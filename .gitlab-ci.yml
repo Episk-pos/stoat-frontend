@@ -14,12 +14,15 @@ stages:
 variables:
   NODE_VERSION: "22"
   PNPM_VERSION: "10.10.0"
+  GIT_SUBMODULE_STRATEGY: normal
+  GIT_SUBMODULE_PATHS: packages/stoat.js packages/solid-livekit-components packages/js-lingui-solid
 
 # Build the frontend
 build-frontend:
   stage: build
   image: node:${NODE_VERSION}-slim
   before_script:
+    - apt-get update && apt-get install -y --no-install-recommends git ca-certificates && rm -rf /var/lib/apt/lists/*
     - npm install -g pnpm@${PNPM_VERSION}
   script:
     - pnpm install --frozen-lockfile

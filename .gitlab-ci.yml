@@ -12,7 +12,7 @@ stages:
   - deploy
 
 variables:
-  NODE_VERSION: "25"
+  NODE_VERSION: "22"
   PNPM_VERSION: "10.10.0"
 
 # Build the frontend
@@ -20,8 +20,7 @@ build-frontend:
   stage: build
   image: node:${NODE_VERSION}-slim
   before_script:
-    - corepack enable
-    - corepack prepare pnpm@${PNPM_VERSION} --activate
+    - npm install -g pnpm@${PNPM_VERSION}
   script:
     - pnpm install --frozen-lockfile
 

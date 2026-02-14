@@ -350,35 +350,17 @@ export function Demo(props: { channel: Channel }) {
               <MdHeadset {...iconSize(20)} />
             </Button> */}
 
-            <div
-              use:floating={{
-                tooltip: {
-                  placement: "top",
-                  content: "Coming soon! 👀",
-                },
-              }}
-            >
-              <Button onPress={() => voice.toggleCamera()} isDisabled>
-                <Switch fallback="Camera">
-                  <Match when={voice.video()}>Sharing camera</Match>
-                </Switch>
-              </Button>
-            </div>
+            <Button onPress={() => voice.toggleCamera()}>
+              <Switch fallback="Camera">
+                <Match when={voice.video()}>Sharing camera</Match>
+              </Switch>
+            </Button>
 
-            <div
-              use:floating={{
-                tooltip: {
-                  placement: "top",
-                  content: "Coming soon! 👀",
-                },
-              }}
-            >
-              <Button onPress={() => voice.toggleScreenshare()} isDisabled>
-                <Switch fallback="Share screen">
-                  <Match when={voice.screenshare()}>Sharing screen</Match>
-                </Switch>
-              </Button>
-            </div>
+            <Button onPress={() => voice.toggleScreenshare()}>
+              <Switch fallback="Share screen">
+                <Match when={voice.screenshare()}>Sharing screen</Match>
+              </Switch>
+            </Button>
           </Show>
         </Actions>
       </Row>

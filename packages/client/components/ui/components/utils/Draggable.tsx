@@ -6,7 +6,14 @@ import {
   Setter,
   createEffect,
   createSignal,
+  onCleanup,
 } from "solid-js";
+
+/** Duration in ms a touch must be held before drag activates */
+const LONG_PRESS_DELAY_MS = 500;
+
+/** Max movement in px before a touch is considered a scroll, not a long press */
+const LONG_PRESS_MOVE_THRESHOLD_PX = 10;
 
 interface Props<T> {
   type?: string;
@@ -55,6 +62,10 @@ export function Draggable<T>(props: Props<T>) {
     props.dragHandles || false,
   );
 
+  // On touch devices, block drag until a long-press is detected.
+  // This prevents drag from hijacking normal scroll gestures.
+  const [touchDragBlocked, setTouchDragBlocked] = createSignal(false);
+
   const [containerItems, setContainerItems] = createSignal<ContainerItem<T>[]>(
     [],
   );
@@ -70,12 +81,71 @@ export function Draggable<T>(props: Props<T>) {
     setContainerItems(newContainerItems);
   });
 
+  // Long-press timer state for touch drag activation
+  let longPressTimer: ReturnType<typeof setTimeout> | null = null;
+  let touchStartX = 0;
+  let touchStartY = 0;
+
+  function clearLongPressTimer() {
+    if (longPressTimer !== null) {
+      clearTimeout(longPressTimer);
+      longPressTimer = null;
+    }
+  }
+
+  function handleTouchStart(e: TouchEvent) {
+    if (props.disabled) return;
+
+    const touch = e.touches[0];
+    touchStartX = touch.clientX;
+    touchStartY = touch.clientY;
+
+    // Block drag during the long-press detection period
+    setTouchDragBlocked(true);
+
+    clearLongPressTimer();
+    longPressTimer = setTimeout(() => {
+      longPressTimer = null;
+      // Long press detected -- unblock drag
+      setTouchDragBlocked(false);
+
+      // Haptic feedback if available
+      if (navigator.vibrate) {
+        navigator.vibrate(50);
+      }
+    }, LONG_PRESS_DELAY_MS);
+  }
+
+  function handleTouchMove(e: TouchEvent) {
+    if (longPressTimer === null) return;
+
+    const touch = e.touches[0];
+    const dx = touch.clientX - touchStartX;
+    const dy = touch.clientY - touchStartY;
+
+    // If finger moved beyond threshold, user is scrolling -- cancel long press
+    if (Math.abs(dx) > LONG_PRESS_MOVE_THRESHOLD_PX || Math.abs(dy) > LONG_PRESS_MOVE_THRESHOLD_PX) {
+      clearLongPressTimer();
+      // Keep drag blocked so scroll continues unimpeded
+      setTouchDragBlocked(true);
+    }
+  }
+
+  function handleTouchEnd() {
+    clearLongPressTimer();
+    // Re-allow normal drag state after touch ends
+    setTouchDragBlocked(false);
+  }
+
+  onCleanup(() => clearLongPressTimer());
+
   /**
    * Handle DND event from solid-dnd-directive
    * @param e
    */
   function handleDndEvent(e: DragHandleEvent<T>) {
     setDragDisabled(props.dragHandles || false);
+    setTouchDragBlocked(false);
 
     const { items: newContainerItems } = e.detail;
     setContainerItems(newContainerItems);
@@ -88,11 +158,15 @@ export function Draggable<T>(props: Props<T>) {
   }
 
   function isDisabled() {
-    return props.disabled || dragDisabled();
+    return props.disabled || dragDisabled() || touchDragBlocked();
   }
 
   return (
     <div
+      ontouchstart={handleTouchStart}
+      ontouchmove={handleTouchMove}
+      ontouchend={handleTouchEnd}
+      ontouchcancel={handleTouchEnd}
       use:dndzone={{
         type: props.type,
         items: containerItems,
@@ -133,12 +207,24 @@ export function createDragHandle(
   dragDisabled: Accessor<boolean>,
   setDragDisabled: Setter<boolean>,
 ) {
+  let longPressTimer: ReturnType<typeof setTimeout> | null = null;
+  let handleTouchStartX = 0;
+  let handleTouchStartY = 0;
+
+  function clearTimer() {
+    if (longPressTimer !== null) {
+      clearTimeout(longPressTimer);
+      longPressTimer = null;
+    }
+  }
+
   function startDrag(e: Event) {
     e.preventDefault();
     setDragDisabled(false);
   }
 
   function endDrag() {
+    clearTimer();
     setDragDisabled(true);
   }
 
@@ -147,10 +233,47 @@ export function createDragHandle(
       setDragDisabled(false);
   }
 
+  function handleTouchStart(e: TouchEvent) {
+    const touch = e.touches[0];
+    handleTouchStartX = touch.clientX;
+    handleTouchStartY = touch.clientY;
+
+    clearTimer();
+    longPressTimer = setTimeout(() => {
+      longPressTimer = null;
+      // Long press detected on drag handle -- enable drag
+      setDragDisabled(false);
+      if (navigator.vibrate) {
+        navigator.vibrate(50);
+      }
+    }, LONG_PRESS_DELAY_MS);
+  }
+
+  function handleTouchMove(e: TouchEvent) {
+    if (longPressTimer === null) return;
+
+    const touch = e.touches[0];
+    const dx = touch.clientX - handleTouchStartX;
+    const dy = touch.clientY - handleTouchStartY;
+
+    if (Math.abs(dx) > LONG_PRESS_MOVE_THRESHOLD_PX || Math.abs(dy) > LONG_PRESS_MOVE_THRESHOLD_PX) {
+      clearTimer();
+      // User is scrolling, keep drag disabled
+      setDragDisabled(true);
+    }
+  }
+
+  function handleTouchEnd() {
+    clearTimer();
+  }
+
   return {
     tabindex: dragDisabled() ? 0 : -1,
     onmouseenter: startDrag,
-    ontouchstart: startDrag,
+    ontouchstart: handleTouchStart,
+    ontouchmove: handleTouchMove,
+    ontouchend: handleTouchEnd,
+    ontouchcancel: handleTouchEnd,
     onmouseleave: endDrag,
     onkeydown: handleKeyDown,
     "aria-label": "drag-handle",

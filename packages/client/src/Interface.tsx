@@ -10,7 +10,12 @@ import { useClient, useClientLifecycle } from "@revolt/client";
 import { State } from "@revolt/client/Controller";
 import { NotificationsWorker } from "@revolt/client/NotificationsWorker";
 import { useModals } from "@revolt/modal";
-import { Navigate, useBeforeLeave, useLocation } from "@revolt/routing";
+import {
+  Navigate,
+  paramsFromPathname,
+  useBeforeLeave,
+  useLocation,
+} from "@revolt/routing";
 import { useState } from "@revolt/state";
 import { LAYOUT_SECTIONS } from "@revolt/state/stores/Layout";
 import { CircularProgress } from "@revolt/ui";
@@ -37,6 +42,20 @@ const Interface = (props: { children: JSX.Element }) => {
         });
       } else if (typeof e.to === "string") {
         state.layout.setLastActivePath(e.to);
+
+        // On mobile viewports, collapse the primary sidebar when navigating
+        // to a channel so the message area is visible
+        const MOBILE_BREAKPOINT = 768;
+        if (window.innerWidth <= MOBILE_BREAKPOINT) {
+          const params = paramsFromPathname(e.to);
+          if (params.channelId) {
+            state.layout.setSectionState(
+              LAYOUT_SECTIONS.PRIMARY_SIDEBAR,
+              false,
+              true,
+            );
+          }
+        }
       }
     }
   });

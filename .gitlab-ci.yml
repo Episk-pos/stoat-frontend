@@ -1,0 +1,86 @@
+# =============================================================================
+# Stoat Frontend CI/CD Pipeline
+# =============================================================================
+# Pipeline Flow:
+#   build -> deploy
+#
+# On push to main: build and deploy to stoat.episkopos.community (S3 + CloudFront)
+# =============================================================================
+
+stages:
+  - build
+  - deploy
+
+variables:
+  NODE_VERSION: "25"
+  PNPM_VERSION: "10.10.0"
+
+# Build the frontend
+build-frontend:
+  stage: build
+  image: node:${NODE_VERSION}-slim
+  before_script:
+    - corepack enable
+    - corepack prepare pnpm@${PNPM_VERSION} --activate
+  script:
+    - pnpm install --frozen-lockfile
+
+    # Build dependencies (stoat.js, livekit components, lingui plugins)
+    - pnpm --filter stoat.js run build
+    - pnpm --filter solid-livekit-components build
+    - pnpm --filter @lingui-solid/babel-plugin-lingui-macro build
+    - pnpm --filter @lingui-solid/babel-plugin-extract-messages build
+
+    # Compile i18n catalogs
+    - pnpm --filter client exec lingui compile --typescript
+
+    # Copy assets
+    - pnpm --filter client exec node scripts/copyAssets.mjs
+
+    # Build the client with Stoat-specific env vars
+    - |
+      VITE_API_URL=https://stoat.episkopos.community/api \
+      VITE_WS_URL=wss://stoat.episkopos.community/events \
+      VITE_MEDIA_URL=https://stoat.episkopos.community/autumn \
+      VITE_PROXY_URL=https://stoat.episkopos.community/january \
+      pnpm --filter client exec vite build
+  artifacts:
+    paths:
+      - packages/client/dist/
+    expire_in: 1 hour
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+
+# Deploy to S3 + invalidate CloudFront
+deploy-frontend:
+  stage: deploy
+  image: amazon/aws-cli:2.15.0
+  script:
+    # Sync hashed assets with immutable cache headers (1 year)
+    - |
+      aws s3 sync packages/client/dist/ s3://$S3_BUCKET/ \
+        --delete \
+        --cache-control "max-age=31536000,immutable" \
+        --exclude "index.html" \
+        --exclude "*.json" \
+        --exclude "*.txt"
+    # Upload index.html with no-cache (always revalidate)
+    - |
+      aws s3 cp packages/client/dist/index.html s3://$S3_BUCKET/index.html \
+        --cache-control "no-cache,no-store,must-revalidate"
+    # Upload manifests with no-cache
+    - |
+      for f in packages/client/dist/*.json packages/client/dist/*.txt; do
+        [ -f "$f" ] && aws s3 cp "$f" s3://$S3_BUCKET/$(basename "$f") \
+          --cache-control "no-cache,no-store,must-revalidate" || true
+      done
+    # Invalidate CloudFront cache
+    - |
+      aws cloudfront create-invalidation \
+        --distribution-id $CLOUDFRONT_DISTRIBUTION_ID \
+        --paths "/*"
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+  needs:
+    - job: build-frontend
+      artifacts: true

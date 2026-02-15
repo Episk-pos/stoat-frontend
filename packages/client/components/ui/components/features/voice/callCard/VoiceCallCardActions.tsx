@@ -66,7 +66,7 @@ export function VoiceCallCardActions(props: { size: "xs" | "sm" }) {
       >
         <Show
           when={voice.video()}
-          fallback={<Symbol>camera_video_off</Symbol>}
+          fallback={<Symbol>videocam_off</Symbol>}
         >
           <Symbol>camera_video</Symbol>
         </Show>

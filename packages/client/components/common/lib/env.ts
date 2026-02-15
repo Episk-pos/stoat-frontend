@@ -13,17 +13,6 @@ export default {
    */
   DEFAULT_API_URL,
   /**
-   * Whether this is Stoat
-   */
-  IS_STOAT: [
-    // historically...
-    "https://api.revolt.chat",
-    "https://beta.revolt.chat/api",
-    "https://revolt.chat/api",
-    // ... and now:
-    "https://stoat.chat/api",
-  ].includes(DEFAULT_API_URL),
-  /**
    * What WS server to connect to by default.
    */
   DEFAULT_WS_URL:
@@ -44,6 +33,26 @@ export default {
     (import.meta.env.DEV ? import.meta.env.VITE_DEV_PROXY_URL : undefined) ??
     (import.meta.env.VITE_PROXY_URL as string) ??
     "https://proxy.stoatusercontent.com",
+  /**
+   * What emoji CDN to use for Unicode emoji SVGs.
+   */
+  EMOJI_URL:
+    (import.meta.env.VITE_EMOJI_URL as string) ??
+    "https://static.stoat.chat/emoji",
+  /**
+   * Discover directory URL. If not set, the Discover feature is hidden.
+   */
+  DISCOVER_URL: import.meta.env.VITE_DISCOVER_URL as string | undefined,
+  /**
+   * Geolocation API URL for age-restricted content. If not set, geo-blocking is disabled.
+   */
+  GEO_URL: import.meta.env.VITE_GEO_URL as string | undefined,
+  /**
+   * GIF API URL for the GIF picker. If not set, the GIF picker is hidden/disabled.
+   */
+  GIF_API_URL:
+    (import.meta.env.VITE_GIF_API_URL as string) ??
+    "https://api.gifbox.me",
   /**
    * hCaptcha site key to use if enabled
    */

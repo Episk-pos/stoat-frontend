@@ -45,6 +45,8 @@ build-frontend:
       VITE_WS_URL=wss://stoat.episkopos.community/events \
       VITE_MEDIA_URL=https://stoat.episkopos.community/autumn \
       VITE_PROXY_URL=https://stoat.episkopos.community/january \
+      VITE_EMOJI_URL=https://static.stoat.chat/emoji \
+      VITE_GIF_API_URL=https://stoat.episkopos.community/gifbox \
       pnpm --filter client exec vite build
   artifacts:
     paths:

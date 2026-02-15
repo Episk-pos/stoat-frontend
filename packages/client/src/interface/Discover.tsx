@@ -4,12 +4,13 @@ import { PublicBot, PublicChannelInvite } from "stoat.js";
 import { styled } from "styled-system/jsx";
 
 import { useClient } from "@revolt/client";
+import { CONFIGURATION } from "@revolt/common";
 import { useModals } from "@revolt/modal";
 import { paramsFromPathname, useLocation, useNavigate } from "@revolt/routing";
 import { useState } from "@revolt/state";
 
 /**
- * stt.gg wrapper
+ * Discover directory iframe wrapper
  */
 export function Discover() {
   const state = useState();
@@ -19,12 +20,14 @@ export function Discover() {
   const { openModal } = useModals();
   const [ref, setRef] = createSignal<HTMLIFrameElement>();
 
+  if (!CONFIGURATION.DISCOVER_URL) return <></>;
+
   async function onMessage(message: MessageEvent) {
     const frame = ref();
     if (!frame) return;
 
     const url = new URL(message.origin);
-    if (url.origin !== "https://stt.gg") return;
+    if (!CONFIGURATION.DISCOVER_URL || url.origin !== new URL(CONFIGURATION.DISCOVER_URL).origin) return;
 
     const data = JSON.parse(message.data);
     console.info(data);
@@ -88,7 +91,7 @@ export function Discover() {
   // Render the URL once, update path in browser through messaging
   const query = new URLSearchParams(location.query as Record<string, string>);
   query.set("embedded", "true");
-  const src = `https://stt.gg/${location.pathname}?${query}`;
+  const src = `${CONFIGURATION.DISCOVER_URL}/${location.pathname}?${query}`;
 
   return <Base ref={setRef} src={src} />;
 }

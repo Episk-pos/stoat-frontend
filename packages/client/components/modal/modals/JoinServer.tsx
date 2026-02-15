@@ -8,7 +8,7 @@ import { Column, Dialog, DialogProps, Form2, Text } from "@revolt/ui";
 import { useModals } from "..";
 import { Modals } from "../types";
 
-const RE_INVITE_URL = /(?:invite|stt.gg)\/([a-z0-9]+)/gi;
+const RE_INVITE_URL = /invite\/([a-z0-9]+)/gi;
 
 /**
  * Modal to join a server
@@ -76,7 +76,7 @@ export function JoinServerModal(
             name="link"
             control={group.controls.link}
             label={t`Code`}
-            placeholder="stt.gg/wVEJDGVs"
+            placeholder="invite/abc123"
           />
         </Column>
       </form>

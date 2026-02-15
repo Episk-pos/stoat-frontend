@@ -71,6 +71,15 @@ export function VoiceCallCardActions(props: { size: "xs" | "sm" }) {
           <Symbol>camera_video</Symbol>
         </Show>
       </IconButton>
+      <Show when={voice.video()}>
+        <IconButton
+          size={props.size}
+          variant="tonal"
+          onPress={() => voice.flipCamera()}
+        >
+          <Symbol>flip_camera_android</Symbol>
+        </IconButton>
+      </Show>
       <IconButton
         size={props.size}
         variant={voice.screenshare() ? "filled" : "tonal"}
@@ -81,6 +90,18 @@ export function VoiceCallCardActions(props: { size: "xs" | "sm" }) {
           fallback={<Symbol>screen_share</Symbol>}
         >
           <Symbol>stop_screen_share</Symbol>
+        </Show>
+      </IconButton>
+      <IconButton
+        size={props.size}
+        variant={voice.audioOnly() ? "tonal" : "filled"}
+        onPress={() => voice.toggleAudioOnly()}
+      >
+        <Show
+          when={voice.audioOnly()}
+          fallback={<Symbol>visibility</Symbol>}
+        >
+          <Symbol>visibility_off</Symbol>
         </Show>
       </IconButton>
       <Button

@@ -9,7 +9,13 @@ import {
 } from "solid-js";
 import { RoomContext } from "solid-livekit-components";
 
-import { Room } from "livekit-client";
+import {
+  Room,
+  Track,
+  createLocalVideoTrack,
+  facingModeFromLocalTrack,
+  type FacingMode,
+} from "livekit-client";
 import { Channel } from "stoat.js";
 
 import { useModals } from "@revolt/modal";
@@ -51,6 +57,9 @@ class Voice {
   screenshare: Accessor<boolean>;
   #setScreenshare: Setter<boolean>;
 
+  audioOnly: Accessor<boolean>;
+  #setAudioOnly: Setter<boolean>;
+
   onError: (error: unknown) => void = () => {};
 
   constructor(voiceSettings: VoiceSettings) {
@@ -83,6 +92,10 @@ class Voice {
     const [screenshare, setScreenshare] = createSignal(false);
     this.screenshare = screenshare;
     this.#setScreenshare = setScreenshare;
+
+    const [audioOnly, setAudioOnly] = createSignal(false);
+    this.audioOnly = audioOnly;
+    this.#setAudioOnly = setAudioOnly;
   }
 
   async connect(channel: Channel, auth?: { url: string; token: string }) {
@@ -108,6 +121,7 @@ class Voice {
       this.#setDeafen(false);
       this.#setVideo(false);
       this.#setScreenshare(false);
+      this.#setAudioOnly(false);
 
       if (this.speakingPermission)
         room.localParticipant
@@ -169,6 +183,64 @@ class Voice {
       );
 
       this.#setVideo(room.localParticipant.isCameraEnabled);
+    } catch (error) {
+      this.onError(error);
+    }
+  }
+
+  async flipCamera() {
+    try {
+      const room = this.room();
+      if (!room) throw "invalid state";
+
+      const camPub = room.localParticipant.getTrackPublication(
+        Track.Source.Camera,
+      );
+      const currentTrack = camPub?.track;
+
+      // Determine current facing mode and flip it
+      let newFacingMode: FacingMode = "environment";
+      if (currentTrack) {
+        const current = facingModeFromLocalTrack(currentTrack);
+        newFacingMode =
+          current?.facingMode === "environment" ? "user" : "environment";
+      }
+
+      // Create new track with flipped facing mode
+      const newTrack = await createLocalVideoTrack({
+        facingMode: newFacingMode,
+      });
+
+      // Unpublish old and publish new
+      if (camPub) {
+        await room.localParticipant.unpublishTrack(camPub.track!);
+      }
+      await room.localParticipant.publishTrack(newTrack);
+      this.#setVideo(true);
+    } catch (error) {
+      this.onError(error);
+    }
+  }
+
+  async toggleAudioOnly() {
+    try {
+      const room = this.room();
+      if (!room) throw "invalid state";
+
+      const newValue = !this.audioOnly();
+      this.#setAudioOnly(newValue);
+
+      // Subscribe/unsubscribe to all remote video tracks
+      for (const participant of room.remoteParticipants.values()) {
+        for (const pub of participant.trackPublications.values()) {
+          if (
+            pub.kind === Track.Kind.Video &&
+            pub.source !== Track.Source.ScreenShareAudio
+          ) {
+            pub.setSubscribed(!newValue);
+          }
+        }
+      }
     } catch (error) {
       this.onError(error);
     }

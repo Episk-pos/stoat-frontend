@@ -12,6 +12,7 @@ import { RoomContext } from "solid-livekit-components";
 import { Room } from "livekit-client";
 import { Channel } from "stoat.js";
 
+import { useModals } from "@revolt/modal";
 import { useState } from "@revolt/state";
 import { Voice as VoiceSettings } from "@revolt/state/stores/Voice";
 import { VoiceCallCardContext } from "@revolt/ui/components/features/voice/callCard/VoiceCallCard";
@@ -49,6 +50,8 @@ class Voice {
 
   screenshare: Accessor<boolean>;
   #setScreenshare: Setter<boolean>;
+
+  onError: (error: unknown) => void = () => {};
 
   constructor(voiceSettings: VoiceSettings) {
     this.#settings = voiceSettings;
@@ -144,33 +147,45 @@ class Voice {
   }
 
   async toggleMute() {
-    const room = this.room();
-    if (!room) throw "invalid state";
-    await room.localParticipant.setMicrophoneEnabled(
-      !room.localParticipant.isMicrophoneEnabled,
-    );
+    try {
+      const room = this.room();
+      if (!room) throw "invalid state";
+      await room.localParticipant.setMicrophoneEnabled(
+        !room.localParticipant.isMicrophoneEnabled,
+      );
 
-    this.#setMicrophone(room.localParticipant.isMicrophoneEnabled);
+      this.#setMicrophone(room.localParticipant.isMicrophoneEnabled);
+    } catch (error) {
+      this.onError(error);
+    }
   }
 
   async toggleCamera() {
-    const room = this.room();
-    if (!room) throw "invalid state";
-    await room.localParticipant.setCameraEnabled(
-      !room.localParticipant.isCameraEnabled,
-    );
+    try {
+      const room = this.room();
+      if (!room) throw "invalid state";
+      await room.localParticipant.setCameraEnabled(
+        !room.localParticipant.isCameraEnabled,
+      );
 
-    this.#setVideo(room.localParticipant.isCameraEnabled);
+      this.#setVideo(room.localParticipant.isCameraEnabled);
+    } catch (error) {
+      this.onError(error);
+    }
   }
 
   async toggleScreenshare() {
-    const room = this.room();
-    if (!room) throw "invalid state";
-    await room.localParticipant.setScreenShareEnabled(
-      !room.localParticipant.isScreenShareEnabled,
-    );
+    try {
+      const room = this.room();
+      if (!room) throw "invalid state";
+      await room.localParticipant.setScreenShareEnabled(
+        !room.localParticipant.isScreenShareEnabled,
+      );
 
-    this.#setScreenshare(room.localParticipant.isScreenShareEnabled);
+      this.#setScreenshare(room.localParticipant.isScreenShareEnabled);
+    } catch (error) {
+      this.onError(error);
+    }
   }
 
   getConnectedUser(userId: string) {
@@ -193,7 +208,9 @@ const voiceContext = createContext<Voice>(null as unknown as Voice);
  */
 export function VoiceContext(props: { children: JSX.Element }) {
   const state = useState();
+  const { showError } = useModals();
   const voice = new Voice(state.voice);
+  voice.onError = showError;
 
   return (
     <voiceContext.Provider value={voice}>

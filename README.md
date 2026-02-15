@@ -52,7 +52,7 @@ mise dev
 mise check
 ```
 
-Finally, navigate to http://local.revolt.chat:5173.
+Finally, navigate to http://local.stoat.chat:5173.
 
 ### Pulling in Stoat's brand assets
 

@@ -107,6 +107,9 @@ class Voice {
         echoCancellation: this.#settings.echoCancellation,
         noiseSuppression: this.#settings.noiseSupression,
       },
+      videoCaptureDefaults: {
+        deviceId: this.#settings.preferredVideoInputDevice,
+      },
       audioOutput: {
         deviceId: this.#settings.preferredAudioOutputDevice,
       },

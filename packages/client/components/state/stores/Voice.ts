@@ -5,6 +5,7 @@ import { AbstractStore } from ".";
 export interface TypeVoice {
   preferredAudioInputDevice?: string;
   preferredAudioOutputDevice?: string;
+  preferredVideoInputDevice?: string;
 
   echoCancellation: boolean;
   noiseSupression: boolean;
@@ -61,6 +62,10 @@ export class Voice extends AbstractStore<"voice", TypeVoice> {
 
     if (typeof input.preferredAudioOutputDevice === "string") {
       data.preferredAudioOutputDevice = input.preferredAudioOutputDevice;
+    }
+
+    if (typeof input.preferredVideoInputDevice === "string") {
+      data.preferredVideoInputDevice = input.preferredVideoInputDevice;
     }
 
     if (typeof input.echoCancellation === "boolean") {
@@ -150,6 +155,13 @@ export class Voice extends AbstractStore<"voice", TypeVoice> {
   }
 
   /**
+   * Set the preferred video input device
+   */
+  set preferredVideoInputDevice(value: string) {
+    this.set("preferredVideoInputDevice", value);
+  }
+
+  /**
    * Set echo cancellation
    */
   set echoCancellation(value: boolean) {
@@ -189,6 +201,13 @@ export class Voice extends AbstractStore<"voice", TypeVoice> {
    */
   get preferredAudioOutputDevice(): string | undefined {
     return this.get().preferredAudioOutputDevice;
+  }
+
+  /**
+   * Get the preferred video input device
+   */
+  get preferredVideoInputDevice(): string | undefined {
+    return this.get().preferredVideoInputDevice;
   }
 
   /**

@@ -78,7 +78,7 @@ export function Discover() {
           break;
         }
         case "applyTheme": {
-          alert("revite themes are not supported!");
+          alert("Legacy themes are not supported!");
           break;
         }
       }

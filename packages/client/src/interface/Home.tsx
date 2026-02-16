@@ -133,7 +133,7 @@ export function HomePage() {
               variant="tertiary"
               onClick={() =>
                 window.open(
-                  "https://wiki.revolt.chat/notes/project/financial-support/",
+                  "https://opencollective.com/revolt",
                 )
               }
               description={

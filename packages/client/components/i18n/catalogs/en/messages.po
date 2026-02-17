@@ -490,6 +490,10 @@ msgstr "By creating this bot, you agree to the <0>Acceptable Use Policy</0>."
 msgid "By creating this server, you agree to the <0>Acceptable Use Policy</0>."
 msgstr "By creating this server, you agree to the <0>Acceptable Use Policy</0>."
 
+#: components/ui/components/features/voice/callCard/VoiceCallCardActions.tsx
+msgid "Camera"
+msgstr "Camera"
+
 #: components/modal/modals/SignOutSessions.tsx
 #: components/modal/modals/ServerIdentity.tsx
 #: components/modal/modals/ResetBotToken.tsx
@@ -1025,6 +1029,10 @@ msgstr "Desktop"
 msgid "Developer Documentation"
 msgstr "Developer Documentation"
 
+#: components/ui/components/features/voice/callCard/VoiceCallCardActions.tsx
+msgid "Device settings"
+msgstr "Device settings"
+
 #: components/app/interface/settings/user/Account.tsx
 msgid "Disable Account"
 msgstr "Disable Account"
@@ -1340,8 +1348,8 @@ msgstr "Go to account settings to edit your username"
 
 #: src/interface/Home.tsx
 #: components/app/interface/settings/user/Feedback.tsx
-msgid "Go to the Stoat Lounge"
-msgstr "Go to the Stoat Lounge"
+#~ msgid "Go to the Stoat Lounge"
+#~ msgstr "Go to the Stoat Lounge"
 
 #: src/interface/Home.tsx
 #: src/interface/Home.tsx
@@ -1492,8 +1500,8 @@ msgstr "Join a server"
 
 #: src/interface/Home.tsx
 #: components/app/interface/settings/user/Feedback.tsx
-msgid "Join the Stoat Lounge"
-msgstr "Join the Stoat Lounge"
+#~ msgid "Join the Stoat Lounge"
+#~ msgstr "Join the Stoat Lounge"
 
 #: components/ui/components/features/voice/callCard/VoiceCallCardPreview.tsx
 msgid "Join the voice channel"
@@ -1759,6 +1767,10 @@ msgstr "Message was sent on another platform"
 #: components/app/interface/settings/channel/permissions/ChannelPermissionsEditor.tsx
 msgid "Messaging"
 msgstr "Messaging"
+
+#: components/ui/components/features/voice/callCard/VoiceCallCardActions.tsx
+msgid "Microphone"
+msgstr "Microphone"
 
 #: components/app/interface/settings/user/Native.tsx
 msgid "Minimise to Tray"
@@ -2338,6 +2350,14 @@ msgstr "Select members to add"
 msgid "Select your language"
 msgstr "Select your language"
 
+#: components/ui/components/features/voice/callCard/VoiceCallCardActions.tsx
+msgid "Selected camera is unavailable."
+msgstr "Selected camera is unavailable."
+
+#: components/ui/components/features/voice/callCard/VoiceCallCardActions.tsx
+msgid "Selected microphone is unavailable."
+msgstr "Selected microphone is unavailable."
+
 #: components/app/interface/settings/channel/permissions/ChannelPermissionsEditor.tsx
 msgid "Send attachments to chat"
 msgstr "Send attachments to chat"
@@ -2549,6 +2569,14 @@ msgstr "Stoat Founder"
 msgid "Stoat is one of the best ways to stay connected with your friends and community, anywhere, anytime."
 msgstr "Stoat is one of the best ways to stay connected with your friends and community, anywhere, anytime."
 
+#: components/app/menus/UserContextMenu.tsx
+msgid "Stop watching screenshare"
+msgstr "Stop watching screenshare"
+
+#: components/app/menus/UserContextMenu.tsx
+msgid "Stop watching video"
+msgstr "Stop watching video"
+
 #: components/app/interface/settings/user/Feedback.tsx
 msgid "Submit feature suggestion"
 msgstr "Submit feature suggestion"
@@ -2753,6 +2781,14 @@ msgstr "Unblock user"
 msgid "Uncaught Stoat error: {0}"
 msgstr "Uncaught Stoat error: {0}"
 
+#: components/ui/components/features/voice/callCard/VoiceCallCardActions.tsx
+msgid "Unknown camera"
+msgstr "Unknown camera"
+
+#: components/ui/components/features/voice/callCard/VoiceCallCardActions.tsx
+msgid "Unknown microphone"
+msgstr "Unknown microphone"
+
 #: components/markdown/plugins/anchors.tsx
 msgid "Unknown Server"
 msgstr "Unknown Server"
@@ -2905,6 +2941,10 @@ msgstr "Video"
 msgid "View Channel"
 msgstr "View Channel"
 
+#: src/interface/channels/ChannelHeader.tsx
+msgid "View chat"
+msgstr "View chat"
+
 #: components/app/interface/settings/user/Feedback.tsx
 msgid "View currently active bug reports here."
 msgstr "View currently active bug reports here."
@@ -2949,6 +2989,14 @@ msgstr "Volume"
 #: components/app/interface/settings/user/profile/UserProfileEditor.tsx
 msgid "Want to change username?"
 msgstr "Want to change username?"
+
+#: components/app/menus/UserContextMenu.tsx
+msgid "Watch screenshare"
+msgstr "Watch screenshare"
+
+#: components/app/menus/UserContextMenu.tsx
+msgid "Watch video"
+msgstr "Watch video"
 
 #: components/auth/src/flows/FlowCheck.tsx
 msgid "We've sent you a verification email. Please allow up to 10 minutes for it to arrive."
@@ -3033,8 +3081,8 @@ msgstr "You can re-open it later, but it will disappear on both sides."
 #: src/interface/Home.tsx
 #: components/app/interface/settings/user/Feedback.tsx
 #: components/app/interface/settings/user/Feedback.tsx
-msgid "You can report issues and discuss improvements with us directly here."
-msgstr "You can report issues and discuss improvements with us directly here."
+#~ msgid "You can report issues and discuss improvements with us directly here."
+#~ msgstr "You can report issues and discuss improvements with us directly here."
 
 #. placeholder {0}: err.max
 #: components/i18n/errors.ts

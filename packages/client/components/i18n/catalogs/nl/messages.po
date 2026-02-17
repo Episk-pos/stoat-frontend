@@ -490,6 +490,10 @@ msgstr ""
 msgid "By creating this server, you agree to the <0>Acceptable Use Policy</0>."
 msgstr ""
 
+#: components/ui/components/features/voice/callCard/VoiceCallCardActions.tsx
+msgid "Camera"
+msgstr ""
+
 #: components/modal/modals/SignOutSessions.tsx
 #: components/modal/modals/ServerIdentity.tsx
 #: components/modal/modals/ResetBotToken.tsx
@@ -1025,6 +1029,10 @@ msgstr ""
 msgid "Developer Documentation"
 msgstr ""
 
+#: components/ui/components/features/voice/callCard/VoiceCallCardActions.tsx
+msgid "Device settings"
+msgstr ""
+
 #: components/app/interface/settings/user/Account.tsx
 msgid "Disable Account"
 msgstr "Account uitschakelen"
@@ -1340,8 +1348,8 @@ msgstr ""
 
 #: src/interface/Home.tsx
 #: components/app/interface/settings/user/Feedback.tsx
-msgid "Go to the Stoat Lounge"
-msgstr ""
+#~ msgid "Go to the Stoat Lounge"
+#~ msgstr ""
 
 #: src/interface/Home.tsx
 #: src/interface/Home.tsx
@@ -1492,8 +1500,8 @@ msgstr ""
 
 #: src/interface/Home.tsx
 #: components/app/interface/settings/user/Feedback.tsx
-msgid "Join the Stoat Lounge"
-msgstr ""
+#~ msgid "Join the Stoat Lounge"
+#~ msgstr ""
 
 #: components/ui/components/features/voice/callCard/VoiceCallCardPreview.tsx
 msgid "Join the voice channel"
@@ -1759,6 +1767,10 @@ msgstr "Bericht is gestuurd op een ander platform"
 #: components/app/interface/settings/channel/permissions/ChannelPermissionsEditor.tsx
 msgid "Messaging"
 msgstr "Berichten"
+
+#: components/ui/components/features/voice/callCard/VoiceCallCardActions.tsx
+msgid "Microphone"
+msgstr ""
 
 #: components/app/interface/settings/user/Native.tsx
 msgid "Minimise to Tray"
@@ -2338,6 +2350,14 @@ msgstr ""
 msgid "Select your language"
 msgstr "Selecteer je taal"
 
+#: components/ui/components/features/voice/callCard/VoiceCallCardActions.tsx
+msgid "Selected camera is unavailable."
+msgstr ""
+
+#: components/ui/components/features/voice/callCard/VoiceCallCardActions.tsx
+msgid "Selected microphone is unavailable."
+msgstr ""
+
 #: components/app/interface/settings/channel/permissions/ChannelPermissionsEditor.tsx
 msgid "Send attachments to chat"
 msgstr ""
@@ -2549,6 +2569,14 @@ msgstr ""
 msgid "Stoat is one of the best ways to stay connected with your friends and community, anywhere, anytime."
 msgstr ""
 
+#: components/app/menus/UserContextMenu.tsx
+msgid "Stop watching screenshare"
+msgstr ""
+
+#: components/app/menus/UserContextMenu.tsx
+msgid "Stop watching video"
+msgstr ""
+
 #: components/app/interface/settings/user/Feedback.tsx
 msgid "Submit feature suggestion"
 msgstr "Dien functie suggestie in"
@@ -2753,6 +2781,14 @@ msgstr "Deblokkeer gebruiker"
 msgid "Uncaught Stoat error: {0}"
 msgstr ""
 
+#: components/ui/components/features/voice/callCard/VoiceCallCardActions.tsx
+msgid "Unknown camera"
+msgstr ""
+
+#: components/ui/components/features/voice/callCard/VoiceCallCardActions.tsx
+msgid "Unknown microphone"
+msgstr ""
+
 #: components/markdown/plugins/anchors.tsx
 msgid "Unknown Server"
 msgstr ""
@@ -2905,6 +2941,10 @@ msgstr "Video"
 msgid "View Channel"
 msgstr "Bekijk Kanaal"
 
+#: src/interface/channels/ChannelHeader.tsx
+msgid "View chat"
+msgstr ""
+
 #: components/app/interface/settings/user/Feedback.tsx
 msgid "View currently active bug reports here."
 msgstr "Bekijk hier de momenteel actieve bugrapporten."
@@ -2948,6 +2988,14 @@ msgstr ""
 
 #: components/app/interface/settings/user/profile/UserProfileEditor.tsx
 msgid "Want to change username?"
+msgstr ""
+
+#: components/app/menus/UserContextMenu.tsx
+msgid "Watch screenshare"
+msgstr ""
+
+#: components/app/menus/UserContextMenu.tsx
+msgid "Watch video"
 msgstr ""
 
 #: components/auth/src/flows/FlowCheck.tsx
@@ -3033,8 +3081,8 @@ msgstr "Je kunt het later opnieuw openen, maar het zal aan beide kanten verdwijn
 #: src/interface/Home.tsx
 #: components/app/interface/settings/user/Feedback.tsx
 #: components/app/interface/settings/user/Feedback.tsx
-msgid "You can report issues and discuss improvements with us directly here."
-msgstr "Je kan hier problemen melden en verbeteringen direct met ons bespreken."
+#~ msgid "You can report issues and discuss improvements with us directly here."
+#~ msgstr "Je kan hier problemen melden en verbeteringen direct met ons bespreken."
 
 #. placeholder {0}: err.max
 #: components/i18n/errors.ts

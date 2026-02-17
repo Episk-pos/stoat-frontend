@@ -1,4 +1,15 @@
-import { Match, Show, Switch } from "solid-js";
+import {
+  Accessor,
+  Match,
+  Setter,
+  Show,
+  Switch,
+  createContext,
+  createEffect,
+  createSignal,
+  onCleanup,
+  useContext,
+} from "solid-js";
 import {
   TrackLoop,
   TrackReference,
@@ -27,6 +38,19 @@ import { VoiceStatefulUserIcons } from "../VoiceStatefulUserIcons";
 
 import { VoiceCallCardActions } from "./VoiceCallCardActions";
 import { VoiceCallCardStatus } from "./VoiceCallCardStatus";
+
+type MaximizeState = {
+  maximizedTileId: Accessor<string | undefined>;
+  setMaximizedTileId: Setter<string | undefined>;
+};
+
+const maximizeContext = createContext<MaximizeState>(
+  null as unknown as MaximizeState,
+);
+
+function useMaximize() {
+  return useContext(maximizeContext);
+}
 
 /**
  * Call card (active)
@@ -72,6 +96,8 @@ const Call = styled("div", {
  * Show a grid of participants
  */
 function Participants() {
+  const [maximizedTileId, setMaximizedTileId] = createSignal<string>();
+
   const tracks = useTracks(
     [
       { source: Track.Source.Camera, withPlaceholder: true },
@@ -80,15 +106,23 @@ function Participants() {
     { onlySubscribed: false },
   );
 
+  const context: MaximizeState = {
+    maximizedTileId,
+    setMaximizedTileId,
+  };
+
+  createEffect(() => {
+    if (!maximizedTileId() && document.fullscreenElement) {
+      void document.exitFullscreen().catch(() => {});
+    }
+  });
+
   return (
-    <Grid>
-      <TrackLoop tracks={tracks}>{() => <ParticipantTile />}</TrackLoop>
-      {/* <div class={tile()} />
-      <div class={tile()} />
-      <div class={tile()} />
-      <div class={tile()} />
-      <div class={tile()} /> */}
-    </Grid>
+    <maximizeContext.Provider value={context}>
+      <Grid>
+        <TrackLoop tracks={tracks}>{() => <ParticipantTile />}</TrackLoop>
+      </Grid>
+    </maximizeContext.Provider>
   );
 }
 
@@ -106,11 +140,23 @@ const Grid = styled("div", {
  */
 function ParticipantTile() {
   const track = useTrackRefContext();
+  const { maximizedTileId } = useMaximize();
+  const tileId = () => `${track.participant.identity}:${track.source}`;
 
   return (
-    <Switch fallback={<UserTile />}>
+    <Switch
+      fallback={
+        <UserTile
+          tileId={tileId()}
+          isMaximized={maximizedTileId() === tileId()}
+        />
+      }
+    >
       <Match when={track.source === Track.Source.ScreenShare}>
-        <ScreenshareTile />
+        <ScreenshareTile
+          tileId={tileId()}
+          isMaximized={maximizedTileId() === tileId()}
+        />
       </Match>
     </Switch>
   );
@@ -119,9 +165,11 @@ function ParticipantTile() {
 /**
  * Shown when the track source is a camera or placeholder
  */
-function UserTile() {
+function UserTile(props: { tileId: string; isMaximized: boolean }) {
   const participant = useEnsureParticipant();
   const track = useMaybeTrackRefContext();
+  const { setMaximizedTileId } = useMaximize();
+  let tileRef: HTMLDivElement | undefined;
 
   const isMicMuted = useIsMuted({
     participant,
@@ -136,10 +184,52 @@ function UserTile() {
 
   const user = useUser(participant.identity);
 
+  async function toggleMaximize() {
+    const shouldOpen = !props.isMaximized;
+    setMaximizedTileId(shouldOpen ? props.tileId : undefined);
+
+    if (!tileRef) return;
+    if (!shouldOpen && document.fullscreenElement) {
+      await document.exitFullscreen().catch(() => {});
+      return;
+    }
+
+    if (shouldOpen && !document.fullscreenElement && tileRef.requestFullscreen) {
+      await tileRef.requestFullscreen().catch(() => {});
+    }
+  }
+
+  createEffect(() => {
+    const onFullscreenChange = () => {
+      if (!document.fullscreenElement) {
+        setMaximizedTileId((current) =>
+          current === props.tileId ? undefined : current,
+        );
+      }
+    };
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setMaximizedTileId((current) =>
+          current === props.tileId ? undefined : current,
+        );
+      }
+    };
+
+    document.addEventListener("fullscreenchange", onFullscreenChange);
+    document.addEventListener("keydown", onKeyDown);
+    onCleanup(() => {
+      document.removeEventListener("fullscreenchange", onFullscreenChange);
+      document.removeEventListener("keydown", onKeyDown);
+    });
+  });
+
   return (
     <div
+      ref={tileRef}
       class={tile({
         speaking: isSpeaking(),
+        maximized: props.isMaximized,
       })}
       use:floating={{
         userCard: {
@@ -175,10 +265,24 @@ function UserTile() {
       <Overlay>
         <OverlayInner>
           <OverflowingText>{user().username}</OverflowingText>
-          <VoiceStatefulUserIcons
-            userId={participant.identity}
-            muted={isMicMuted()}
-          />
+          <OverlayActions>
+            <VoiceStatefulUserIcons
+              userId={participant.identity}
+              muted={isMicMuted()}
+            />
+            <TileActionButton
+              type="button"
+              title={props.isMaximized ? "Restore" : "Maximize"}
+              onClick={(event) => {
+                event.stopPropagation();
+                void toggleMaximize();
+              }}
+            >
+              <Symbol size={16}>
+                {props.isMaximized ? "close_fullscreen" : "open_in_full"}
+              </Symbol>
+            </TileActionButton>
+          </OverlayActions>
         </OverlayInner>
       </Overlay>
     </div>
@@ -196,18 +300,63 @@ const AvatarOnly = styled("div", {
 /**
  * Shown when the track source is a screenshare
  */
-function ScreenshareTile() {
+function ScreenshareTile(props: { tileId: string; isMaximized: boolean }) {
   const participant = useEnsureParticipant();
   const track = useMaybeTrackRefContext();
   const user = useUser(participant.identity);
+  const { setMaximizedTileId } = useMaximize();
+  let tileRef: HTMLDivElement | undefined;
 
   const isMuted = useIsMuted({
     participant,
     source: Track.Source.ScreenShareAudio,
   });
 
+  async function toggleMaximize() {
+    const shouldOpen = !props.isMaximized;
+    setMaximizedTileId(shouldOpen ? props.tileId : undefined);
+
+    if (!tileRef) return;
+    if (!shouldOpen && document.fullscreenElement) {
+      await document.exitFullscreen().catch(() => {});
+      return;
+    }
+
+    if (shouldOpen && !document.fullscreenElement && tileRef.requestFullscreen) {
+      await tileRef.requestFullscreen().catch(() => {});
+    }
+  }
+
+  createEffect(() => {
+    const onFullscreenChange = () => {
+      if (!document.fullscreenElement) {
+        setMaximizedTileId((current) =>
+          current === props.tileId ? undefined : current,
+        );
+      }
+    };
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setMaximizedTileId((current) =>
+          current === props.tileId ? undefined : current,
+        );
+      }
+    };
+
+    document.addEventListener("fullscreenchange", onFullscreenChange);
+    document.addEventListener("keydown", onKeyDown);
+    onCleanup(() => {
+      document.removeEventListener("fullscreenchange", onFullscreenChange);
+      document.removeEventListener("keydown", onKeyDown);
+    });
+  });
+
   return (
-    <div class={tile() + " group"}>
+    <div
+      ref={tileRef}
+      class={tile({ maximized: props.isMaximized }) + " group"}
+    >
       <VideoTrack
         style={{ "grid-area": "1/1" }}
         trackRef={track as TrackReference}
@@ -217,9 +366,23 @@ function ScreenshareTile() {
       <Overlay showOnHover>
         <OverlayInner>
           <OverflowingText>{user().username}</OverflowingText>
-          <Show when={isMuted()}>
-            <Symbol size={18}>no_sound</Symbol>
-          </Show>
+          <OverlayActions>
+            <Show when={isMuted()}>
+              <Symbol size={18}>no_sound</Symbol>
+            </Show>
+            <TileActionButton
+              type="button"
+              title={props.isMaximized ? "Restore" : "Maximize"}
+              onClick={(event) => {
+                event.stopPropagation();
+                void toggleMaximize();
+              }}
+            >
+              <Symbol size={16}>
+                {props.isMaximized ? "close_fullscreen" : "open_in_full"}
+              </Symbol>
+            </TileActionButton>
+          </OverlayActions>
         </OverlayInner>
       </Overlay>
     </div>
@@ -247,6 +410,13 @@ const tile = cva({
       true: {
         outlineColor: "var(--md-sys-color-primary)",
       },
+    },
+    maximized: {
+      true: {
+        gridColumn: "1 / -1",
+        minHeight: "min(70vh, 920px)",
+      },
+      false: {},
     },
   },
 });
@@ -296,6 +466,35 @@ const OverlayInner = styled("div", {
 
     _first: {
       flexGrow: 1,
+    },
+  },
+});
+
+const OverlayActions = styled("div", {
+  base: {
+    display: "inline-flex",
+    alignItems: "center",
+    gap: "var(--gap-sm)",
+  },
+});
+
+const TileActionButton = styled("button", {
+  base: {
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+    width: "26px",
+    height: "26px",
+    borderRadius: "9999px",
+    border: "none",
+    cursor: "pointer",
+    color: "var(--md-sys-color-on-surface)",
+    background:
+      "color-mix(in srgb, var(--md-sys-color-surface) 70%, transparent)",
+    transition: "var(--transitions-fast) background-color",
+    _hover: {
+      background:
+        "color-mix(in srgb, var(--md-sys-color-surface) 92%, transparent)",
     },
   },
 });

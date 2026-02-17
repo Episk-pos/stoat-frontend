@@ -490,6 +490,10 @@ msgstr ""
 msgid "By creating this server, you agree to the <0>Acceptable Use Policy</0>."
 msgstr ""
 
+#: components/ui/components/features/voice/callCard/VoiceCallCardActions.tsx
+msgid "Camera"
+msgstr ""
+
 #: components/modal/modals/SignOutSessions.tsx
 #: components/modal/modals/ServerIdentity.tsx
 #: components/modal/modals/ResetBotToken.tsx
@@ -1025,6 +1029,10 @@ msgstr ""
 msgid "Developer Documentation"
 msgstr ""
 
+#: components/ui/components/features/voice/callCard/VoiceCallCardActions.tsx
+msgid "Device settings"
+msgstr ""
+
 #: components/app/interface/settings/user/Account.tsx
 msgid "Disable Account"
 msgstr "অ্যাকাউন্টকে সাময়িকভাবে নিস্ক্রিয় করুন"
@@ -1340,8 +1348,8 @@ msgstr ""
 
 #: src/interface/Home.tsx
 #: components/app/interface/settings/user/Feedback.tsx
-msgid "Go to the Stoat Lounge"
-msgstr ""
+#~ msgid "Go to the Stoat Lounge"
+#~ msgstr ""
 
 #: src/interface/Home.tsx
 #: src/interface/Home.tsx
@@ -1492,8 +1500,8 @@ msgstr ""
 
 #: src/interface/Home.tsx
 #: components/app/interface/settings/user/Feedback.tsx
-msgid "Join the Stoat Lounge"
-msgstr ""
+#~ msgid "Join the Stoat Lounge"
+#~ msgstr ""
 
 #: components/ui/components/features/voice/callCard/VoiceCallCardPreview.tsx
 msgid "Join the voice channel"
@@ -1759,6 +1767,10 @@ msgstr "মেসেজটি অন্য প্ল্যাটফর্মে 
 #: components/app/interface/settings/channel/permissions/ChannelPermissionsEditor.tsx
 msgid "Messaging"
 msgstr "মেসেজিং"
+
+#: components/ui/components/features/voice/callCard/VoiceCallCardActions.tsx
+msgid "Microphone"
+msgstr ""
 
 #: components/app/interface/settings/user/Native.tsx
 msgid "Minimise to Tray"
@@ -2338,6 +2350,14 @@ msgstr ""
 msgid "Select your language"
 msgstr "আপনার ভাষা নির্বাচন করুন"
 
+#: components/ui/components/features/voice/callCard/VoiceCallCardActions.tsx
+msgid "Selected camera is unavailable."
+msgstr ""
+
+#: components/ui/components/features/voice/callCard/VoiceCallCardActions.tsx
+msgid "Selected microphone is unavailable."
+msgstr ""
+
 #: components/app/interface/settings/channel/permissions/ChannelPermissionsEditor.tsx
 msgid "Send attachments to chat"
 msgstr ""
@@ -2753,6 +2773,14 @@ msgstr "ইউজারকে আনব্লক করুন"
 msgid "Uncaught Stoat error: {0}"
 msgstr ""
 
+#: components/ui/components/features/voice/callCard/VoiceCallCardActions.tsx
+msgid "Unknown camera"
+msgstr ""
+
+#: components/ui/components/features/voice/callCard/VoiceCallCardActions.tsx
+msgid "Unknown microphone"
+msgstr ""
+
 #: components/markdown/plugins/anchors.tsx
 msgid "Unknown Server"
 msgstr ""
@@ -3033,8 +3061,8 @@ msgstr "আপনি পরে এটি আবারও খুলতে পা�
 #: src/interface/Home.tsx
 #: components/app/interface/settings/user/Feedback.tsx
 #: components/app/interface/settings/user/Feedback.tsx
-msgid "You can report issues and discuss improvements with us directly here."
-msgstr "আপনি এখানে অ্যাপ সম্পর্কিত যেকোন সমস্যার রিপোর্ট করতে ও অ্যাপের উন্নতি সম্পর্কে আমাদের সঙ্গে সরাসরি আলোচনা করতে পারেন।"
+#~ msgid "You can report issues and discuss improvements with us directly here."
+#~ msgstr "আপনি এখানে অ্যাপ সম্পর্কিত যেকোন সমস্যার রিপোর্ট করতে ও অ্যাপের উন্নতি সম্পর্কে আমাদের সঙ্গে সরাসরি আলোচনা করতে পারেন।"
 
 #. placeholder {0}: err.max
 #: components/i18n/errors.ts

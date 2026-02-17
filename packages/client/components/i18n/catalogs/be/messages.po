@@ -490,6 +490,10 @@ msgstr ""
 msgid "By creating this server, you agree to the <0>Acceptable Use Policy</0>."
 msgstr ""
 
+#: components/ui/components/features/voice/callCard/VoiceCallCardActions.tsx
+msgid "Camera"
+msgstr ""
+
 #: components/modal/modals/SignOutSessions.tsx
 #: components/modal/modals/ServerIdentity.tsx
 #: components/modal/modals/ResetBotToken.tsx
@@ -1025,6 +1029,10 @@ msgstr ""
 msgid "Developer Documentation"
 msgstr ""
 
+#: components/ui/components/features/voice/callCard/VoiceCallCardActions.tsx
+msgid "Device settings"
+msgstr ""
+
 #: components/app/interface/settings/user/Account.tsx
 msgid "Disable Account"
 msgstr "Адключыць уліковы запіс"
@@ -1340,8 +1348,8 @@ msgstr ""
 
 #: src/interface/Home.tsx
 #: components/app/interface/settings/user/Feedback.tsx
-msgid "Go to the Stoat Lounge"
-msgstr ""
+#~ msgid "Go to the Stoat Lounge"
+#~ msgstr ""
 
 #: src/interface/Home.tsx
 #: src/interface/Home.tsx
@@ -1492,8 +1500,8 @@ msgstr ""
 
 #: src/interface/Home.tsx
 #: components/app/interface/settings/user/Feedback.tsx
-msgid "Join the Stoat Lounge"
-msgstr ""
+#~ msgid "Join the Stoat Lounge"
+#~ msgstr ""
 
 #: components/ui/components/features/voice/callCard/VoiceCallCardPreview.tsx
 msgid "Join the voice channel"
@@ -1759,6 +1767,10 @@ msgstr "Паведамленне было адпраўлена з іншай п�
 #: components/app/interface/settings/channel/permissions/ChannelPermissionsEditor.tsx
 msgid "Messaging"
 msgstr "Абмен паведамленнямі"
+
+#: components/ui/components/features/voice/callCard/VoiceCallCardActions.tsx
+msgid "Microphone"
+msgstr ""
 
 #: components/app/interface/settings/user/Native.tsx
 msgid "Minimise to Tray"
@@ -2338,6 +2350,14 @@ msgstr ""
 msgid "Select your language"
 msgstr "Абярыце мову"
 
+#: components/ui/components/features/voice/callCard/VoiceCallCardActions.tsx
+msgid "Selected camera is unavailable."
+msgstr ""
+
+#: components/ui/components/features/voice/callCard/VoiceCallCardActions.tsx
+msgid "Selected microphone is unavailable."
+msgstr ""
+
 #: components/app/interface/settings/channel/permissions/ChannelPermissionsEditor.tsx
 msgid "Send attachments to chat"
 msgstr ""
@@ -2753,6 +2773,14 @@ msgstr "Разблакіраваць карыстальніка"
 msgid "Uncaught Stoat error: {0}"
 msgstr ""
 
+#: components/ui/components/features/voice/callCard/VoiceCallCardActions.tsx
+msgid "Unknown camera"
+msgstr ""
+
+#: components/ui/components/features/voice/callCard/VoiceCallCardActions.tsx
+msgid "Unknown microphone"
+msgstr ""
+
 #: components/markdown/plugins/anchors.tsx
 msgid "Unknown Server"
 msgstr ""
@@ -3033,8 +3061,8 @@ msgstr "Вы можаце зноў адкрыць яе пазней, але ян
 #: src/interface/Home.tsx
 #: components/app/interface/settings/user/Feedback.tsx
 #: components/app/interface/settings/user/Feedback.tsx
-msgid "You can report issues and discuss improvements with us directly here."
-msgstr "Тут вы можаце паведаміць аб праблемах і абмеркаваць з намі паляпшэнні."
+#~ msgid "You can report issues and discuss improvements with us directly here."
+#~ msgstr "Тут вы можаце паведаміць аб праблемах і абмеркаваць з намі паляпшэнні."
 
 #. placeholder {0}: err.max
 #: components/i18n/errors.ts

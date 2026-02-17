@@ -3,11 +3,13 @@ import { JSX, Match, Show, Switch } from "solid-js";
 import { Trans } from "@lingui-solid/solid/macro";
 import { useNavigate } from "@solidjs/router";
 import { Channel, Message, ServerMember, User } from "stoat.js";
+import { Track } from "livekit-client";
 
 import { useClient } from "@revolt/client";
 import { useModals } from "@revolt/modal";
 import { useSmartParams } from "@revolt/routing";
 import { useState } from "@revolt/state";
+import { useVoice } from "@revolt/rtc";
 import { Slider, Text } from "@revolt/ui";
 
 import MdAddCircleOutline from "@material-design-icons/svg/outlined/add_circle_outline.svg?component-solid";
@@ -52,6 +54,7 @@ export function UserContextMenu(props: {
   const client = useClient();
   const navigate = useNavigate();
   const { openModal } = useModals();
+  const voice = useVoice();
 
   // server context
   const params = useSmartParams();
@@ -227,6 +230,55 @@ export function UserContextMenu(props: {
         >
           <Trans>Mute</Trans>
         </ContextMenuButton>
+
+        <ContextMenuButton
+          icon={MdDoNotDisturbOn}
+          onClick={() =>
+            voice.setVideoWatchDisabled(
+              props.user.id,
+              !voice.isVideoWatchDisabled(props.user.id),
+            )
+          }
+          actionSymbol={
+            voice.isVideoWatchDisabled(props.user.id) ? MdChecked : MdUnchecked
+          }
+        >
+          <Show
+            when={voice.isVideoWatchDisabled(props.user.id)}
+            fallback={<Trans>Stop watching video</Trans>}
+          >
+            <Trans>Watch video</Trans>
+          </Show>
+        </ContextMenuButton>
+
+        <Show
+          when={
+            voice.isScreenshareWatching(props.user.id) ||
+            !!voice
+              .getConnectedUser(props.user.id)
+              ?.getTrackPublication(Track.Source.ScreenShare)
+          }
+        >
+          <ContextMenuButton
+            icon={MdDoNotDisturbOn}
+            onClick={() =>
+              voice.setScreenshareWatching(
+                props.user.id,
+                !voice.isScreenshareWatching(props.user.id),
+              )
+            }
+            actionSymbol={
+              voice.isScreenshareWatching(props.user.id) ? MdChecked : MdUnchecked
+            }
+          >
+            <Show
+              when={voice.isScreenshareWatching(props.user.id)}
+              fallback={<Trans>Watch screenshare</Trans>}
+            >
+              <Trans>Stop watching screenshare</Trans>
+            </Show>
+          </ContextMenuButton>
+        </Show>
 
         <ContextMenuDivider />
       </Show>

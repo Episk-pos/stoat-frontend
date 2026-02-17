@@ -203,6 +203,32 @@ export function ChannelHeader(props: Props) {
         </IconButton>
       </Show>
 
+      <Show when={props.sidebarState && props.channel.isVoice}>
+        <IconButton
+          use:floating={{
+            tooltip: {
+              placement: "bottom",
+              content: t`View chat`,
+            },
+          }}
+          onPress={() => {
+            if (props.sidebarState!().state === "voice_chat") {
+              props.setSidebarState!({ state: "default" });
+            } else {
+              // Prefer chat over the member sidebar when entering voice.
+              state.layout.setSectionState(
+                LAYOUT_SECTIONS.MEMBER_SIDEBAR,
+                false,
+                true,
+              );
+              props.setSidebarState!({ state: "voice_chat" });
+            }
+          }}
+        >
+          <Symbol>chat</Symbol>
+        </IconButton>
+      </Show>
+
       <Show when={props.sidebarState && props.channel.type !== "SavedMessages"}>
         <IconButton
           onPress={() => {

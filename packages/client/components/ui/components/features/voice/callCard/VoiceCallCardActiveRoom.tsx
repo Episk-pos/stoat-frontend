@@ -29,7 +29,7 @@ import { styled } from "styled-system/jsx";
 
 import { UserContextMenu } from "@revolt/app";
 import { useUser } from "@revolt/markdown/users";
-import { InRoom } from "@revolt/rtc";
+import { InRoom, useVoice } from "@revolt/rtc";
 import { Avatar } from "@revolt/ui/components/design";
 import { OverflowingText } from "@revolt/ui/components/utils";
 import { Symbol } from "@revolt/ui/components/utils/Symbol";
@@ -183,6 +183,8 @@ function UserTile(props: { tileId: string; isMaximized: boolean }) {
   const isSpeaking = useIsSpeaking(participant);
 
   const user = useUser(participant.identity);
+  const voice = useVoice();
+  const videoDisabled = () => voice.isVideoWatchDisabled(participant.identity);
 
   async function toggleMaximize() {
     const shouldOpen = !props.isMaximized;
@@ -253,7 +255,9 @@ function UserTile(props: { tileId: string; isMaximized: boolean }) {
           </AvatarOnly>
         }
       >
-        <Match when={isTrackReference(track) && !isVideoMuted()}>
+        <Match
+        when={isTrackReference(track) && !isVideoMuted() && !videoDisabled()}
+      >
           <VideoTrack
             style={{ "grid-area": "1/1" }}
             trackRef={track as TrackReference}
@@ -297,6 +301,17 @@ const AvatarOnly = styled("div", {
   },
 });
 
+const ScreensharePlaceholder = styled("div", {
+  base: {
+    gridArea: "1/1",
+    display: "grid",
+    placeItems: "center",
+    textAlign: "center",
+    padding: "var(--gap-lg)",
+    color: "var(--md-sys-color-on-surface)",
+  },
+});
+
 /**
  * Shown when the track source is a screenshare
  */
@@ -304,12 +319,20 @@ function ScreenshareTile(props: { tileId: string; isMaximized: boolean }) {
   const participant = useEnsureParticipant();
   const track = useMaybeTrackRefContext();
   const user = useUser(participant.identity);
+  const voice = useVoice();
   const { setMaximizedTileId } = useMaximize();
   let tileRef: HTMLDivElement | undefined;
 
   const isMuted = useIsMuted({
     participant,
     source: Track.Source.ScreenShareAudio,
+  });
+
+  const watching = () => voice.isScreenshareWatching(participant.identity);
+
+  // If the share ends (tile unmounts), clear watch state.
+  onCleanup(() => {
+    voice.setScreenshareWatching(participant.identity, false);
   });
 
   async function toggleMaximize() {
@@ -353,35 +376,66 @@ function ScreenshareTile(props: { tileId: string; isMaximized: boolean }) {
   });
 
   return (
-    <div
-      ref={tileRef}
-      class={tile({ maximized: props.isMaximized }) + " group"}
-    >
-      <VideoTrack
-        style={{ "grid-area": "1/1" }}
-        trackRef={track as TrackReference}
-        manageSubscription={true}
-      />
+    <div ref={tileRef} class={tile({ maximized: props.isMaximized }) + " group"}>
+      <Show
+        when={watching()}
+        fallback={
+          <ScreensharePlaceholder>
+            <div>Screen share available</div>
+          </ScreensharePlaceholder>
+        }
+      >
+        <VideoTrack
+          style={{ "grid-area": "1/1" }}
+          trackRef={track as TrackReference}
+          manageSubscription={true}
+        />
+      </Show>
 
-      <Overlay showOnHover>
+      <Overlay showOnHover={watching()}>
         <OverlayInner>
           <OverflowingText>{user().username}</OverflowingText>
           <OverlayActions>
             <Show when={isMuted()}>
               <Symbol size={18}>no_sound</Symbol>
             </Show>
-            <TileActionButton
-              type="button"
-              title={props.isMaximized ? "Restore" : "Maximize"}
-              onClick={(event) => {
-                event.stopPropagation();
-                void toggleMaximize();
-              }}
-            >
-              <Symbol size={16}>
-                {props.isMaximized ? "close_fullscreen" : "open_in_full"}
-              </Symbol>
-            </TileActionButton>
+
+            <Show when={!watching()}>
+              <WatchButton
+                type="button"
+                onClick={(event) => {
+                  event.stopPropagation();
+                  voice.setScreenshareWatching(participant.identity, true);
+                }}
+              >
+                Watch
+              </WatchButton>
+            </Show>
+
+            <Show when={watching()}>
+              <TileActionButton
+                type="button"
+                title="Stop watching"
+                onClick={(event) => {
+                  event.stopPropagation();
+                  voice.setScreenshareWatching(participant.identity, false);
+                }}
+              >
+                <Symbol size={16}>visibility_off</Symbol>
+              </TileActionButton>
+              <TileActionButton
+                type="button"
+                title={props.isMaximized ? "Restore" : "Maximize"}
+                onClick={(event) => {
+                  event.stopPropagation();
+                  void toggleMaximize();
+                }}
+              >
+                <Symbol size={16}>
+                  {props.isMaximized ? "close_fullscreen" : "open_in_full"}
+                </Symbol>
+              </TileActionButton>
+            </Show>
           </OverlayActions>
         </OverlayInner>
       </Overlay>
@@ -491,6 +545,27 @@ const TileActionButton = styled("button", {
     color: "var(--md-sys-color-on-surface)",
     background:
       "color-mix(in srgb, var(--md-sys-color-surface) 70%, transparent)",
+    transition: "var(--transitions-fast) background-color",
+    _hover: {
+      background:
+        "color-mix(in srgb, var(--md-sys-color-surface) 92%, transparent)",
+    },
+  },
+});
+
+
+const WatchButton = styled("button", {
+  base: {
+    border: "none",
+    cursor: "pointer",
+    fontSize: "13px",
+    fontWeight: 600,
+    height: "28px",
+    paddingInline: "12px",
+    borderRadius: "9999px",
+    color: "var(--md-sys-color-on-surface)",
+    background:
+      "color-mix(in srgb, var(--md-sys-color-surface) 82%, transparent)",
     transition: "var(--transitions-fast) background-color",
     _hover: {
       background:

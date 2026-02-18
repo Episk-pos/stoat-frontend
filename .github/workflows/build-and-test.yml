@@ -12,6 +12,9 @@ on:
       - "README.md"
   pull_request:
 
+env:
+  GITHUB_TOKEN: ${{ github.token }}
+
 jobs:
   i18n:
     name: Generate i18n catalog

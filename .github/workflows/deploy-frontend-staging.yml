@@ -14,6 +14,10 @@ concurrency:
   group: deploy-frontend-staging
   cancel-in-progress: true
 
+env:
+  # Some tooling expects GITHUB_TOKEN via env var.
+  GITHUB_TOKEN: ${{ github.token }}
+
 jobs:
   deploy:
     name: Build and Deploy to S3 (staging)

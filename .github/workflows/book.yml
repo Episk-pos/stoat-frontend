@@ -5,6 +5,9 @@ on:
       - main
   pull_request:
 
+env:
+  GITHUB_TOKEN: ${{ github.token }}
+
 jobs:
   deploy:
     runs-on: ubuntu-latest

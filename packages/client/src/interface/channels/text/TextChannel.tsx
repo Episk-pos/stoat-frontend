@@ -47,6 +47,10 @@ export type SidebarState =
       state: "pins";
     }
   | {
+      /** Voice-only: show the channel message timeline in the right panel. */
+      state: "voice_chat";
+    }
+  | {
       state: "default";
     };
 
@@ -164,49 +168,48 @@ export function TextChannel(props: ChannelPageProps) {
       </Header>
       <Content>
         <main class={main()}>
-          <Show
-            when={props.channel.isVoice}
-            fallback={
-              <BelowFloatingHeader>
-                <div>
-                  <NewMessages
-                    lastId={lastId}
-                    jumpBack={() => navigate(lastId()!)}
-                    dismiss={() => setLastId()}
-                  />
-                </div>
-              </BelowFloatingHeader>
-            }
-          >
+          <Show when={props.channel.isVoice}>
             <VoiceChannelCallCardMount channel={props.channel} />
           </Show>
 
-          <Messages
-            channel={props.channel}
-            lastReadId={lastId}
-            pendingMessages={(pendingProps) => (
-              <DraftMessages
-                channel={props.channel}
-                tail={pendingProps.tail}
-                sentIds={pendingProps.ids}
-              />
-            )}
-            typingIndicator={
-              <TypingIndicator
-                users={props.channel.typing}
-                ownId={client().user!.id}
-              />
-            }
-            highlightedMessageId={highlightMessageId}
-            clearHighlightedMessage={() => navigate(".")}
-            atEndRef={(ref) => (atEndRef = ref)}
-            jumpToBottomRef={(ref) => (jumpToBottomRef = ref)}
-          />
+          <Show when={!props.channel.isVoice}>
+            <BelowFloatingHeader>
+              <div>
+                <NewMessages
+                  lastId={lastId}
+                  jumpBack={() => navigate(lastId()!)}
+                  dismiss={() => setLastId()}
+                />
+              </div>
+            </BelowFloatingHeader>
 
-          <MessageComposition
-            channel={props.channel}
-            onMessageSend={() => jumpToBottomRef?.()}
-          />
+            <Messages
+              channel={props.channel}
+              lastReadId={lastId}
+              pendingMessages={(pendingProps) => (
+                <DraftMessages
+                  channel={props.channel}
+                  tail={pendingProps.tail}
+                  sentIds={pendingProps.ids}
+                />
+              )}
+              typingIndicator={
+                <TypingIndicator
+                  users={props.channel.typing}
+                  ownId={client().user!.id}
+                />
+              }
+              highlightedMessageId={highlightMessageId}
+              clearHighlightedMessage={() => navigate(".")}
+              atEndRef={(ref) => (atEndRef = ref)}
+              jumpToBottomRef={(ref) => (jumpToBottomRef = ref)}
+            />
+
+            <MessageComposition
+              channel={props.channel}
+              onMessageSend={() => jumpToBottomRef?.()}
+            />
+          </Show>
         </main>
         <Show
           when={
@@ -218,62 +221,113 @@ export function TextChannel(props: ChannelPageProps) {
             sidebarState().state !== "default"
           }
         >
-          <div
-            ref={sidebarScrollTargetElement}
-            use:scrollable={{
-              direction: "y",
-              showOnHover: true,
-              class: sidebar(),
-            }}
-            style={{
-              width: sidebarState().state !== "default" ? "360px" : "",
-            }}
-          >
-            <Switch
-              fallback={
-                <MemberSidebar
-                  channel={props.channel}
-                  scrollTargetElement={sidebarScrollTargetElement}
-                />
-              }
-            >
-              <Match when={sidebarState().state === "search"}>
-                <WideSidebarContainer>
-                  <SidebarTitle>
-                    <Text class="label" size="large">
-                      Search Results
-                    </Text>
-                  </SidebarTitle>
-                  <TextSearchSidebar
-                    channel={props.channel}
-                    query={{
-                      query: (sidebarState() as { query: string }).query,
-                    }}
-                  />
-                </WideSidebarContainer>
-              </Match>
-              <Match when={sidebarState().state === "pins"}>
-                <WideSidebarContainer>
-                  <SidebarTitle>
-                    <Text class="label" size="large">
-                      Pinned Messages
-                    </Text>
-                  </SidebarTitle>
-                  <TextSearchSidebar
-                    channel={props.channel}
-                    query={{ pinned: true, sort: "Latest" }}
-                  />
-                </WideSidebarContainer>
-              </Match>
-            </Switch>
+          <Show
+            when={
+              props.channel.isVoice && sidebarState().state === "voice_chat"
+            }
+            fallback={
+              <div
+                ref={sidebarScrollTargetElement}
+                use:scrollable={{
+                  direction: "y",
+                  showOnHover: true,
+                  class: sidebar(),
+                }}
+                style={{
+                  width: sidebarState().state !== "default" ? "360px" : "",
+                }}
+              >
+                <Switch
+                  fallback={
+                    <MemberSidebar
+                      channel={props.channel}
+                      scrollTargetElement={sidebarScrollTargetElement}
+                    />
+                  }
+                >
+                  <Match when={sidebarState().state === "search"}>
+                    <WideSidebarContainer>
+                      <SidebarTitle>
+                        <Text class="label" size="large">
+                          Search Results
+                        </Text>
+                      </SidebarTitle>
+                      <TextSearchSidebar
+                        channel={props.channel}
+                        query={{
+                          query: (sidebarState() as { query: string }).query,
+                        }}
+                      />
+                    </WideSidebarContainer>
+                  </Match>
+                  <Match when={sidebarState().state === "pins"}>
+                    <WideSidebarContainer>
+                      <SidebarTitle>
+                        <Text class="label" size="large">
+                          Pinned Messages
+                        </Text>
+                      </SidebarTitle>
+                      <TextSearchSidebar
+                        channel={props.channel}
+                        query={{ pinned: true, sort: "Latest" }}
+                      />
+                    </WideSidebarContainer>
+                  </Match>
+                </Switch>
 
-            <Show when={sidebarState().state !== "default"}>
+                <Show when={sidebarState().state !== "default"}>
+                  <Keybind
+                    keybind={KeybindAction.CLOSE_SIDEBAR}
+                    onPressed={() => setSidebarState({ state: "default" })}
+                  />
+                </Show>
+              </div>
+            }
+          >
+            <div
+              class={sidebar()}
+              style={{
+                width: "360px",
+                display: "flex",
+                "flex-direction": "column",
+                "min-height": 0,
+              }}
+            >
+              <div style={{ flex: "1 1 auto", "min-height": 0 }}>
+                <Messages
+                  channel={props.channel}
+                  lastReadId={lastId}
+                  pendingMessages={(pendingProps) => (
+                    <DraftMessages
+                      channel={props.channel}
+                      tail={pendingProps.tail}
+                      sentIds={pendingProps.ids}
+                    />
+                  )}
+                  typingIndicator={
+                    <TypingIndicator
+                      users={props.channel.typing}
+                      ownId={client().user!.id}
+                    />
+                  }
+                  highlightedMessageId={highlightMessageId}
+                  clearHighlightedMessage={() => navigate(".")}
+                  atEndRef={(ref) => (atEndRef = ref)}
+                  jumpToBottomRef={(ref) => (jumpToBottomRef = ref)}
+                />
+              </div>
+
+              <MessageComposition
+                channel={props.channel}
+                onMessageSend={() => jumpToBottomRef?.()}
+              />
+
               <Keybind
                 keybind={KeybindAction.CLOSE_SIDEBAR}
                 onPressed={() => setSidebarState({ state: "default" })}
               />
-            </Show>
-          </div>
+            </div>
+          </Show>
         </Show>
       </Content>
     </>

@@ -2569,6 +2569,14 @@ msgstr ""
 msgid "Stoat is one of the best ways to stay connected with your friends and community, anywhere, anytime."
 msgstr ""
 
+#: components/app/menus/UserContextMenu.tsx
+msgid "Stop watching screenshare"
+msgstr ""
+
+#: components/app/menus/UserContextMenu.tsx
+msgid "Stop watching video"
+msgstr ""
+
 #: components/app/interface/settings/user/Feedback.tsx
 msgid "Submit feature suggestion"
 msgstr "5U8M17 F347U23 5U6635710N"
@@ -2933,6 +2941,10 @@ msgstr "V1D30"
 msgid "View Channel"
 msgstr "V13W CH4NN3L"
 
+#: src/interface/channels/ChannelHeader.tsx
+msgid "View chat"
+msgstr ""
+
 #: components/app/interface/settings/user/Feedback.tsx
 msgid "View currently active bug reports here."
 msgstr "V13W CU223N7LY 4C71V3 8U6 23P0275 H323."
@@ -2976,6 +2988,14 @@ msgstr ""
 
 #: components/app/interface/settings/user/profile/UserProfileEditor.tsx
 msgid "Want to change username?"
+msgstr ""
+
+#: components/app/menus/UserContextMenu.tsx
+msgid "Watch screenshare"
+msgstr ""
+
+#: components/app/menus/UserContextMenu.tsx
+msgid "Watch video"
 msgstr ""
 
 #: components/auth/src/flows/FlowCheck.tsx

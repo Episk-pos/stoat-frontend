@@ -60,6 +60,14 @@ class Voice {
   audioOnly: Accessor<boolean>;
   #setAudioOnly: Setter<boolean>;
 
+  /** Per-remote-user camera watch override (session-scoped). */
+  videoWatchDisabled: Accessor<Record<string, boolean>>;
+  #setVideoWatchDisabled: Setter<Record<string, boolean>>;
+
+  /** Per-remote-user screenshare watch state (session-scoped). */
+  screenshareWatch: Accessor<Record<string, boolean>>;
+  #setScreenshareWatch: Setter<Record<string, boolean>>;
+
   onError: (error: unknown) => void = () => {};
 
   constructor(voiceSettings: VoiceSettings) {
@@ -96,6 +104,18 @@ class Voice {
     const [audioOnly, setAudioOnly] = createSignal(false);
     this.audioOnly = audioOnly;
     this.#setAudioOnly = setAudioOnly;
+
+    const [videoWatchDisabled, setVideoWatchDisabled] = createSignal<
+      Record<string, boolean>
+    >({});
+    this.videoWatchDisabled = videoWatchDisabled;
+    this.#setVideoWatchDisabled = setVideoWatchDisabled;
+
+    const [screenshareWatch, setScreenshareWatch] = createSignal<
+      Record<string, boolean>
+    >({});
+    this.screenshareWatch = screenshareWatch;
+    this.#setScreenshareWatch = setScreenshareWatch;
   }
 
   async connect(channel: Channel, auth?: { url: string; token: string }) {
@@ -125,6 +145,8 @@ class Voice {
       this.#setVideo(false);
       this.#setScreenshare(false);
       this.#setAudioOnly(false);
+      this.#setVideoWatchDisabled({});
+      this.#setScreenshareWatch({});
 
       if (this.speakingPermission)
         room.localParticipant
@@ -233,14 +255,25 @@ class Voice {
       const newValue = !this.audioOnly();
       this.#setAudioOnly(newValue);
 
-      // Subscribe/unsubscribe to all remote video tracks
+      // Subscribe/unsubscribe to all remote video tracks.
+      // Note: respect session-scoped watch preferences for cameras and screenshares.
       for (const participant of room.remoteParticipants.values()) {
+        const userId = participant.identity;
+        const videoDisabled = !!this.videoWatchDisabled()[userId];
+        const screenshareWatching = !!this.screenshareWatch()[userId];
+
         for (const pub of participant.trackPublications.values()) {
           if (
             pub.kind === Track.Kind.Video &&
             pub.source !== Track.Source.ScreenShareAudio
           ) {
-            pub.setSubscribed(!newValue);
+            const shouldSubscribe =
+              !newValue &&
+              (pub.source === Track.Source.ScreenShare
+                ? screenshareWatching
+                : !videoDisabled);
+
+            pub.setSubscribed(shouldSubscribe);
           }
         }
       }
@@ -262,6 +295,53 @@ class Voice {
     } catch (error) {
       this.onError(error);
     }
+  }
+
+  #setRemoteSubscribed(
+    userId: string,
+    source: Track.Source,
+    subscribed: boolean,
+  ) {
+    const room = this.room();
+    const participant = room?.getParticipantByIdentity(userId);
+    const pub = participant?.getTrackPublication(source);
+    if (pub) pub.setSubscribed(subscribed);
+  }
+
+  isVideoWatchDisabled(userId: string) {
+    return !!this.videoWatchDisabled()[userId];
+  }
+
+  setVideoWatchDisabled(userId: string, disabled: boolean) {
+    this.#setVideoWatchDisabled((current) => ({
+      ...current,
+      [userId]: disabled,
+    }));
+
+    // Only subscribe when not in audio-only.
+    this.#setRemoteSubscribed(
+      userId,
+      Track.Source.Camera,
+      !disabled && !this.audioOnly(),
+    );
+  }
+
+  isScreenshareWatching(userId: string) {
+    return !!this.screenshareWatch()[userId];
+  }
+
+  setScreenshareWatching(userId: string, watching: boolean) {
+    this.#setScreenshareWatch((current) => ({
+      ...current,
+      [userId]: watching,
+    }));
+
+    // Only subscribe when not in audio-only.
+    this.#setRemoteSubscribed(
+      userId,
+      Track.Source.ScreenShare,
+      watching && !this.audioOnly(),
+    );
   }
 
   getConnectedUser(userId: string) {

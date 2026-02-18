@@ -40,7 +40,9 @@ export function VoiceCallCardActions(props: { size: "xs" | "sm" }) {
   const selectedMicUnavailable = createMemo(
     () =>
       !!activeMicId() &&
-      !micSelector.devices().some((device) => device.deviceId === activeMicId()),
+      !micSelector
+        .devices()
+        .some((device) => device.deviceId === activeMicId()),
   );
 
   const selectedCameraUnavailable = createMemo(

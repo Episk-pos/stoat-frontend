@@ -543,7 +543,7 @@ function ScreenshareTile(props: { tileId: string; isMaximized: boolean }) {
         </Show>
       </MediaLayer>
 
-      <Overlay showOnHover={watching()}>
+      <Overlay showOnHover={watching() && !props.isMaximized}>
         <OverlayInner>
           <OverflowingText>{user().username}</OverflowingText>
           <OverlayActions>
@@ -551,19 +551,20 @@ function ScreenshareTile(props: { tileId: string; isMaximized: boolean }) {
               <Symbol size={18}>no_sound</Symbol>
             </Show>
 
-            <Show when={!watching()}>
-              <WatchButton
-                type="button"
-                onClick={(event) => {
-                  event.stopPropagation();
-                  voice.setScreenshareWatching(participant.identity, true);
-                }}
-              >
-                Watch
-              </WatchButton>
-            </Show>
-
-            <Show when={watching()}>
+            <Show
+              when={watching()}
+              fallback={
+                <WatchButton
+                  type="button"
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    voice.setScreenshareWatching(participant.identity, true);
+                  }}
+                >
+                  Watch
+                </WatchButton>
+              }
+            >
               <TileActionButton
                 type="button"
                 title="Stop watching"
@@ -574,56 +575,57 @@ function ScreenshareTile(props: { tileId: string; isMaximized: boolean }) {
               >
                 <Symbol size={16}>visibility_off</Symbol>
               </TileActionButton>
-              <TileActionButton
-                type="button"
-                title={props.isMaximized ? "Unspotlight" : "Spotlight"}
-                onClick={(event) => {
-                  event.stopPropagation();
-                  toggleSpotlight();
-                }}
-              >
-                <Symbol size={16}>push_pin</Symbol>
-              </TileActionButton>
+            </Show>
 
-              <Show when={props.isMaximized}>
-                <Show when={spotlightControls.hasOtherTiles()}>
-                  <TileActionButton
-                    type="button"
-                    title={
-                      spotlightControls.hideMembers()
-                        ? "Show members"
-                        : "Hide members"
-                    }
-                    onClick={(event) => {
-                      event.stopPropagation();
-                      spotlightControls.toggleHideMembers();
-                    }}
-                  >
-                    <Symbol size={16}>
-                      {spotlightControls.hideMembers() ? "group" : "group_off"}
-                    </Symbol>
-                  </TileActionButton>
-                </Show>
+            <TileActionButton
+              type="button"
+              title={props.isMaximized ? "Unspotlight" : "Spotlight"}
+              onClick={(event) => {
+                event.stopPropagation();
+                toggleSpotlight();
+              }}
+            >
+              <Symbol size={16}>push_pin</Symbol>
+            </TileActionButton>
 
+            <Show when={props.isMaximized}>
+              <Show when={spotlightControls.hasOtherTiles()}>
                 <TileActionButton
                   type="button"
                   title={
-                    callFullscreen.isCallFullscreen()
-                      ? "Exit fullscreen"
-                      : "Fullscreen call"
+                    spotlightControls.hideMembers()
+                      ? "Show members"
+                      : "Hide members"
                   }
                   onClick={(event) => {
                     event.stopPropagation();
-                    void callFullscreen.toggleCallFullscreen();
+                    spotlightControls.toggleHideMembers();
                   }}
                 >
                   <Symbol size={16}>
-                    {callFullscreen.isCallFullscreen()
-                      ? "close_fullscreen"
-                      : "open_in_full"}
+                    {spotlightControls.hideMembers() ? "group" : "group_off"}
                   </Symbol>
                 </TileActionButton>
               </Show>
+
+              <TileActionButton
+                type="button"
+                title={
+                  callFullscreen.isCallFullscreen()
+                    ? "Exit fullscreen"
+                    : "Fullscreen call"
+                }
+                onClick={(event) => {
+                  event.stopPropagation();
+                  void callFullscreen.toggleCallFullscreen();
+                }}
+              >
+                <Symbol size={16}>
+                  {callFullscreen.isCallFullscreen()
+                    ? "close_fullscreen"
+                    : "open_in_full"}
+                </Symbol>
+              </TileActionButton>
             </Show>
           </OverlayActions>
         </OverlayInner>

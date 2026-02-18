@@ -121,7 +121,7 @@ const Base = styled("div", {
 
 const Parent = styled("div", {
   base: {
-    flexGrow: 1,
+    width: "100%",
     flexShrink: 0,
 
     display: "flex",

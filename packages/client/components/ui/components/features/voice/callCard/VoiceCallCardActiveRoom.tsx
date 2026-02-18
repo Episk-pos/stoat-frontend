@@ -88,7 +88,8 @@ const Call = styled("div", {
   base: {
     flexGrow: 1,
     minHeight: 0,
-    overflowY: "scroll",
+    display: "flex",
+    overflow: "hidden",
   },
 });
 
@@ -129,9 +130,18 @@ function Participants() {
 const Grid = styled("div", {
   base: {
     display: "grid",
+    flexGrow: 1,
+    minHeight: 0,
+    height: "100%",
+    overflowY: "auto",
+
     gap: "var(--gap-md)",
     padding: "var(--gap-md)",
     gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))",
+
+    // Keep the grid visually centered when there are few tiles,
+    // but allow natural scrolling once it exceeds available height.
+    alignContent: "center",
   },
 });
 

@@ -165,6 +165,7 @@ function Participants() {
   const [hideMembers, setHideMembers] = createSignal(false);
 
   let spotlightStageRef: HTMLDivElement | undefined;
+  let filmstripRef: HTMLDivElement | undefined;
   const [spotlightSize, setSpotlightSize] = createSignal<
     { width: number; height: number } | undefined
   >(undefined);
@@ -214,7 +215,11 @@ function Participants() {
   const updateSpotlightSize = () => {
     if (!spotlightStageRef) return;
     const width = spotlightStageRef.clientWidth;
-    const height = spotlightStageRef.clientHeight;
+    const reserved =
+      !hideMembers() && otherTracks().length > 0
+        ? (filmstripRef?.clientHeight ?? 0) + 8
+        : 0;
+    const height = Math.max(0, spotlightStageRef.clientHeight - reserved);
     if (!width || !height) return;
 
     // Fit a 16:9 tile into the available stage without clipping.
@@ -232,6 +237,7 @@ function Participants() {
 
     const ro = new ResizeObserver(() => updateSpotlightSize());
     ro.observe(spotlightStageRef);
+    if (filmstripRef) ro.observe(filmstripRef);
     window.addEventListener("resize", updateSpotlightSize);
 
     onCleanup(() => {
@@ -287,7 +293,12 @@ function Participants() {
             </SpotlightStage>
 
             <Show when={!hideMembers() && otherTracks().length > 0}>
-              <Filmstrip>
+              <Filmstrip
+                ref={(el) => {
+                  filmstripRef = el;
+                  updateSpotlightSize();
+                }}
+              >
                 <TrackLoop tracks={otherTracks}>
                   {() => <ParticipantTile />}
                 </TrackLoop>
@@ -319,17 +330,17 @@ const Grid = styled("div", {
 
 const Spotlight = styled("div", {
   base: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "var(--gap-md)",
     width: "100%",
     flex: "1 1 auto",
     minHeight: 0,
+    position: "relative",
   },
 });
 
 const SpotlightStage = styled("div", {
   base: {
+    position: "absolute",
+    inset: 0,
     flex: "1 1 auto",
     minHeight: 0,
     display: "grid",
@@ -345,15 +356,27 @@ const SpotlightStage = styled("div", {
 
 const Filmstrip = styled("div", {
   base: {
-    flex: "0 0 auto",
+    position: "absolute",
+    left: "var(--gap-md)",
+    right: "var(--gap-md)",
+    bottom: "var(--gap-md)",
+
+    zIndex: 6,
+
     display: "flex",
     gap: "var(--gap-md)",
+    justifyContent: "center",
     overflowX: "auto",
     overflowY: "hidden",
-    paddingBottom: "var(--gap-xs)",
+
+    padding: "var(--gap-sm)",
+    borderRadius: "var(--borderRadius-lg)",
+    background:
+      "color-mix(in srgb, var(--md-sys-color-surface) 55%, transparent)",
+    backdropFilter: "blur(8px)",
 
     "& .voice-tile": {
-      flex: "0 0 240px",
+      flex: "0 0 200px",
     },
   },
 });

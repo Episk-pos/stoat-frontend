@@ -20,8 +20,8 @@ jobs:
     runs-on: ubuntu-latest
 
     # This workflow expects a GitHub App to be configured.
-    # If the secrets are not present, skip instead of failing every push.
-    if: ${{ secrets.GH_STOAT_RELEASE_APP_ID != '' && secrets.GH_STOAT_RELEASE_APP_PRIVATE_KEY != '' }}
+    # Gate on a repo variable to avoid hard failures when secrets aren't set.
+    if: ${{ vars.ENABLE_RELEASE_PLEASE == 'true' }}
     outputs:
       release_created: ${{ steps.rp.outputs.release_created }}
     steps:

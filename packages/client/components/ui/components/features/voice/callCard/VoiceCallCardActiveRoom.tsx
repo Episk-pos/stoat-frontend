@@ -285,7 +285,6 @@ const SpotlightStage = styled("div", {
 
     "& .voice-tile": {
       width: "min(100%, 1200px)",
-      maxHeight: "100%",
     },
   },
 });

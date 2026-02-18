@@ -279,12 +279,16 @@ const SpotlightStage = styled("div", {
   base: {
     flex: "1 1 auto",
     minHeight: 0,
-    display: "grid",
-    placeItems: "center",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
     overflow: "hidden",
 
     "& .voice-tile": {
-      width: "min(100%, 1200px)",
+      height: "100%",
+      width: "auto",
+      maxHeight: "100%",
+      maxWidth: "min(100%, 1200px)",
     },
   },
 });
@@ -679,6 +683,13 @@ const MediaLayer = styled("div", {
     display: "grid",
     width: "100%",
     height: "100%",
+
+    // Ensure the overlay action bar stays visible/clickable on top.
+    pointerEvents: "none",
+
+    "& video": {
+      pointerEvents: "none",
+    },
   },
 });
 

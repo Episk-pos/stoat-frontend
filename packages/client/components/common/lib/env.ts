@@ -1,6 +1,14 @@
+const RUNTIME_ORIGIN =
+  typeof window !== "undefined" ? window.location.origin : undefined;
+
+const RUNTIME_WS_ORIGIN = RUNTIME_ORIGIN
+  ? RUNTIME_ORIGIN.replace(/^https:/, "wss:").replace(/^http:/, "ws:")
+  : undefined;
+
 const DEFAULT_API_URL =
   (import.meta.env.DEV ? import.meta.env.VITE_DEV_API_URL : undefined) ??
   (import.meta.env.VITE_API_URL as string) ??
+  (RUNTIME_ORIGIN ? `${RUNTIME_ORIGIN}/api` : undefined) ??
   "https://stoat.chat/api";
 
 export default {
@@ -18,6 +26,7 @@ export default {
   DEFAULT_WS_URL:
     (import.meta.env.DEV ? import.meta.env.VITE_DEV_WS_URL : undefined) ??
     (import.meta.env.VITE_WS_URL as string) ??
+    (RUNTIME_WS_ORIGIN ? `${RUNTIME_WS_ORIGIN}/events` : undefined) ??
     "wss://stoat.chat/events",
   /**
    * What media server to connect to by default.
@@ -25,6 +34,7 @@ export default {
   DEFAULT_MEDIA_URL:
     (import.meta.env.DEV ? import.meta.env.VITE_DEV_MEDIA_URL : undefined) ??
     (import.meta.env.VITE_MEDIA_URL as string) ??
+    (RUNTIME_ORIGIN ? `${RUNTIME_ORIGIN}/autumn` : undefined) ??
     "https://cdn.stoatusercontent.com",
   /**
    * What proxy server to connect to by default.
@@ -32,6 +42,7 @@ export default {
   DEFAULT_PROXY_URL:
     (import.meta.env.DEV ? import.meta.env.VITE_DEV_PROXY_URL : undefined) ??
     (import.meta.env.VITE_PROXY_URL as string) ??
+    (RUNTIME_ORIGIN ? `${RUNTIME_ORIGIN}/january` : undefined) ??
     "https://proxy.stoatusercontent.com",
   /**
    * What emoji CDN to use for Unicode emoji SVGs.
@@ -52,6 +63,7 @@ export default {
    */
   GIF_API_URL:
     (import.meta.env.VITE_GIF_API_URL as string) ??
+    (RUNTIME_ORIGIN ? `${RUNTIME_ORIGIN}/gifbox` : undefined) ??
     "https://api.gifbox.me",
   /**
    * hCaptcha site key to use if enabled

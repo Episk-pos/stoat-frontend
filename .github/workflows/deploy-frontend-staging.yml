@@ -59,12 +59,7 @@ jobs:
 
       - name: Build staging frontend
         env:
-          VITE_API_URL: https://staging.stoat.episkopos.community/api
-          VITE_WS_URL: wss://staging.stoat.episkopos.community/events
-          VITE_MEDIA_URL: https://staging.stoat.episkopos.community/autumn
-          VITE_PROXY_URL: https://staging.stoat.episkopos.community/january
           VITE_EMOJI_URL: https://static.stoat.chat/emoji
-          VITE_GIF_API_URL: https://staging.stoat.episkopos.community/gifbox
         run: pnpm --filter client exec vite build
 
       - name: Configure AWS credentials

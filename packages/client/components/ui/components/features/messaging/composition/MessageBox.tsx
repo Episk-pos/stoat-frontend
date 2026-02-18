@@ -97,7 +97,7 @@ const Base = styled("div", {
     flexGrow: 1,
 
     paddingInlineEnd: "var(--gap-md)",
-    paddingBlock: "var(--gap-sm)",
+    paddingBlock: "var(--gap-xs)",
     borderStartRadius: "var(--borderRadius-xl)",
 
     display: "flex",
@@ -121,7 +121,7 @@ const Base = styled("div", {
 
 const Parent = styled("div", {
   base: {
-    flexGrow: 1,
+    width: "100%",
     flexShrink: 0,
 
     display: "flex",

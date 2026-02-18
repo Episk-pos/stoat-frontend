@@ -2569,6 +2569,14 @@ msgstr ""
 msgid "Stoat is one of the best ways to stay connected with your friends and community, anywhere, anytime."
 msgstr ""
 
+#: components/app/menus/UserContextMenu.tsx
+msgid "Stop watching screenshare"
+msgstr ""
+
+#: components/app/menus/UserContextMenu.tsx
+msgid "Stop watching video"
+msgstr ""
+
 #: components/app/interface/settings/user/Feedback.tsx
 msgid "Submit feature suggestion"
 msgstr "提交功能建议"
@@ -2933,6 +2941,10 @@ msgstr "视频"
 msgid "View Channel"
 msgstr "查看频道"
 
+#: src/interface/channels/ChannelHeader.tsx
+msgid "View chat"
+msgstr ""
+
 #: components/app/interface/settings/user/Feedback.tsx
 msgid "View currently active bug reports here."
 msgstr "在此处查看当前活跃的错误报告。"
@@ -2976,6 +2988,14 @@ msgstr ""
 
 #: components/app/interface/settings/user/profile/UserProfileEditor.tsx
 msgid "Want to change username?"
+msgstr ""
+
+#: components/app/menus/UserContextMenu.tsx
+msgid "Watch screenshare"
+msgstr ""
+
+#: components/app/menus/UserContextMenu.tsx
+msgid "Watch video"
 msgstr ""
 
 #: components/auth/src/flows/FlowCheck.tsx

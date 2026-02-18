@@ -162,11 +162,7 @@ export function LeParticipant() {
           </div>
         }
       >
-        <Match
-          when={
-            isTrackReference(track) && !isVideoMuted()
-          }
-        >
+        <Match when={isTrackReference(track) && !isVideoMuted()}>
           <VideoTrack
             style={{ "grid-area": "1/1" }}
             trackRef={track as TrackReference}

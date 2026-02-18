@@ -10,11 +10,11 @@ import {
 import { RoomContext } from "solid-livekit-components";
 
 import {
+  type FacingMode,
   Room,
   Track,
   createLocalVideoTrack,
   facingModeFromLocalTrack,
-  type FacingMode,
 } from "livekit-client";
 import { Channel } from "stoat.js";
 

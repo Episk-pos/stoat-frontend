@@ -117,11 +117,14 @@ function Categories() {
     queryFn: () => {
       const [authHeader, authHeaderValue] = client()!.authenticationHeader;
 
-      return fetch(`${CONFIGURATION.GIF_API_URL}/trending?locale=en_US&limit=1`, {
-        headers: {
-          [authHeader]: authHeaderValue,
+      return fetch(
+        `${CONFIGURATION.GIF_API_URL}/trending?locale=en_US&limit=1`,
+        {
+          headers: {
+            [authHeader]: authHeaderValue,
+          },
         },
-      })
+      )
         .then((r) => r.json())
         .then((resp) => resp.results[0]);
     },
@@ -221,7 +224,8 @@ function GifSearch(props: { query: string }) {
       const [authHeader, authHeaderValue] = client()!.authenticationHeader;
 
       return fetch(
-        CONFIGURATION.GIF_API_URL + "/" +
+        CONFIGURATION.GIF_API_URL +
+          "/" +
           (props.query === "trending"
             ? `trending?locale=en_US`
             : `search?locale=en_US&query=${encodeURIComponent(props.query)}`),

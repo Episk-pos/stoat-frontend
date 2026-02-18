@@ -61,7 +61,7 @@ export function RenderAnchor(
 
   // Handle links that navigate internally
   try {
-    let url = new URL(localProps.href);
+    const url = new URL(localProps.href);
 
     // Determine whether it's in our scope
     if (url.origin === location.origin) {

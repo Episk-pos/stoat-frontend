@@ -9,6 +9,7 @@ import {
   createMemo,
   createSignal,
   onCleanup,
+  onMount,
   useContext,
 } from "solid-js";
 import {
@@ -163,6 +164,11 @@ function Participants() {
   const [maximizedTileId, setMaximizedTileId] = createSignal<string>();
   const [hideMembers, setHideMembers] = createSignal(false);
 
+  let spotlightStageRef: HTMLDivElement | undefined;
+  const [spotlightSize, setSpotlightSize] = createSignal<
+    { width: number; height: number } | undefined
+  >(undefined);
+
   const tracks = useTracks(
     [
       { source: Track.Source.Camera, withPlaceholder: true },
@@ -205,6 +211,39 @@ function Participants() {
     if (!maximizedTileId()) setHideMembers(false);
   });
 
+  const updateSpotlightSize = () => {
+    if (!spotlightStageRef) return;
+    const width = spotlightStageRef.clientWidth;
+    const height = spotlightStageRef.clientHeight;
+    if (!width || !height) return;
+
+    // Fit a 16:9 tile into the available stage without clipping.
+    const fittedWidth = Math.min(width, (height * 16) / 9);
+    const fittedHeight = (fittedWidth * 9) / 16;
+
+    setSpotlightSize({
+      width: Math.max(0, Math.floor(fittedWidth)),
+      height: Math.max(0, Math.floor(fittedHeight)),
+    });
+  };
+
+  createEffect(() => {
+    if (!maximizedTileId() || !spotlightStageRef) return;
+
+    const ro = new ResizeObserver(() => updateSpotlightSize());
+    ro.observe(spotlightStageRef);
+    window.addEventListener("resize", updateSpotlightSize);
+
+    onCleanup(() => {
+      ro.disconnect();
+      window.removeEventListener("resize", updateSpotlightSize);
+    });
+  });
+
+  onMount(() => {
+    updateSpotlightSize();
+  });
+
   const hasOtherTiles = createMemo(
     () => !!maximizedTileId() && otherTracks().length > 0,
   );
@@ -227,7 +266,21 @@ function Participants() {
           }
         >
           <Spotlight>
-            <SpotlightStage>
+            <SpotlightStage
+              ref={(el) => {
+                spotlightStageRef = el;
+                updateSpotlightSize();
+              }}
+              style={
+                spotlightSize()
+                  ? {
+                      "--spotlight-width": `${spotlightSize()!.width}px`,
+                      "--spotlight-height": `${spotlightSize()!.height}px`,
+                    }
+                  : undefined
+              }
+              data-hide-members={hideMembers() ? "true" : "false"}
+            >
               <TrackLoop tracks={spotlightTracks}>
                 {() => <ParticipantTile />}
               </TrackLoop>
@@ -279,16 +332,13 @@ const SpotlightStage = styled("div", {
   base: {
     flex: "1 1 auto",
     minHeight: 0,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
+    display: "grid",
+    placeItems: "center",
     overflow: "hidden",
 
     "& .voice-tile": {
-      height: "100%",
-      width: "auto",
-      maxHeight: "100%",
-      maxWidth: "min(100%, 1200px)",
+      width: "var(--spotlight-width, min(100%, 1200px))",
+      height: "var(--spotlight-height, auto)",
     },
   },
 });

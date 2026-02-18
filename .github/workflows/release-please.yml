@@ -18,6 +18,10 @@ jobs:
   release-please:
     name: Release Please
     runs-on: ubuntu-latest
+
+    # This workflow expects a GitHub App to be configured.
+    # If the secrets are not present, skip instead of failing every push.
+    if: ${{ secrets.GH_STOAT_RELEASE_APP_ID != '' && secrets.GH_STOAT_RELEASE_APP_PRIVATE_KEY != '' }}
     outputs:
       release_created: ${{ steps.rp.outputs.release_created }}
     steps:
@@ -40,7 +44,7 @@ jobs:
 
     permissions:
       contents: write
-    
+
     steps:
       - id: app-token
         uses: actions/create-github-app-token@v2

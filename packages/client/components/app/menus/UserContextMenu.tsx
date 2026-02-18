@@ -2,14 +2,14 @@ import { JSX, Match, Show, Switch } from "solid-js";
 
 import { Trans } from "@lingui-solid/solid/macro";
 import { useNavigate } from "@solidjs/router";
-import { Channel, Message, ServerMember, User } from "stoat.js";
 import { Track } from "livekit-client";
+import { Channel, Message, ServerMember, User } from "stoat.js";
 
 import { useClient } from "@revolt/client";
 import { useModals } from "@revolt/modal";
 import { useSmartParams } from "@revolt/routing";
-import { useState } from "@revolt/state";
 import { useVoice } from "@revolt/rtc";
+import { useState } from "@revolt/state";
 import { Slider, Text } from "@revolt/ui";
 
 import MdAddCircleOutline from "@material-design-icons/svg/outlined/add_circle_outline.svg?component-solid";
@@ -268,7 +268,9 @@ export function UserContextMenu(props: {
               )
             }
             actionSymbol={
-              voice.isScreenshareWatching(props.user.id) ? MdChecked : MdUnchecked
+              voice.isScreenshareWatching(props.user.id)
+                ? MdChecked
+                : MdUnchecked
             }
           >
             <Show

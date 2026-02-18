@@ -10,11 +10,11 @@ import {
 import { RoomContext } from "solid-livekit-components";
 
 import {
+  type FacingMode,
   Room,
   Track,
   createLocalVideoTrack,
   facingModeFromLocalTrack,
-  type FacingMode,
 } from "livekit-client";
 import { Channel } from "stoat.js";
 
@@ -297,7 +297,11 @@ class Voice {
     }
   }
 
-  #setRemoteSubscribed(userId: string, source: Track.Source, subscribed: boolean) {
+  #setRemoteSubscribed(
+    userId: string,
+    source: Track.Source,
+    subscribed: boolean,
+  ) {
     const room = this.room();
     const participant = room?.getParticipantByIdentity(userId);
     const pub = participant?.getTrackPublication(source);

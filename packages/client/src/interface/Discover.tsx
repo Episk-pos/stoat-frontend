@@ -27,7 +27,11 @@ export function Discover() {
     if (!frame) return;
 
     const url = new URL(message.origin);
-    if (!CONFIGURATION.DISCOVER_URL || url.origin !== new URL(CONFIGURATION.DISCOVER_URL).origin) return;
+    if (
+      !CONFIGURATION.DISCOVER_URL ||
+      url.origin !== new URL(CONFIGURATION.DISCOVER_URL).origin
+    )
+      return;
 
     const data = JSON.parse(message.data);
     console.info(data);

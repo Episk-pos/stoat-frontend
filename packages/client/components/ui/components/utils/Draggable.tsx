@@ -124,7 +124,10 @@ export function Draggable<T>(props: Props<T>) {
     const dy = touch.clientY - touchStartY;
 
     // If finger moved beyond threshold, user is scrolling -- cancel long press
-    if (Math.abs(dx) > LONG_PRESS_MOVE_THRESHOLD_PX || Math.abs(dy) > LONG_PRESS_MOVE_THRESHOLD_PX) {
+    if (
+      Math.abs(dx) > LONG_PRESS_MOVE_THRESHOLD_PX ||
+      Math.abs(dy) > LONG_PRESS_MOVE_THRESHOLD_PX
+    ) {
       clearLongPressTimer();
       // Keep drag blocked so scroll continues unimpeded
       setTouchDragBlocked(true);
@@ -256,7 +259,10 @@ export function createDragHandle(
     const dx = touch.clientX - handleTouchStartX;
     const dy = touch.clientY - handleTouchStartY;
 
-    if (Math.abs(dx) > LONG_PRESS_MOVE_THRESHOLD_PX || Math.abs(dy) > LONG_PRESS_MOVE_THRESHOLD_PX) {
+    if (
+      Math.abs(dx) > LONG_PRESS_MOVE_THRESHOLD_PX ||
+      Math.abs(dy) > LONG_PRESS_MOVE_THRESHOLD_PX
+    ) {
       clearTimer();
       // User is scrolling, keep drag disabled
       setDragDisabled(true);

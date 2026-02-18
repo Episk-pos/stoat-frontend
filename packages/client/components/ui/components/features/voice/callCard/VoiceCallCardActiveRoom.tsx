@@ -196,7 +196,11 @@ function UserTile(props: { tileId: string; isMaximized: boolean }) {
       return;
     }
 
-    if (shouldOpen && !document.fullscreenElement && tileRef.requestFullscreen) {
+    if (
+      shouldOpen &&
+      !document.fullscreenElement &&
+      tileRef.requestFullscreen
+    ) {
       await tileRef.requestFullscreen().catch(() => {});
     }
   }
@@ -256,8 +260,8 @@ function UserTile(props: { tileId: string; isMaximized: boolean }) {
         }
       >
         <Match
-        when={isTrackReference(track) && !isVideoMuted() && !videoDisabled()}
-      >
+          when={isTrackReference(track) && !isVideoMuted() && !videoDisabled()}
+        >
           <VideoTrack
             style={{ "grid-area": "1/1" }}
             trackRef={track as TrackReference}
@@ -345,7 +349,11 @@ function ScreenshareTile(props: { tileId: string; isMaximized: boolean }) {
       return;
     }
 
-    if (shouldOpen && !document.fullscreenElement && tileRef.requestFullscreen) {
+    if (
+      shouldOpen &&
+      !document.fullscreenElement &&
+      tileRef.requestFullscreen
+    ) {
       await tileRef.requestFullscreen().catch(() => {});
     }
   }
@@ -376,7 +384,10 @@ function ScreenshareTile(props: { tileId: string; isMaximized: boolean }) {
   });
 
   return (
-    <div ref={tileRef} class={tile({ maximized: props.isMaximized }) + " group"}>
+    <div
+      ref={tileRef}
+      class={tile({ maximized: props.isMaximized }) + " group"}
+    >
       <Show
         when={watching()}
         fallback={
@@ -552,7 +563,6 @@ const TileActionButton = styled("button", {
     },
   },
 });
-
 
 const WatchButton = styled("button", {
   base: {

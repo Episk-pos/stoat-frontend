@@ -222,7 +222,9 @@ export function TextChannel(props: ChannelPageProps) {
           }
         >
           <Show
-            when={props.channel.isVoice && sidebarState().state === "voice_chat"}
+            when={
+              props.channel.isVoice && sidebarState().state === "voice_chat"
+            }
             fallback={
               <div
                 ref={sidebarScrollTargetElement}

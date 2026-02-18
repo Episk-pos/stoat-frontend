@@ -21,7 +21,6 @@ import MdSettings from "@material-design-icons/svg/filled/settings.svg?component
 import { Tooltip } from "../../../../components/ui/components/floating";
 import { Draggable } from "../../../../components/ui/components/utils/Draggable";
 
-import { Symbol } from "@revolt/ui/components/utils/Symbol";
 import { UserMenu } from "./UserMenu";
 
 interface Props {

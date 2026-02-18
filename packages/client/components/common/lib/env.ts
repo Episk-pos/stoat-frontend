@@ -51,8 +51,7 @@ export default {
    * GIF API URL for the GIF picker. If not set, the GIF picker is hidden/disabled.
    */
   GIF_API_URL:
-    (import.meta.env.VITE_GIF_API_URL as string) ??
-    "https://api.gifbox.me",
+    (import.meta.env.VITE_GIF_API_URL as string) ?? "https://api.gifbox.me",
   /**
    * hCaptcha site key to use if enabled
    */

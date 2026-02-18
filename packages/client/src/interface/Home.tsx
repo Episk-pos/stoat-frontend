@@ -131,11 +131,7 @@ export function HomePage() {
             </CategoryButton>
             <CategoryButton
               variant="tertiary"
-              onClick={() =>
-                window.open(
-                  "https://opencollective.com/revolt",
-                )
-              }
+              onClick={() => window.open("https://opencollective.com/revolt")}
               description={
                 <Trans>Support the project by donating - thank you!</Trans>
               }

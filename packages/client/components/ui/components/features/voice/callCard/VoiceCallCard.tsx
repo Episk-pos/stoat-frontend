@@ -325,8 +325,7 @@ const Card = styled("div", {
     active: {
       true: {
         width: "100%",
-        // Give the in-call UI enough room for spotlight + filmstrip
-        height: "min(80vh, 1040px)",
+        height: "40vh",
       },
       false: {
         width: "360px",

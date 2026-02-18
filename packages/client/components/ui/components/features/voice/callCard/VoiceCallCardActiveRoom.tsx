@@ -6,10 +6,8 @@ import {
   Switch,
   createContext,
   createEffect,
-  createMemo,
   createSignal,
   onCleanup,
-  onMount,
   useContext,
 } from "solid-js";
 import {
@@ -31,7 +29,7 @@ import { styled } from "styled-system/jsx";
 
 import { UserContextMenu } from "@revolt/app";
 import { useUser } from "@revolt/markdown/users";
-import { InRoom, useVoice } from "@revolt/rtc";
+import { InRoom } from "@revolt/rtc";
 import { Avatar } from "@revolt/ui/components/design";
 import { OverflowingText } from "@revolt/ui/components/utils";
 import { Symbol } from "@revolt/ui/components/utils/Symbol";
@@ -54,82 +52,21 @@ function useMaximize() {
   return useContext(maximizeContext);
 }
 
-type CallFullscreenState = {
-  isCallFullscreen: Accessor<boolean>;
-  toggleCallFullscreen: () => Promise<void>;
-};
-
-const callFullscreenContext = createContext<CallFullscreenState>(
-  null as unknown as CallFullscreenState,
-);
-
-function useCallFullscreen() {
-  return useContext(callFullscreenContext);
-}
-
-type SpotlightControlsState = {
-  hideMembers: Accessor<boolean>;
-  toggleHideMembers: () => void;
-  hasOtherTiles: Accessor<boolean>;
-};
-
-const spotlightControlsContext = createContext<SpotlightControlsState>(
-  null as unknown as SpotlightControlsState,
-);
-
-function useSpotlightControls() {
-  return useContext(spotlightControlsContext);
-}
-
 /**
  * Call card (active)
  */
 export function VoiceCallCardActiveRoom() {
-  let callRef: HTMLDivElement | undefined;
-  const [isCallFullscreen, setIsCallFullscreen] = createSignal(false);
-
-  async function toggleCallFullscreen() {
-    try {
-      if (!callRef) return;
-      if (document.fullscreenElement) {
-        await document.exitFullscreen();
-      } else if (callRef.requestFullscreen) {
-        await callRef.requestFullscreen();
-      }
-    } catch {
-      // ignore
-    }
-  }
-
-  createEffect(() => {
-    const onFullscreenChange = () => {
-      setIsCallFullscreen(!!callRef && document.fullscreenElement === callRef);
-    };
-
-    document.addEventListener("fullscreenchange", onFullscreenChange);
-    onCleanup(() =>
-      document.removeEventListener("fullscreenchange", onFullscreenChange),
-    );
-  });
-
-  const callFullscreen: CallFullscreenState = {
-    isCallFullscreen,
-    toggleCallFullscreen,
-  };
-
   return (
-    <callFullscreenContext.Provider value={callFullscreen}>
-      <View>
-        <Call ref={callRef}>
-          <InRoom>
-            <Participants />
-          </InRoom>
-        </Call>
+    <View>
+      <Call>
+        <InRoom>
+          <Participants />
+        </InRoom>
+      </Call>
 
-        <VoiceCallCardStatus />
-        <VoiceCallCardActions size="sm" />
-      </View>
-    </callFullscreenContext.Provider>
+      <VoiceCallCardStatus />
+      <VoiceCallCardActions size="sm" />
+    </View>
   );
 }
 
@@ -151,9 +88,7 @@ const Call = styled("div", {
   base: {
     flexGrow: 1,
     minHeight: 0,
-    display: "flex",
-    overflow: "hidden",
-    padding: "var(--gap-md)",
+    overflowY: "scroll",
   },
 });
 
@@ -162,12 +97,6 @@ const Call = styled("div", {
  */
 function Participants() {
   const [maximizedTileId, setMaximizedTileId] = createSignal<string>();
-  const [hideMembers, setHideMembers] = createSignal(false);
-
-  let spotlightStageRef: HTMLDivElement | undefined;
-  const [spotlightSize, setSpotlightSize] = createSignal<
-    { width: number; height: number } | undefined
-  >(undefined);
 
   const tracks = useTracks(
     [
@@ -182,179 +111,27 @@ function Participants() {
     setMaximizedTileId,
   };
 
-  const getTracks = () =>
-    typeof tracks === "function"
-      ? (tracks as unknown as () => TrackReference[])()
-      : (tracks as unknown as TrackReference[]);
-
-  const spotlightTrack = createMemo(() => {
-    const id = maximizedTileId();
-    if (!id) return undefined;
-    return getTracks().find(
-      (t) => `${t.participant.identity}:${t.source}` === id,
-    );
-  });
-
-  const spotlightTracks = createMemo(() => {
-    const t = spotlightTrack();
-    return t ? [t] : [];
-  });
-
-  const otherTracks = createMemo(() => {
-    const id = maximizedTileId();
-    const all = getTracks();
-    if (!id) return all;
-    return all.filter((t) => `${t.participant.identity}:${t.source}` !== id);
-  });
-
   createEffect(() => {
-    if (!maximizedTileId()) setHideMembers(false);
+    if (!maximizedTileId() && document.fullscreenElement) {
+      void document.exitFullscreen().catch(() => {});
+    }
   });
-
-  const updateSpotlightSize = () => {
-    if (!spotlightStageRef) return;
-    const width = spotlightStageRef.clientWidth;
-    const height = spotlightStageRef.clientHeight;
-    if (!width || !height) return;
-
-    // Fit a 16:9 tile into the available stage without clipping.
-    const fittedWidth = Math.min(width, (height * 16) / 9);
-    const fittedHeight = (fittedWidth * 9) / 16;
-
-    setSpotlightSize({
-      width: Math.max(0, Math.floor(fittedWidth)),
-      height: Math.max(0, Math.floor(fittedHeight)),
-    });
-  };
-
-  createEffect(() => {
-    if (!maximizedTileId() || !spotlightStageRef) return;
-
-    const ro = new ResizeObserver(() => updateSpotlightSize());
-    ro.observe(spotlightStageRef);
-    window.addEventListener("resize", updateSpotlightSize);
-
-    onCleanup(() => {
-      ro.disconnect();
-      window.removeEventListener("resize", updateSpotlightSize);
-    });
-  });
-
-  onMount(() => {
-    updateSpotlightSize();
-  });
-
-  const hasOtherTiles = createMemo(
-    () => !!maximizedTileId() && otherTracks().length > 0,
-  );
-
-  const spotlightControls: SpotlightControlsState = {
-    hideMembers,
-    toggleHideMembers: () => setHideMembers((v) => !v),
-    hasOtherTiles,
-  };
 
   return (
     <maximizeContext.Provider value={context}>
-      <spotlightControlsContext.Provider value={spotlightControls}>
-        <Show
-          when={maximizedTileId()}
-          fallback={
-            <Grid>
-              <TrackLoop tracks={tracks}>{() => <ParticipantTile />}</TrackLoop>
-            </Grid>
-          }
-        >
-          <Spotlight>
-            <SpotlightStage
-              ref={(el) => {
-                spotlightStageRef = el;
-                updateSpotlightSize();
-              }}
-              style={
-                spotlightSize()
-                  ? {
-                      "--spotlight-width": `${spotlightSize()!.width}px`,
-                      "--spotlight-height": `${spotlightSize()!.height}px`,
-                    }
-                  : undefined
-              }
-              data-hide-members={hideMembers() ? "true" : "false"}
-            >
-              <TrackLoop tracks={spotlightTracks}>
-                {() => <ParticipantTile />}
-              </TrackLoop>
-            </SpotlightStage>
-
-            <Show when={!hideMembers() && otherTracks().length > 0}>
-              <Filmstrip>
-                <TrackLoop tracks={otherTracks}>
-                  {() => <ParticipantTile />}
-                </TrackLoop>
-              </Filmstrip>
-            </Show>
-          </Spotlight>
-        </Show>
-      </spotlightControlsContext.Provider>
+      <Grid>
+        <TrackLoop tracks={tracks}>{() => <ParticipantTile />}</TrackLoop>
+      </Grid>
     </maximizeContext.Provider>
   );
 }
 
 const Grid = styled("div", {
   base: {
-    width: "100%",
-    flex: "1 1 auto",
-    minWidth: 0,
-    minHeight: 0,
-
     display: "grid",
     gap: "var(--gap-md)",
+    padding: "var(--gap-md)",
     gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))",
-    alignContent: "start",
-
-    // Avoid forcing scrollbars in normal cases; only scroll when needed.
-    overflowY: "auto",
-  },
-});
-
-const Spotlight = styled("div", {
-  base: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "var(--gap-md)",
-    width: "100%",
-    flex: "1 1 auto",
-    minHeight: 0,
-  },
-});
-
-const SpotlightStage = styled("div", {
-  base: {
-    flex: "1 1 auto",
-    minHeight: 0,
-    width: "100%",
-    display: "grid",
-    placeItems: "center",
-    overflow: "hidden",
-
-    "& .voice-tile": {
-      width: "var(--spotlight-width, 100%)",
-      height: "var(--spotlight-height, auto)",
-    },
-  },
-});
-
-const Filmstrip = styled("div", {
-  base: {
-    flex: "0 0 auto",
-    display: "flex",
-    gap: "var(--gap-md)",
-    overflowX: "auto",
-    overflowY: "hidden",
-
-    "& .voice-tile": {
-      flex: "0 0 240px",
-    },
   },
 });
 
@@ -392,8 +169,7 @@ function UserTile(props: { tileId: string; isMaximized: boolean }) {
   const participant = useEnsureParticipant();
   const track = useMaybeTrackRefContext();
   const { setMaximizedTileId } = useMaximize();
-  const callFullscreen = useCallFullscreen();
-  const spotlightControls = useSpotlightControls();
+  let tileRef: HTMLDivElement | undefined;
 
   const isMicMuted = useIsMuted({
     participant,
@@ -407,20 +183,54 @@ function UserTile(props: { tileId: string; isMaximized: boolean }) {
   const isSpeaking = useIsSpeaking(participant);
 
   const user = useUser(participant.identity);
-  const voice = useVoice();
-  const videoDisabled = () => voice.isVideoWatchDisabled(participant.identity);
 
-  function toggleSpotlight() {
-    setMaximizedTileId(props.isMaximized ? undefined : props.tileId);
+  async function toggleMaximize() {
+    const shouldOpen = !props.isMaximized;
+    setMaximizedTileId(shouldOpen ? props.tileId : undefined);
+
+    if (!tileRef) return;
+    if (!shouldOpen && document.fullscreenElement) {
+      await document.exitFullscreen().catch(() => {});
+      return;
+    }
+
+    if (shouldOpen && !document.fullscreenElement && tileRef.requestFullscreen) {
+      await tileRef.requestFullscreen().catch(() => {});
+    }
   }
+
+  createEffect(() => {
+    const onFullscreenChange = () => {
+      if (!document.fullscreenElement) {
+        setMaximizedTileId((current) =>
+          current === props.tileId ? undefined : current,
+        );
+      }
+    };
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setMaximizedTileId((current) =>
+          current === props.tileId ? undefined : current,
+        );
+      }
+    };
+
+    document.addEventListener("fullscreenchange", onFullscreenChange);
+    document.addEventListener("keydown", onKeyDown);
+    onCleanup(() => {
+      document.removeEventListener("fullscreenchange", onFullscreenChange);
+      document.removeEventListener("keydown", onKeyDown);
+    });
+  });
 
   return (
     <div
+      ref={tileRef}
       class={tile({
         speaking: isSpeaking(),
-        spotlighted: props.isMaximized,
+        maximized: props.isMaximized,
       })}
-      classList={{ "voice-tile": true, group: true }}
       use:floating={{
         userCard: {
           user: user().user!,
@@ -431,37 +241,26 @@ function UserTile(props: { tileId: string; isMaximized: boolean }) {
         ),
       }}
     >
-      <MediaLayer>
-        <Switch
-          fallback={
-            <AvatarOnly>
-              <Avatar
-                src={user().avatar}
-                fallback={user().username}
-                size={48}
-                interactive={false}
-              />
-            </AvatarOnly>
-          }
-        >
-          <Match
-            when={
-              isTrackReference(track) && !isVideoMuted() && !videoDisabled()
-            }
-          >
-            <VideoTrack
-              style={{
-                "grid-area": "1/1",
-                width: "100%",
-                height: "100%",
-                "object-fit": "cover",
-              }}
-              trackRef={track as TrackReference}
-              manageSubscription={true}
+      <Switch
+        fallback={
+          <AvatarOnly>
+            <Avatar
+              src={user().avatar}
+              fallback={user().username}
+              size={48}
+              interactive={false}
             />
-          </Match>
-        </Switch>
-      </MediaLayer>
+          </AvatarOnly>
+        }
+      >
+        <Match when={isTrackReference(track) && !isVideoMuted()}>
+          <VideoTrack
+            style={{ "grid-area": "1/1" }}
+            trackRef={track as TrackReference}
+            manageSubscription={true}
+          />
+        </Match>
+      </Switch>
 
       <Overlay>
         <OverlayInner>
@@ -473,54 +272,16 @@ function UserTile(props: { tileId: string; isMaximized: boolean }) {
             />
             <TileActionButton
               type="button"
-              title={props.isMaximized ? "Unspotlight" : "Spotlight"}
+              title={props.isMaximized ? "Restore" : "Maximize"}
               onClick={(event) => {
                 event.stopPropagation();
-                toggleSpotlight();
+                void toggleMaximize();
               }}
             >
-              <Symbol size={16}>push_pin</Symbol>
+              <Symbol size={16}>
+                {props.isMaximized ? "close_fullscreen" : "open_in_full"}
+              </Symbol>
             </TileActionButton>
-
-            <Show when={props.isMaximized}>
-              <Show when={spotlightControls.hasOtherTiles()}>
-                <TileActionButton
-                  type="button"
-                  title={
-                    spotlightControls.hideMembers()
-                      ? "Show members"
-                      : "Hide members"
-                  }
-                  onClick={(event) => {
-                    event.stopPropagation();
-                    spotlightControls.toggleHideMembers();
-                  }}
-                >
-                  <Symbol size={16}>
-                    {spotlightControls.hideMembers() ? "group" : "group_off"}
-                  </Symbol>
-                </TileActionButton>
-              </Show>
-
-              <TileActionButton
-                type="button"
-                title={
-                  callFullscreen.isCallFullscreen()
-                    ? "Exit fullscreen"
-                    : "Fullscreen call"
-                }
-                onClick={(event) => {
-                  event.stopPropagation();
-                  void callFullscreen.toggleCallFullscreen();
-                }}
-              >
-                <Symbol size={16}>
-                  {callFullscreen.isCallFullscreen()
-                    ? "close_fullscreen"
-                    : "open_in_full"}
-                </Symbol>
-              </TileActionButton>
-            </Show>
           </OverlayActions>
         </OverlayInner>
       </Overlay>
@@ -536,17 +297,6 @@ const AvatarOnly = styled("div", {
   },
 });
 
-const ScreensharePlaceholder = styled("div", {
-  base: {
-    gridArea: "1/1",
-    display: "grid",
-    placeItems: "center",
-    textAlign: "center",
-    padding: "var(--gap-lg)",
-    color: "var(--md-sys-color-on-surface)",
-  },
-});
-
 /**
  * Shown when the track source is a screenshare
  */
@@ -554,133 +304,84 @@ function ScreenshareTile(props: { tileId: string; isMaximized: boolean }) {
   const participant = useEnsureParticipant();
   const track = useMaybeTrackRefContext();
   const user = useUser(participant.identity);
-  const voice = useVoice();
   const { setMaximizedTileId } = useMaximize();
-  const callFullscreen = useCallFullscreen();
-  const spotlightControls = useSpotlightControls();
+  let tileRef: HTMLDivElement | undefined;
 
   const isMuted = useIsMuted({
     participant,
     source: Track.Source.ScreenShareAudio,
   });
 
-  const watching = () => voice.isScreenshareWatching(participant.identity);
+  async function toggleMaximize() {
+    const shouldOpen = !props.isMaximized;
+    setMaximizedTileId(shouldOpen ? props.tileId : undefined);
 
-  function toggleSpotlight() {
-    setMaximizedTileId(props.isMaximized ? undefined : props.tileId);
+    if (!tileRef) return;
+    if (!shouldOpen && document.fullscreenElement) {
+      await document.exitFullscreen().catch(() => {});
+      return;
+    }
+
+    if (shouldOpen && !document.fullscreenElement && tileRef.requestFullscreen) {
+      await tileRef.requestFullscreen().catch(() => {});
+    }
   }
+
+  createEffect(() => {
+    const onFullscreenChange = () => {
+      if (!document.fullscreenElement) {
+        setMaximizedTileId((current) =>
+          current === props.tileId ? undefined : current,
+        );
+      }
+    };
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setMaximizedTileId((current) =>
+          current === props.tileId ? undefined : current,
+        );
+      }
+    };
+
+    document.addEventListener("fullscreenchange", onFullscreenChange);
+    document.addEventListener("keydown", onKeyDown);
+    onCleanup(() => {
+      document.removeEventListener("fullscreenchange", onFullscreenChange);
+      document.removeEventListener("keydown", onKeyDown);
+    });
+  });
 
   return (
     <div
-      class={tile({ spotlighted: props.isMaximized })}
-      classList={{ "voice-tile": true, group: true }}
+      ref={tileRef}
+      class={tile({ maximized: props.isMaximized }) + " group"}
     >
-      <MediaLayer>
-        <Show
-          when={watching()}
-          fallback={
-            <ScreensharePlaceholder>
-              <div>Screen share available</div>
-            </ScreensharePlaceholder>
-          }
-        >
-          <VideoTrack
-            style={{
-              "grid-area": "1/1",
-              width: "100%",
-              height: "100%",
-              "object-fit": "contain",
-            }}
-            trackRef={track as TrackReference}
-            manageSubscription={false}
-          />
-        </Show>
-      </MediaLayer>
+      <VideoTrack
+        style={{ "grid-area": "1/1" }}
+        trackRef={track as TrackReference}
+        manageSubscription={true}
+      />
 
-      <Overlay showOnHover={watching() && !props.isMaximized}>
+      <Overlay showOnHover>
         <OverlayInner>
           <OverflowingText>{user().username}</OverflowingText>
           <OverlayActions>
             <Show when={isMuted()}>
               <Symbol size={18}>no_sound</Symbol>
             </Show>
-
-            <Show
-              when={watching()}
-              fallback={
-                <WatchButton
-                  type="button"
-                  onClick={(event) => {
-                    event.stopPropagation();
-                    voice.setScreenshareWatching(participant.identity, true);
-                  }}
-                >
-                  Watch
-                </WatchButton>
-              }
-            >
-              <TileActionButton
-                type="button"
-                title="Stop watching"
-                onClick={(event) => {
-                  event.stopPropagation();
-                  voice.setScreenshareWatching(participant.identity, false);
-                }}
-              >
-                <Symbol size={16}>visibility_off</Symbol>
-              </TileActionButton>
-            </Show>
-
             <TileActionButton
               type="button"
-              title={props.isMaximized ? "Unspotlight" : "Spotlight"}
+              title={props.isMaximized ? "Restore" : "Maximize"}
               onClick={(event) => {
                 event.stopPropagation();
-                toggleSpotlight();
+                void toggleMaximize();
               }}
             >
-              <Symbol size={16}>push_pin</Symbol>
+              <Symbol size={16}>
+                {props.isMaximized ? "close_fullscreen" : "open_in_full"}
+              </Symbol>
             </TileActionButton>
-
-            <Show when={props.isMaximized}>
-              <Show when={spotlightControls.hasOtherTiles()}>
-                <TileActionButton
-                  type="button"
-                  title={
-                    spotlightControls.hideMembers()
-                      ? "Show members"
-                      : "Hide members"
-                  }
-                  onClick={(event) => {
-                    event.stopPropagation();
-                    spotlightControls.toggleHideMembers();
-                  }}
-                >
-                  <Symbol size={16}>
-                    {spotlightControls.hideMembers() ? "group" : "group_off"}
-                  </Symbol>
-                </TileActionButton>
-              </Show>
-
-              <TileActionButton
-                type="button"
-                title={
-                  callFullscreen.isCallFullscreen()
-                    ? "Exit fullscreen"
-                    : "Fullscreen call"
-                }
-                onClick={(event) => {
-                  event.stopPropagation();
-                  void callFullscreen.toggleCallFullscreen();
-                }}
-              >
-                <Symbol size={16}>
-                  {callFullscreen.isCallFullscreen()
-                    ? "close_fullscreen"
-                    : "open_in_full"}
-                </Symbol>
-              </TileActionButton>
-            </Show>
           </OverlayActions>
         </OverlayInner>
       </Overlay>
@@ -694,11 +395,6 @@ const tile = cva({
     aspectRatio: "16/9",
     transition: ".3s ease all",
     borderRadius: "var(--borderRadius-lg)",
-
-    minWidth: 0,
-
-    position: "relative",
-    isolation: "isolate",
 
     color: "var(--md-sys-color-on-surface)",
     background: "#0002",
@@ -715,30 +411,12 @@ const tile = cva({
         outlineColor: "var(--md-sys-color-primary)",
       },
     },
-    spotlighted: {
+    maximized: {
       true: {
-        outlineColor:
-          "color-mix(in srgb, var(--md-sys-color-primary) 60%, transparent)",
+        gridColumn: "1 / -1",
+        minHeight: "min(70vh, 920px)",
       },
       false: {},
-    },
-  },
-});
-
-const MediaLayer = styled("div", {
-  base: {
-    position: "absolute",
-    inset: 0,
-    zIndex: 1,
-    display: "grid",
-    width: "100%",
-    height: "100%",
-
-    // Ensure the overlay action bar stays visible/clickable on top.
-    pointerEvents: "none",
-
-    "& video": {
-      pointerEvents: "none",
     },
   },
 });
@@ -747,10 +425,6 @@ const Overlay = styled("div", {
   base: {
     minWidth: 0,
     gridArea: "1/1",
-
-    position: "absolute",
-    inset: 0,
-    zIndex: 2,
 
     padding: "var(--gap-md) var(--gap-lg)",
 
@@ -817,26 +491,6 @@ const TileActionButton = styled("button", {
     color: "var(--md-sys-color-on-surface)",
     background:
       "color-mix(in srgb, var(--md-sys-color-surface) 70%, transparent)",
-    transition: "var(--transitions-fast) background-color",
-    _hover: {
-      background:
-        "color-mix(in srgb, var(--md-sys-color-surface) 92%, transparent)",
-    },
-  },
-});
-
-const WatchButton = styled("button", {
-  base: {
-    border: "none",
-    cursor: "pointer",
-    fontSize: "13px",
-    fontWeight: 600,
-    height: "28px",
-    paddingInline: "12px",
-    borderRadius: "9999px",
-    color: "var(--md-sys-color-on-surface)",
-    background:
-      "color-mix(in srgb, var(--md-sys-color-surface) 82%, transparent)",
     transition: "var(--transitions-fast) background-color",
     _hover: {
       background:

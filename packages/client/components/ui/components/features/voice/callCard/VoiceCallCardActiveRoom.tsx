@@ -249,10 +249,18 @@ function Participants() {
 
 const Grid = styled("div", {
   base: {
+    width: "100%",
+    flex: "1 1 auto",
+    minWidth: 0,
+    minHeight: 0,
+
     display: "grid",
     gap: "var(--gap-md)",
     gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))",
     alignContent: "start",
+
+    // Avoid forcing scrollbars in normal cases; only scroll when needed.
+    overflowY: "auto",
   },
 });
 
@@ -262,6 +270,7 @@ const Spotlight = styled("div", {
     flexDirection: "column",
     gap: "var(--gap-md)",
     width: "100%",
+    flex: "1 1 auto",
     minHeight: 0,
   },
 });
@@ -275,9 +284,8 @@ const SpotlightStage = styled("div", {
     overflow: "hidden",
 
     "& .voice-tile": {
-      width: "100%",
+      width: "min(100%, 1200px)",
       maxHeight: "100%",
-      maxWidth: "1200px",
     },
   },
 });
@@ -391,6 +399,7 @@ function UserTile(props: { tileId: string; isMaximized: boolean }) {
               width: "100%",
               height: "100%",
               "object-fit": "cover",
+              "z-index": 1,
             }}
             trackRef={track as TrackReference}
             manageSubscription={true}
@@ -524,6 +533,7 @@ function ScreenshareTile(props: { tileId: string; isMaximized: boolean }) {
             width: "100%",
             height: "100%",
             "object-fit": "contain",
+            "z-index": 1,
           }}
           trackRef={track as TrackReference}
           manageSubscription={false}
@@ -657,6 +667,9 @@ const Overlay = styled("div", {
   base: {
     minWidth: 0,
     gridArea: "1/1",
+
+    zIndex: 2,
+    pointerEvents: "auto",
 
     padding: "var(--gap-md) var(--gap-lg)",
 

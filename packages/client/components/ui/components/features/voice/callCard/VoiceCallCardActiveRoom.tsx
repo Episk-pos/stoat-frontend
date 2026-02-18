@@ -377,34 +377,37 @@ function UserTile(props: { tileId: string; isMaximized: boolean }) {
         ),
       }}
     >
-      <Switch
-        fallback={
-          <AvatarOnly>
-            <Avatar
-              src={user().avatar}
-              fallback={user().username}
-              size={48}
-              interactive={false}
-            />
-          </AvatarOnly>
-        }
-      >
-        <Match
-          when={isTrackReference(track) && !isVideoMuted() && !videoDisabled()}
+      <MediaLayer>
+        <Switch
+          fallback={
+            <AvatarOnly>
+              <Avatar
+                src={user().avatar}
+                fallback={user().username}
+                size={48}
+                interactive={false}
+              />
+            </AvatarOnly>
+          }
         >
-          <VideoTrack
-            style={{
-              "grid-area": "1/1",
-              width: "100%",
-              height: "100%",
-              "object-fit": "cover",
-              "z-index": 1,
-            }}
-            trackRef={track as TrackReference}
-            manageSubscription={true}
-          />
-        </Match>
-      </Switch>
+          <Match
+            when={
+              isTrackReference(track) && !isVideoMuted() && !videoDisabled()
+            }
+          >
+            <VideoTrack
+              style={{
+                "grid-area": "1/1",
+                width: "100%",
+                height: "100%",
+                "object-fit": "cover",
+              }}
+              trackRef={track as TrackReference}
+              manageSubscription={true}
+            />
+          </Match>
+        </Switch>
+      </MediaLayer>
 
       <Overlay>
         <OverlayInner>
@@ -518,26 +521,27 @@ function ScreenshareTile(props: { tileId: string; isMaximized: boolean }) {
       class={tile({ spotlighted: props.isMaximized })}
       classList={{ "voice-tile": true, group: true }}
     >
-      <Show
-        when={watching()}
-        fallback={
-          <ScreensharePlaceholder>
-            <div>Screen share available</div>
-          </ScreensharePlaceholder>
-        }
-      >
-        <VideoTrack
-          style={{
-            "grid-area": "1/1",
-            width: "100%",
-            height: "100%",
-            "object-fit": "contain",
-            "z-index": 1,
-          }}
-          trackRef={track as TrackReference}
-          manageSubscription={false}
-        />
-      </Show>
+      <MediaLayer>
+        <Show
+          when={watching()}
+          fallback={
+            <ScreensharePlaceholder>
+              <div>Screen share available</div>
+            </ScreensharePlaceholder>
+          }
+        >
+          <VideoTrack
+            style={{
+              "grid-area": "1/1",
+              width: "100%",
+              height: "100%",
+              "object-fit": "contain",
+            }}
+            trackRef={track as TrackReference}
+            manageSubscription={false}
+          />
+        </Show>
+      </MediaLayer>
 
       <Overlay showOnHover={watching()}>
         <OverlayInner>
@@ -637,6 +641,9 @@ const tile = cva({
 
     minWidth: 0,
 
+    position: "relative",
+    isolation: "isolate",
+
     color: "var(--md-sys-color-on-surface)",
     background: "#0002",
 
@@ -662,13 +669,25 @@ const tile = cva({
   },
 });
 
+const MediaLayer = styled("div", {
+  base: {
+    position: "absolute",
+    inset: 0,
+    zIndex: 1,
+    display: "grid",
+    width: "100%",
+    height: "100%",
+  },
+});
+
 const Overlay = styled("div", {
   base: {
     minWidth: 0,
     gridArea: "1/1",
 
+    position: "absolute",
+    inset: 0,
     zIndex: 2,
-    pointerEvents: "auto",
 
     padding: "var(--gap-md) var(--gap-lg)",
 

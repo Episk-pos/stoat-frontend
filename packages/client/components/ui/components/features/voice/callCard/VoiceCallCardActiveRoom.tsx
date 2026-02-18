@@ -90,6 +90,7 @@ const Call = styled("div", {
     minHeight: 0,
     display: "flex",
     overflow: "hidden",
+    padding: "var(--gap-md)",
   },
 });
 
@@ -120,7 +121,7 @@ function Participants() {
 
   return (
     <maximizeContext.Provider value={context}>
-      <Grid>
+      <Grid single={tracks.length <= 1}>
         <TrackLoop tracks={tracks}>{() => <ParticipantTile />}</TrackLoop>
       </Grid>
     </maximizeContext.Provider>
@@ -132,16 +133,29 @@ const Grid = styled("div", {
     display: "grid",
     flexGrow: 1,
     minHeight: 0,
-    height: "100%",
     overflowY: "auto",
 
     gap: "var(--gap-md)",
-    padding: "var(--gap-md)",
     gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))",
+  },
+  variants: {
+    single: {
+      true: {
+        gridTemplateColumns: "minmax(0, 1fr)",
+        gridAutoRows: "1fr",
+        overflow: "hidden",
+        alignContent: "stretch",
 
-    // Keep the grid visually centered when there are few tiles,
-    // but allow natural scrolling once it exceeds available height.
-    alignContent: "center",
+        // Let a single tile fill the available space instead of keeping 16:9.
+        "& > div": {
+          height: "100%",
+          aspectRatio: "auto",
+        },
+      },
+    },
+  },
+  defaultVariants: {
+    single: false,
   },
 });
 

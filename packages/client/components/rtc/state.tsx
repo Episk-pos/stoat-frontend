@@ -65,6 +65,9 @@ class Voice {
   spotlightHideMembers: Accessor<boolean>;
   #setSpotlightHideMembers: Setter<boolean>;
 
+  spotlightActive: Accessor<boolean>;
+  #setSpotlightActive: Setter<boolean>;
+
   /** Per-remote-user camera watch override (session-scoped). */
   videoWatchDisabled: Accessor<Record<string, boolean>>;
   #setVideoWatchDisabled: Setter<Record<string, boolean>>;
@@ -113,6 +116,10 @@ class Voice {
     const [spotlightHideMembers, setSpotlightHideMembers] = createSignal(false);
     this.spotlightHideMembers = spotlightHideMembers;
     this.#setSpotlightHideMembers = setSpotlightHideMembers;
+
+    const [spotlightActive, setSpotlightActive] = createSignal(false);
+    this.spotlightActive = spotlightActive;
+    this.#setSpotlightActive = setSpotlightActive;
 
     const [videoWatchDisabled, setVideoWatchDisabled] = createSignal<
       Record<string, boolean>
@@ -163,6 +170,7 @@ class Voice {
       this.#setScreenshare(false);
       this.#setAudioOnly(false);
       this.#setSpotlightHideMembers(false);
+      this.#setSpotlightActive(false);
       this.#setVideoWatchDisabled({});
       this.#setScreenshareWatch({});
 
@@ -315,6 +323,14 @@ class Voice {
 
   async toggleSpotlightHideMembers() {
     this.#setSpotlightHideMembers((v) => !v);
+  }
+
+  setSpotlightActive(active: boolean) {
+    this.#setSpotlightActive(active);
+  }
+
+  setSpotlightHideMembers(value: boolean) {
+    this.#setSpotlightHideMembers(value);
   }
 
   async toggleScreenshare() {

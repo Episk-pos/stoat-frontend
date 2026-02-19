@@ -2,6 +2,9 @@ name: Build & Test
 
 on:
   push:
+    branches:
+      - main
+      - staging
     paths-ignore:
       - ".github/**"
       - "!.github/workflows/build-and-test.yml"
@@ -11,6 +14,10 @@ on:
       - ".gitignore"
       - "README.md"
   pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 env:
   # Used by tooling and for authenticated submodule fetches.

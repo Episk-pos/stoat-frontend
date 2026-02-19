@@ -15,9 +15,9 @@ import { VoiceCallCardActiveRoom } from "@revolt/ui/components/features/voice/ca
  * We provide a stub that grants all permissions so the mock
  * connection proceeds without needing a real authenticated channel.
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mockChannel = {
   havePermission: () => true,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
 } as any;
 
 /**

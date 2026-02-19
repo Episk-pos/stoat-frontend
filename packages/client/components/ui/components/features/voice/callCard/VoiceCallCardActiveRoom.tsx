@@ -203,7 +203,7 @@ function Participants() {
   });
 
   // Calculate the current auto-spotlight target
-  const autoSpotlightId = createMemo((prevTracks: TrackReference[] | undefined) => {
+  const autoSpotlightId = createMemo(() => {
     const all = getTracks();
     const speakerIdentity = activeSpeakerIdentity();
 

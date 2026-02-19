@@ -4,7 +4,6 @@ import {
   Setter,
   Show,
   Switch,
-  batch,
   createContext,
   createEffect,
   createMemo,
@@ -467,7 +466,6 @@ function UserTile(props: { tileId: string; isMaximized: boolean }) {
   const track = useMaybeTrackRefContext();
   const { setMaximizedTileId } = useMaximize();
   const callFullscreen = useCallFullscreen();
-  const spotlightControls = useSpotlightControls();
 
   const isMicMuted = useIsMuted({
     participant,
@@ -614,7 +612,6 @@ function ScreenshareTile(props: { tileId: string; isMaximized: boolean }) {
   const voice = useVoice();
   const { setMaximizedTileId } = useMaximize();
   const callFullscreen = useCallFullscreen();
-  const spotlightControls = useSpotlightControls();
 
   const isMuted = useIsMuted({
     participant,

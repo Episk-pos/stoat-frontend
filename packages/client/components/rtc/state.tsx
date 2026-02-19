@@ -137,7 +137,10 @@ class Voice {
   async connect(channel: Channel, auth?: { url: string; token: string }) {
     this.disconnect();
 
-    const isMock = import.meta.env.VITE_MOCK_RTC === "true";
+    const isMock =
+      import.meta.env.VITE_MOCK_RTC === "true" ||
+      (typeof window !== "undefined" &&
+        (window as any).__STOAT_MOCK_RTC__ === true);
 
     const room = isMock
       ? (new MockRoom() as unknown as Room)

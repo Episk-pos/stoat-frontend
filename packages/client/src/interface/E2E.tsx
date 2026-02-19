@@ -32,6 +32,9 @@ export default function E2EPage() {
   const voice = useVoice();
 
   onMount(() => {
+    // Enable mock RTC at runtime (no build-time env var needed)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (window as any).__STOAT_MOCK_RTC__ = true;
     void voice.connect(mockChannel);
   });
 

@@ -201,30 +201,27 @@ function Participants() {
     const all = getTracks();
     const speakerIdentity = activeSpeakerIdentity();
 
-      // Priority 1: Screenshare
-      const screenshare = all.find(
-        (t) => t.source === Track.Source.ScreenShare,
+    // Priority 1: Screenshare
+    const screenshare = all.find((t) => t.source === Track.Source.ScreenShare);
+    if (screenshare) {
+      return `${screenshare.participant.identity}:${screenshare.source}`;
+    }
+
+    // Priority 2: Active Speaker
+    if (speakerIdentity) {
+      const speakerTrack = all.find(
+        (t) =>
+          t.participant.identity === speakerIdentity &&
+          (t.source === Track.Source.Camera ||
+            t.source === Track.Source.ScreenShare),
       );
-      if (screenshare) {
-        return `${screenshare.participant.identity}:${screenshare.source}`;
+      if (speakerTrack) {
+        return `${speakerTrack.participant.identity}:${speakerTrack.source}`;
       }
+    }
 
-      // Priority 2: Active Speaker
-      if (speakerIdentity) {
-        const speakerTrack = all.find(
-          (t) =>
-            t.participant.identity === speakerIdentity &&
-            (t.source === Track.Source.Camera ||
-              t.source === Track.Source.ScreenShare),
-        );
-        if (speakerTrack) {
-          return `${speakerTrack.participant.identity}:${speakerTrack.source}`;
-        }
-      }
-
-      return undefined;
-    },
-  );
+    return undefined;
+  });
 
   // Unified Spotlight State
   // If user has pinned something, use that. Otherwise use the auto-target

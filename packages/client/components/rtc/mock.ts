@@ -162,6 +162,7 @@ export class MockRoom extends EventTarget {
   state = ConnectionState.Disconnected;
   localParticipant = new MockLocalParticipant("local-user", "Local User");
   remoteParticipants = new Map<string, MockParticipant>();
+  activeSpeakers: MockParticipant[] = [];
 
   constructor() {
     super();
@@ -214,6 +215,7 @@ export class MockRoom extends EventTarget {
   }
 
   simulateActiveSpeakers(speakers: MockParticipant[]) {
+    this.activeSpeakers = speakers;
     this.dispatchEvent(
       new CustomEvent(RoomEvent.ActiveSpeakersChanged, { detail: speakers }),
     );

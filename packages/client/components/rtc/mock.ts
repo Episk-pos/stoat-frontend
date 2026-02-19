@@ -230,6 +230,10 @@ export class MockRoom extends EventTarget {
   off(event: string, callback: (...args: any[]) => void) {
     this.removeEventListener(event, callback as any);
   }
+
+  removeAllListeners() {
+    // No-op for mock, but required by SDK interface
+  }
 }
 
 // Global controller for E2E tests

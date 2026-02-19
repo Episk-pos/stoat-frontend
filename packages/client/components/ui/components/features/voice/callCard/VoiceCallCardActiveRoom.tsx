@@ -77,10 +77,6 @@ const spotlightControlsContext = createContext<SpotlightControlsState>(
   null as unknown as SpotlightControlsState,
 );
 
-function useSpotlightControls() {
-  return useContext(spotlightControlsContext);
-}
-
 /**
  * Call card (active)
  */
@@ -203,31 +199,35 @@ function Participants() {
   });
 
   // Calculate the current auto-spotlight target
-  const autoSpotlightId = createMemo((prevTracks: TrackReference[] | undefined) => {
-    const all = getTracks();
-    const speakerIdentity = activeSpeakerIdentity();
+  const autoSpotlightId = createMemo(
+    (_prevTracks: TrackReference[] | undefined) => {
+      const all = getTracks();
+      const speakerIdentity = activeSpeakerIdentity();
 
-    // Priority 1: Screenshare
-    const screenshare = all.find((t) => t.source === Track.Source.ScreenShare);
-    if (screenshare) {
-      return `${screenshare.participant.identity}:${screenshare.source}`;
-    }
-
-    // Priority 2: Active Speaker
-    if (speakerIdentity) {
-      const speakerTrack = all.find(
-        (t) =>
-          t.participant.identity === speakerIdentity &&
-          (t.source === Track.Source.Camera ||
-            t.source === Track.Source.ScreenShare),
+      // Priority 1: Screenshare
+      const screenshare = all.find(
+        (t) => t.source === Track.Source.ScreenShare,
       );
-      if (speakerTrack) {
-        return `${speakerTrack.participant.identity}:${speakerTrack.source}`;
+      if (screenshare) {
+        return `${screenshare.participant.identity}:${screenshare.source}`;
       }
-    }
 
-    return undefined;
-  });
+      // Priority 2: Active Speaker
+      if (speakerIdentity) {
+        const speakerTrack = all.find(
+          (t) =>
+            t.participant.identity === speakerIdentity &&
+            (t.source === Track.Source.Camera ||
+              t.source === Track.Source.ScreenShare),
+        );
+        if (speakerTrack) {
+          return `${speakerTrack.participant.identity}:${speakerTrack.source}`;
+        }
+      }
+
+      return undefined;
+    },
+  );
 
   // Unified Spotlight State
   // If user has pinned something, use that. Otherwise use the auto-target.

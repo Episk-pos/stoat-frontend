@@ -1,11 +1,5 @@
-import {
-  ConnectionState,
-  Participant,
-  Room,
-  RoomEvent,
-  Track,
-  TrackPublication,
-} from "livekit-client";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { ConnectionState, RoomEvent, Track } from "livekit-client";
 
 /**
  * Mock Track
@@ -27,7 +21,7 @@ class MockTrack {
       const ctx = canvas.getContext("2d")!;
       ctx.fillStyle = "black";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
-      const stream = canvas.captureStream();
+      const stream = (canvas as any).captureStream();
       this.mediaStreamTrack = stream.getVideoTracks()[0];
     } else {
       // Create a dummy MediaStreamTrack for Audio
@@ -193,6 +187,15 @@ export class MockRoom extends EventTarget {
 
   addRemoteParticipant(identity: string, name?: string) {
     const p = new MockParticipant(identity, name);
+
+    // Add default camera track so UI renders tiles correctly
+    const pub = new MockTrackPublication(
+      Track.Kind.Video,
+      Track.Source.Camera,
+      new MockTrack(Track.Kind.Video, Track.Source.Camera) as any,
+    );
+    p.trackPublications.set(Track.Source.Camera, pub);
+
     this.remoteParticipants.set(identity, p);
     this.dispatchEvent(
       new CustomEvent(RoomEvent.ParticipantConnected, { detail: p }),

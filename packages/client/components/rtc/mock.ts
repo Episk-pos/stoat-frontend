@@ -163,6 +163,7 @@ export class MockRoom extends EventTarget {
   localParticipant = new MockLocalParticipant("local-user", "Local User");
   remoteParticipants = new Map<string, MockParticipant>();
   activeSpeakers: MockParticipant[] = [];
+  private listenerMap = new Map<string, Map<Function, Function>>();
 
   constructor() {
     super();
@@ -223,17 +224,26 @@ export class MockRoom extends EventTarget {
 
   // Event compatibility layer
   on(event: string, callback: (...args: any[]) => void) {
-    this.addEventListener(event, (ev: any) => {
+    const wrapper = (ev: any) => {
       if (ev instanceof CustomEvent) {
         callback(ev.detail);
       } else {
         callback(ev);
       }
-    });
+    };
+    if (!this.listenerMap.has(event)) {
+      this.listenerMap.set(event, new Map());
+    }
+    this.listenerMap.get(event)!.set(callback, wrapper);
+    this.addEventListener(event, wrapper);
   }
 
   off(event: string, callback: (...args: any[]) => void) {
-    this.removeEventListener(event, callback as any);
+    const wrapper = this.listenerMap.get(event)?.get(callback);
+    if (wrapper) {
+      this.removeEventListener(event, wrapper as EventListener);
+      this.listenerMap.get(event)!.delete(callback);
+    }
   }
 
   removeAllListeners() {

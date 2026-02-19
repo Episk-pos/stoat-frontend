@@ -3,6 +3,7 @@ import { onMount } from "solid-js";
 import { styled } from "styled-system/jsx";
 
 import { useVoice } from "@revolt/rtc";
+import { VoiceCallCardActiveRoom } from "@revolt/ui/components/features/voice/callCard/VoiceCallCardActiveRoom";
 
 /**
  * Minimal stub channel for the mock RTC path.
@@ -37,6 +38,7 @@ export default function E2EPage() {
     <Container>
       <p>E2E Voice Test Page</p>
       <p>State: {voice.state()}</p>
+      <VoiceCallCardActiveRoom />
     </Container>
   );
 }

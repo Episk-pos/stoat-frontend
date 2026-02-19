@@ -25,6 +25,7 @@ import { VoiceCallCardContext } from "@revolt/ui/components/features/voice/callC
 
 import { InRoom } from "./components/InRoom";
 import { RoomAudioManager } from "./components/RoomAudioManager";
+import { MockRoom } from "./mock";
 
 type State =
   | "READY"
@@ -128,19 +129,27 @@ class Voice {
   async connect(channel: Channel, auth?: { url: string; token: string }) {
     this.disconnect();
 
-    const room = new Room({
-      audioCaptureDefaults: {
-        deviceId: this.#settings.preferredAudioInputDevice,
-        echoCancellation: this.#settings.echoCancellation,
-        noiseSuppression: this.#settings.noiseSupression,
-      },
-      videoCaptureDefaults: {
-        deviceId: this.#settings.preferredVideoInputDevice,
-      },
-      audioOutput: {
-        deviceId: this.#settings.preferredAudioOutputDevice,
-      },
-    });
+    const isMock = import.meta.env.VITE_MOCK_RTC === "true";
+
+    const room = isMock
+      ? (new MockRoom() as unknown as Room)
+      : new Room({
+          audioCaptureDefaults: {
+            deviceId: this.#settings.preferredAudioInputDevice,
+            echoCancellation: this.#settings.echoCancellation,
+            noiseSuppression: this.#settings.noiseSupression,
+          },
+          videoCaptureDefaults: {
+            deviceId: this.#settings.preferredVideoInputDevice,
+          },
+          audioOutput: {
+            deviceId: this.#settings.preferredAudioOutputDevice,
+          },
+        });
+
+    if (isMock && typeof window !== "undefined") {
+      (window as any).__STOAT_TEST_CONTROLLER__.room = room;
+    }
 
     batch(() => {
       this.#setRoom(room);
@@ -156,23 +165,36 @@ class Voice {
       this.#setVideoWatchDisabled({});
       this.#setScreenshareWatch({});
 
-      if (this.speakingPermission)
+      if (this.speakingPermission && !isMock)
         room.localParticipant
           .setMicrophoneEnabled(true)
           .then((track) => this.#setMicrophone(typeof track !== "undefined"));
+
+      if (isMock) {
+        // Instant mock connection
+        setTimeout(() => {
+          this.#setState("CONNECTED");
+          if (this.speakingPermission) {
+            void room.localParticipant.setMicrophoneEnabled(true).then(() => {
+              this.#setMicrophone(true);
+            });
+          }
+        }, 10);
+      }
     });
 
-    room.addListener("connected", () => this.#setState("CONNECTED"));
+    if (!isMock) {
+      room.addListener("connected", () => this.#setState("CONNECTED"));
+      room.addListener("disconnected", () => this.#setState("DISCONNECTED"));
 
-    room.addListener("disconnected", () => this.#setState("DISCONNECTED"));
+      if (!auth) {
+        auth = await channel.joinCall("worldwide");
+      }
 
-    if (!auth) {
-      auth = await channel.joinCall("worldwide");
+      await room.connect(auth.url, auth.token, {
+        autoSubscribe: false,
+      });
     }
-
-    await room.connect(auth.url, auth.token, {
-      autoSubscribe: false,
-    });
   }
 
   disconnect() {

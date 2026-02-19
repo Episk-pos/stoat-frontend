@@ -145,6 +145,26 @@ export function VoiceCallCardActions(props: { size: "xs" | "sm" }) {
         </IconButton>
         <IconButton
           size={props.size}
+          variant={voice.spotlightHideMembers() ? "filled" : "tonal"}
+          onPress={() => voice.toggleSpotlightHideMembers()}
+          use:floating={{
+            tooltip: {
+              placement: "top",
+              content: voice.spotlightHideMembers()
+                ? t`Show members`
+                : t`Hide members`,
+            },
+          }}
+        >
+          <Show
+            when={voice.spotlightHideMembers()}
+            fallback={<Symbol>group</Symbol>}
+          >
+            <Symbol>group_off</Symbol>
+          </Show>
+        </IconButton>
+        <IconButton
+          size={props.size}
           variant={showDevicePanel() ? "filled" : "tonal"}
           onPress={() => setShowDevicePanel((open) => !open)}
           use:floating={{

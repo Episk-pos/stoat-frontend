@@ -161,8 +161,8 @@ const Call = styled("div", {
  * Show a grid of participants
  */
 function Participants() {
+  const voice = useVoice();
   const [maximizedTileId, setMaximizedTileId] = createSignal<string>();
-  const [hideMembers, setHideMembers] = createSignal(false);
 
   let spotlightStageRef: HTMLDivElement | undefined;
   const [spotlightSize, setSpotlightSize] = createSignal<
@@ -207,10 +207,6 @@ function Participants() {
     return all.filter((t) => `${t.participant.identity}:${t.source}` !== id);
   });
 
-  createEffect(() => {
-    if (!maximizedTileId()) setHideMembers(false);
-  });
-
   const updateSpotlightSize = () => {
     if (!spotlightStageRef) return;
     const width = spotlightStageRef.clientWidth;
@@ -249,8 +245,8 @@ function Participants() {
   );
 
   const spotlightControls: SpotlightControlsState = {
-    hideMembers,
-    toggleHideMembers: () => setHideMembers((v) => !v),
+    hideMembers: voice.spotlightHideMembers,
+    toggleHideMembers: () => voice.toggleSpotlightHideMembers(),
     hasOtherTiles,
   };
 
@@ -279,14 +275,18 @@ function Participants() {
                     }
                   : undefined
               }
-              data-hide-members={hideMembers() ? "true" : "false"}
+              data-hide-members={
+                voice.spotlightHideMembers() ? "true" : "false"
+              }
             >
               <TrackLoop tracks={spotlightTracks}>
                 {() => <ParticipantTile />}
               </TrackLoop>
             </SpotlightStage>
 
-            <Show when={!hideMembers() && otherTracks().length > 0}>
+            <Show
+              when={!voice.spotlightHideMembers() && otherTracks().length > 0}
+            >
               <Filmstrip>
                 <TrackLoop tracks={otherTracks}>
                   {() => <ParticipantTile />}
@@ -483,25 +483,6 @@ function UserTile(props: { tileId: string; isMaximized: boolean }) {
             </TileActionButton>
 
             <Show when={props.isMaximized}>
-              <Show when={spotlightControls.hasOtherTiles()}>
-                <TileActionButton
-                  type="button"
-                  title={
-                    spotlightControls.hideMembers()
-                      ? "Show members"
-                      : "Hide members"
-                  }
-                  onClick={(event) => {
-                    event.stopPropagation();
-                    spotlightControls.toggleHideMembers();
-                  }}
-                >
-                  <Symbol size={16}>
-                    {spotlightControls.hideMembers() ? "group" : "group_off"}
-                  </Symbol>
-                </TileActionButton>
-              </Show>
-
               <TileActionButton
                 type="button"
                 title={
@@ -643,25 +624,6 @@ function ScreenshareTile(props: { tileId: string; isMaximized: boolean }) {
             </TileActionButton>
 
             <Show when={props.isMaximized}>
-              <Show when={spotlightControls.hasOtherTiles()}>
-                <TileActionButton
-                  type="button"
-                  title={
-                    spotlightControls.hideMembers()
-                      ? "Show members"
-                      : "Hide members"
-                  }
-                  onClick={(event) => {
-                    event.stopPropagation();
-                    spotlightControls.toggleHideMembers();
-                  }}
-                >
-                  <Symbol size={16}>
-                    {spotlightControls.hideMembers() ? "group" : "group_off"}
-                  </Symbol>
-                </TileActionButton>
-              </Show>
-
               <TileActionButton
                 type="button"
                 title={

@@ -1,9 +1,13 @@
+name: Deploy Frontend (Staging)
+
 on:
   workflow_run:
     workflows:
       - Build & Test
     types:
       - completed
+    branches:
+      - staging
   workflow_dispatch:
 
 concurrency:

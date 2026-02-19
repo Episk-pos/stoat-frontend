@@ -173,25 +173,3 @@ jobs:
           name: playwright-report
           path: packages/client/playwright-report/
           retention-days: 30
-
-  # deploy:
-  #   name: Deploy
-  #   runs-on: ubuntu-latest
-
-  #   permissions:
-  #     contents: write
-
-  #   if: github.ref == 'refs/heads/main'
-
-  #   needs:
-  #     - typecheck
-  #     - e2e
-  #     - lint-format
-
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #       with:
-  #         submodules: recursive
-  #     - run: |
-  #         git fetch origin stable:stable
-  #         git push origin main:stable -f

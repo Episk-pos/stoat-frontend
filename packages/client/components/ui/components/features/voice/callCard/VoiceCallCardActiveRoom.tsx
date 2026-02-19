@@ -4,6 +4,7 @@ import {
   Setter,
   Show,
   Switch,
+  batch,
   createContext,
   createEffect,
   createMemo,
@@ -25,7 +26,7 @@ import {
   useTracks,
 } from "solid-livekit-components";
 
-import { Track } from "livekit-client";
+import { Participant, Track } from "livekit-client";
 import { cva } from "styled-system/css";
 import { styled } from "styled-system/jsx";
 
@@ -163,6 +164,7 @@ const Call = styled("div", {
 function Participants() {
   const voice = useVoice();
   const [maximizedTileId, setMaximizedTileId] = createSignal<string>();
+  const [manualPinnedId, setManualPinnedId] = createSignal<string>();
 
   let spotlightStageRef: HTMLDivElement | undefined;
   const [spotlightSize, setSpotlightSize] = createSignal<
@@ -177,15 +179,87 @@ function Participants() {
     { onlySubscribed: false },
   );
 
-  const context: MaximizeState = {
-    maximizedTileId,
-    setMaximizedTileId,
-  };
-
   const getTracks = () =>
     typeof tracks === "function"
       ? (tracks as unknown as () => TrackReference[])()
       : (tracks as unknown as TrackReference[]);
+
+  const [activeSpeakerIdentity, setActiveSpeakerIdentity] =
+    createSignal<string>();
+
+  // Track the primary active speaker identity
+  createEffect(() => {
+    const room = voice.room();
+    if (!room) return;
+
+    const onSpeakersChanged = (speakers: Participant[]) => {
+      setActiveSpeakerIdentity(speakers[0]?.identity);
+    };
+
+    room.on("activeSpeakersChanged", onSpeakersChanged);
+    onCleanup(() => room.off("activeSpeakersChanged", onSpeakersChanged));
+
+    // Sync initial state
+    setActiveSpeakerIdentity(room.activeSpeakers[0]?.identity);
+  });
+
+  // Calculate the current auto-spotlight target
+  const autoSpotlightId = createMemo(() => {
+    const all = getTracks();
+    const speakerIdentity = activeSpeakerIdentity();
+
+    // Priority 1: Screenshare
+    const screenshare = all.find((t) => t.source === Track.Source.ScreenShare);
+    if (screenshare) {
+      return `${screenshare.participant.identity}:${screenshare.source}`;
+    }
+
+    // Priority 2: Active Speaker
+    if (speakerIdentity) {
+      const speakerTrack = all.find(
+        (t) =>
+          t.participant.identity === speakerIdentity &&
+          (t.source === Track.Source.Camera ||
+            t.source === Track.Source.ScreenShare),
+      );
+      if (speakerTrack) {
+        return `${speakerTrack.participant.identity}:${speakerTrack.source}`;
+      }
+    }
+
+    return undefined;
+  });
+
+  // Unified Spotlight State
+  // If user has pinned something, use that. Otherwise use the auto-target.
+  createEffect(() => {
+    const pinned = manualPinnedId();
+    if (pinned) {
+      // Verify pinned track still exists
+      const all = getTracks();
+      const stillExists = all.some(
+        (t) => `${t.participant.identity}:${t.source}` === pinned,
+      );
+      if (stillExists) {
+        setMaximizedTileId(pinned);
+        return;
+      } else {
+        // Pinned track disappeared, clear it
+        setManualPinnedId(undefined);
+      }
+    }
+
+    // Fallback to auto-spotlight
+    setMaximizedTileId(autoSpotlightId());
+  });
+
+  const context: MaximizeState = {
+    maximizedTileId,
+    setMaximizedTileId: (id) => {
+      // Manual action: explicitly set or clear the pin
+      setManualPinnedId(id);
+    },
+  };
 
   const spotlightTrack = createMemo(() => {
     const id = maximizedTileId();
@@ -421,6 +495,8 @@ function UserTile(props: { tileId: string; isMaximized: boolean }) {
         spotlighted: props.isMaximized,
       })}
       classList={{ "voice-tile": true, group: true }}
+      data-spotlighted={props.isMaximized}
+      onDblClick={() => toggleSpotlight()}
       use:floating={{
         userCard: {
           user: user().user!,
@@ -555,6 +631,8 @@ function ScreenshareTile(props: { tileId: string; isMaximized: boolean }) {
     <div
       class={tile({ spotlighted: props.isMaximized })}
       classList={{ "voice-tile": true, group: true }}
+      data-spotlighted={props.isMaximized}
+      onDblClick={() => toggleSpotlight()}
     >
       <MediaLayer>
         <Show

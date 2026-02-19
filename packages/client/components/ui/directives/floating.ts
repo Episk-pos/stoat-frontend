@@ -107,9 +107,10 @@ export function floating(element: HTMLElement, accessor: Accessor<Props>) {
   }
 
   /**
-   * Handle click events
+   * Handle click events (skip multi-clicks so double-click-to-spotlight works)
    */
-  function onClick() {
+  function onClick(event: MouseEvent) {
+    if (event.detail > 1) return;
     // TODO: handle shift+click for mention
     trigger("userCard");
   }

@@ -25,7 +25,7 @@ import {
   useTracks,
 } from "solid-livekit-components";
 
-import { Participant, Track } from "livekit-client";
+import { Track } from "livekit-client";
 import { cva } from "styled-system/css";
 import { styled } from "styled-system/jsx";
 
@@ -65,20 +65,6 @@ const callFullscreenContext = createContext<CallFullscreenState>(
 
 function useCallFullscreen() {
   return useContext(callFullscreenContext);
-}
-
-type SpotlightControlsState = {
-  hideMembers: Accessor<boolean>;
-  toggleHideMembers: () => void;
-  hasOtherTiles: Accessor<boolean>;
-};
-
-const spotlightControlsContext = createContext<SpotlightControlsState>(
-  null as unknown as SpotlightControlsState,
-);
-
-function useSpotlightControls() {
-  return useContext(spotlightControlsContext);
 }
 
 /**
@@ -164,6 +150,9 @@ function Participants() {
   const voice = useVoice();
   const [maximizedTileId, setMaximizedTileId] = createSignal<string>();
   const [manualPinnedId, setManualPinnedId] = createSignal<string>();
+  const [autoSpotlightSuppressed, setAutoSpotlightSuppressed] =
+    createSignal(false);
+  const [dismissedAutoTarget, setDismissedAutoTarget] = createSignal<string>();
 
   let spotlightStageRef: HTMLDivElement | undefined;
   const [spotlightSize, setSpotlightSize] = createSignal<
@@ -186,20 +175,25 @@ function Participants() {
   const [activeSpeakerIdentity, setActiveSpeakerIdentity] =
     createSignal<string>();
 
-  // Track the primary active speaker identity
+  // Track the primary active speaker identity (sticky — keep last speaker
+  // during silence to avoid layout flicker between grid and spotlight).
   createEffect(() => {
     const room = voice.room();
     if (!room) return;
 
-    const onSpeakersChanged = (speakers: Participant[]) => {
-      setActiveSpeakerIdentity(speakers[0]?.identity);
+    const onSpeakersChanged = (speakers: Array<{ identity: string }>) => {
+      if (speakers.length > 0) {
+        setActiveSpeakerIdentity(speakers[0]!.identity);
+      }
     };
 
     room.on("activeSpeakersChanged", onSpeakersChanged);
     onCleanup(() => room.off("activeSpeakersChanged", onSpeakersChanged));
 
     // Sync initial state
-    setActiveSpeakerIdentity(room.activeSpeakers[0]?.identity);
+    if (room.activeSpeakers.length > 0) {
+      setActiveSpeakerIdentity(room.activeSpeakers[0]!.identity);
+    }
   });
 
   // Calculate the current auto-spotlight target
@@ -230,7 +224,8 @@ function Participants() {
   });
 
   // Unified Spotlight State
-  // If user has pinned something, use that. Otherwise use the auto-target.
+  // If user has pinned something, use that. Otherwise use the auto-target
+  // (unless the user explicitly dismissed spotlight).
   createEffect(() => {
     const pinned = manualPinnedId();
     if (pinned) {
@@ -248,14 +243,41 @@ function Participants() {
       }
     }
 
+    // User explicitly returned to grid — stay there
+    if (autoSpotlightSuppressed()) {
+      setMaximizedTileId(undefined);
+      return;
+    }
+
     // Fallback to auto-spotlight
     setMaximizedTileId(autoSpotlightId());
+  });
+
+  // Re-engage auto-spotlight when the target changes to a different
+  // participant/source than what was showing when the user dismissed.
+  createEffect(() => {
+    const current = autoSpotlightId();
+    if (
+      autoSpotlightSuppressed() &&
+      current &&
+      current !== dismissedAutoTarget()
+    ) {
+      setAutoSpotlightSuppressed(false);
+    }
   });
 
   const context: MaximizeState = {
     maximizedTileId,
     setMaximizedTileId: (id) => {
-      // Manual action: explicitly set or clear the pin
+      if (id === undefined) {
+        // User explicitly dismissed — suppress auto-spotlight until a new
+        // event (different speaker / screenshare) occurs.
+        setDismissedAutoTarget(autoSpotlightId());
+        setAutoSpotlightSuppressed(true);
+      } else {
+        setAutoSpotlightSuppressed(false);
+        setDismissedAutoTarget(undefined);
+      }
       setManualPinnedId(id);
     },
   };
@@ -313,62 +335,61 @@ function Participants() {
     updateSpotlightSize();
   });
 
-  const hasOtherTiles = createMemo(
-    () => !!maximizedTileId() && otherTracks().length > 0,
-  );
+  // Sync spotlight-active flag to Voice so VoiceCallCardActions can read it.
+  createEffect(() => {
+    voice.setSpotlightActive(!!maximizedTileId());
+  });
 
-  const spotlightControls: SpotlightControlsState = {
-    hideMembers: voice.spotlightHideMembers,
-    toggleHideMembers: () => voice.toggleSpotlightHideMembers(),
-    hasOtherTiles,
-  };
+  // Reset hide-members when leaving spotlight mode, so it doesn't persist
+  // silently into the next spotlight activation.
+  createEffect(() => {
+    if (!maximizedTileId()) {
+      voice.setSpotlightHideMembers(false);
+    }
+  });
 
   return (
     <maximizeContext.Provider value={context}>
-      <spotlightControlsContext.Provider value={spotlightControls}>
-        <Show
-          when={maximizedTileId()}
-          fallback={
-            <Grid>
-              <TrackLoop tracks={tracks}>{() => <ParticipantTile />}</TrackLoop>
-            </Grid>
-          }
-        >
-          <Spotlight>
-            <SpotlightStage
-              ref={(el) => {
-                spotlightStageRef = el;
-                updateSpotlightSize();
-              }}
-              style={
-                spotlightSize()
-                  ? {
-                      "--spotlight-width": `${spotlightSize()!.width}px`,
-                      "--spotlight-height": `${spotlightSize()!.height}px`,
-                    }
-                  : undefined
-              }
-              data-hide-members={
-                voice.spotlightHideMembers() ? "true" : "false"
-              }
-            >
-              <TrackLoop tracks={spotlightTracks}>
+      <Show
+        when={maximizedTileId()}
+        fallback={
+          <Grid>
+            <TrackLoop tracks={tracks}>{() => <ParticipantTile />}</TrackLoop>
+          </Grid>
+        }
+      >
+        <Spotlight>
+          <SpotlightStage
+            ref={(el) => {
+              spotlightStageRef = el;
+              updateSpotlightSize();
+            }}
+            style={
+              spotlightSize()
+                ? {
+                    "--spotlight-width": `${spotlightSize()!.width}px`,
+                    "--spotlight-height": `${spotlightSize()!.height}px`,
+                  }
+                : undefined
+            }
+            data-hide-members={voice.spotlightHideMembers() ? "true" : "false"}
+          >
+            <TrackLoop tracks={spotlightTracks}>
+              {() => <ParticipantTile />}
+            </TrackLoop>
+          </SpotlightStage>
+
+          <Show
+            when={!voice.spotlightHideMembers() && otherTracks().length > 0}
+          >
+            <Filmstrip>
+              <TrackLoop tracks={otherTracks}>
                 {() => <ParticipantTile />}
               </TrackLoop>
-            </SpotlightStage>
-
-            <Show
-              when={!voice.spotlightHideMembers() && otherTracks().length > 0}
-            >
-              <Filmstrip>
-                <TrackLoop tracks={otherTracks}>
-                  {() => <ParticipantTile />}
-                </TrackLoop>
-              </Filmstrip>
-            </Show>
-          </Spotlight>
-        </Show>
-      </spotlightControlsContext.Provider>
+            </Filmstrip>
+          </Show>
+        </Spotlight>
+      </Show>
     </maximizeContext.Provider>
   );
 }

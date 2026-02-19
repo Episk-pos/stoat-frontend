@@ -1400,6 +1400,10 @@ msgstr "Helped translate Stoat"
 msgid "Here is your new invite code: <0>{0}</0>"
 msgstr "Here is your new invite code: <0>{0}</0>"
 
+#: components/ui/components/features/voice/callCard/VoiceCallCardActions.tsx
+msgid "Hide members"
+msgstr "Hide members"
+
 #: components/app/interface/settings/user/appearance/AppearanceMenu.tsx
 msgid "High Contrast"
 msgstr "High Contrast"
@@ -2479,6 +2483,10 @@ msgstr "Share camera or screen in voice call"
 #: components/app/interface/settings/user/Native.tsx
 msgid "Show corrections and suggestions as you type."
 msgstr "Show corrections and suggestions as you type."
+
+#: components/ui/components/features/voice/callCard/VoiceCallCardActions.tsx
+msgid "Show members"
+msgstr "Show members"
 
 #: components/app/interface/settings/user/appearance/AppearanceMenu.tsx
 msgid "Show send message button"

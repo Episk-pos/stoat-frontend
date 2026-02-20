@@ -147,15 +147,19 @@ class Voice {
       this.#setAudioOnly(false);
       this.#setVideoWatchDisabled({});
       this.#setScreenshareWatch({});
-
-      if (this.speakingPermission)
-        room.localParticipant
-          .setMicrophoneEnabled(true)
-          .then((track) => this.#setMicrophone(typeof track !== "undefined"));
     });
 
-    room.addListener("connected", () => this.#setState("CONNECTED"));
+    if (this.speakingPermission)
+      room.localParticipant
+        .setMicrophoneEnabled(true)
+        .then((track) => {
+          if (this.room() === room)
+            this.#setMicrophone(typeof track !== "undefined");
+        });
 
+    room.addListener("connected", () => this.#setState("CONNECTED"));
+    room.addListener("reconnecting", () => this.#setState("RECONNECTING"));
+    room.addListener("reconnected", () => this.#setState("CONNECTED"));
     room.addListener("disconnected", () => this.#setState("DISCONNECTED"));
 
     if (!auth) {

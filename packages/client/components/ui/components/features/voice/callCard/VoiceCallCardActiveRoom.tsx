@@ -422,13 +422,21 @@ function UserTile(props: { tileId: string; isMaximized: boolean }) {
       })}
       classList={{ "voice-tile": true, group: true }}
       use:floating={{
-        userCard: {
-          user: user().user!,
-          member: user().member,
-        },
-        contextMenu: () => (
-          <UserContextMenu user={user().user!} member={user().member} inVoice />
-        ),
+        ...(user().user
+          ? {
+              userCard: {
+                user: user().user,
+                member: user().member,
+              },
+              contextMenu: () => (
+                <UserContextMenu
+                  user={user().user!}
+                  member={user().member}
+                  inVoice
+                />
+              ),
+            }
+          : {}),
       }}
     >
       <MediaLayer>

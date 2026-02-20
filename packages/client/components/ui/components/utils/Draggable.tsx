@@ -166,10 +166,10 @@ export function Draggable<T>(props: Props<T>) {
 
   return (
     <div
-      ontouchstart={handleTouchStart}
-      ontouchmove={handleTouchMove}
-      ontouchend={handleTouchEnd}
-      ontouchcancel={handleTouchEnd}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+      onTouchCancel={handleTouchEnd}
       use:dndzone={{
         type: props.type,
         items: containerItems,

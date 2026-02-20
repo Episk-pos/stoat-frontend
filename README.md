@@ -2,12 +2,10 @@
 <h1>
   Stoat Frontend
   
-  [![Stars](https://img.shields.io/github/stars/stoatchat/for-web?style=flat-square&logoColor=white)](https://github.com/stoatchat/for-web/stargazers)
-  [![Forks](https://img.shields.io/github/forks/stoatchat/for-web?style=flat-square&logoColor=white)](https://github.com/stoatchat/for-web/network/members)
-  [![Pull Requests](https://img.shields.io/github/issues-pr/stoatchat/for-web?style=flat-square&logoColor=white)](https://github.com/stoatchat/for-web/pulls)
-  [![Issues](https://img.shields.io/github/issues/stoatchat/for-web?style=flat-square&logoColor=white)](https://github.com/stoatchat/for-web/issues)
-  [![Contributors](https://img.shields.io/github/contributors/stoatchat/for-web?style=flat-square&logoColor=white)](https://github.com/stoatchat/for-web/graphs/contributors)
-  [![License](https://img.shields.io/github/license/stoatchat/for-web?style=flat-square&logoColor=white)](https://github.com/stoatchat/for-web/blob/main/LICENSE)
+  [![Pull Requests](https://img.shields.io/github/issues-pr/Episk-pos/stoat-frontend?style=flat-square&logoColor=white)](https://github.com/Episk-pos/stoat-frontend/pulls)
+  [![Issues](https://img.shields.io/github/issues/Episk-pos/stoat-community?style=flat-square&logoColor=white)](https://github.com/Episk-pos/stoat-community/issues)
+  [![Contributors](https://img.shields.io/github/contributors/Episk-pos/stoat-frontend?style=flat-square&logoColor=white)](https://github.com/Episk-pos/stoat-frontend/graphs/contributors)
+  [![License](https://img.shields.io/github/license/Episk-pos/stoat-frontend?style=flat-square&logoColor=white)](https://github.com/Episk-pos/stoat-frontend/blob/main/LICENSE)
 </h1>
 The official web client powering https://stoat.chat/app, built with <a href="https://www.solidjs.com/">Solid.js</a> 💖. <br/>
 Track the project roadmap on <a href="https://op.stoatinternal.com/projects/revolt-for-web/roadmap">OpenProject</a>.

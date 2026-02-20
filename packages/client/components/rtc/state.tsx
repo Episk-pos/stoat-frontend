@@ -187,11 +187,13 @@ class Voice {
     if (isMock) {
       // Instant mock connection
       setTimeout(() => {
-        this.#setState("CONNECTED");
-        if (this.speakingPermission) {
-          void room.localParticipant.setMicrophoneEnabled(true).then(() => {
-            this.#setMicrophone(true);
-          });
+        if (this.room() === room) {
+          this.#setState("CONNECTED");
+          if (this.speakingPermission) {
+            void room.localParticipant.setMicrophoneEnabled(true).then(() => {
+              if (this.room() === room) this.#setMicrophone(true);
+            });
+          }
         }
       }, 10);
     }

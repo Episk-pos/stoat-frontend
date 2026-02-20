@@ -150,12 +150,10 @@ class Voice {
     });
 
     if (this.speakingPermission)
-      room.localParticipant
-        .setMicrophoneEnabled(true)
-        .then((track) => {
-          if (this.room() === room)
-            this.#setMicrophone(typeof track !== "undefined");
-        });
+      room.localParticipant.setMicrophoneEnabled(true).then((track) => {
+        if (this.room() === room)
+          this.#setMicrophone(typeof track !== "undefined");
+      });
 
     room.addListener("connected", () => this.#setState("CONNECTED"));
     room.addListener("reconnecting", () => this.#setState("RECONNECTING"));

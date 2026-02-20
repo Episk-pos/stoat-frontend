@@ -517,13 +517,21 @@ function UserTile(props: { tileId: string; isMaximized: boolean }) {
       data-spotlighted={props.isMaximized}
       onDblClick={() => toggleSpotlight()}
       use:floating={{
-        userCard: {
-          user: user().user!,
-          member: user().member,
-        },
-        contextMenu: () => (
-          <UserContextMenu user={user().user!} member={user().member} inVoice />
-        ),
+        ...(user().user
+          ? {
+              userCard: {
+                user: user().user,
+                member: user().member,
+              },
+              contextMenu: () => (
+                <UserContextMenu
+                  user={user().user!}
+                  member={user().member}
+                  inVoice
+                />
+              ),
+            }
+          : {}),
       }}
     >
       <MediaLayer>

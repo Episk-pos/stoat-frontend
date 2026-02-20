@@ -176,27 +176,32 @@ class Voice {
       this.#setSpotlightActive(false);
       this.#setVideoWatchDisabled({});
       this.#setScreenshareWatch({});
+    });
 
-      if (this.speakingPermission && !isMock)
-        room.localParticipant
-          .setMicrophoneEnabled(true)
-          .then((track) => this.#setMicrophone(typeof track !== "undefined"));
+    if (this.speakingPermission && !isMock)
+      room.localParticipant.setMicrophoneEnabled(true).then((track) => {
+        if (this.room() === room)
+          this.#setMicrophone(typeof track !== "undefined");
+      });
 
-      if (isMock) {
-        // Instant mock connection
-        setTimeout(() => {
+    if (isMock) {
+      // Instant mock connection
+      setTimeout(() => {
+        if (this.room() === room) {
           this.#setState("CONNECTED");
           if (this.speakingPermission) {
             void room.localParticipant.setMicrophoneEnabled(true).then(() => {
-              this.#setMicrophone(true);
+              if (this.room() === room) this.#setMicrophone(true);
             });
           }
-        }, 10);
-      }
-    });
+        }
+      }, 10);
+    }
 
     if (!isMock) {
       room.addListener("connected", () => this.#setState("CONNECTED"));
+      room.addListener("reconnecting", () => this.#setState("RECONNECTING"));
+      room.addListener("reconnected", () => this.#setState("CONNECTED"));
       room.addListener("disconnected", () => this.#setState("DISCONNECTED"));
 
       if (!auth) {

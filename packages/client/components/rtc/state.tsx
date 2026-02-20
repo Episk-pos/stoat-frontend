@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Accessor,
   JSX,
@@ -25,6 +26,7 @@ import { VoiceCallCardContext } from "@revolt/ui/components/features/voice/callC
 
 import { InRoom } from "./components/InRoom";
 import { RoomAudioManager } from "./components/RoomAudioManager";
+import { MockRoom } from "./mock";
 
 type State =
   | "READY"
@@ -59,6 +61,12 @@ class Voice {
 
   audioOnly: Accessor<boolean>;
   #setAudioOnly: Setter<boolean>;
+
+  spotlightHideMembers: Accessor<boolean>;
+  #setSpotlightHideMembers: Setter<boolean>;
+
+  spotlightActive: Accessor<boolean>;
+  #setSpotlightActive: Setter<boolean>;
 
   /** Per-remote-user camera watch override (session-scoped). */
   videoWatchDisabled: Accessor<Record<string, boolean>>;
@@ -105,6 +113,14 @@ class Voice {
     this.audioOnly = audioOnly;
     this.#setAudioOnly = setAudioOnly;
 
+    const [spotlightHideMembers, setSpotlightHideMembers] = createSignal(false);
+    this.spotlightHideMembers = spotlightHideMembers;
+    this.#setSpotlightHideMembers = setSpotlightHideMembers;
+
+    const [spotlightActive, setSpotlightActive] = createSignal(false);
+    this.spotlightActive = spotlightActive;
+    this.#setSpotlightActive = setSpotlightActive;
+
     const [videoWatchDisabled, setVideoWatchDisabled] = createSignal<
       Record<string, boolean>
     >({});
@@ -121,19 +137,30 @@ class Voice {
   async connect(channel: Channel, auth?: { url: string; token: string }) {
     this.disconnect();
 
-    const room = new Room({
-      audioCaptureDefaults: {
-        deviceId: this.#settings.preferredAudioInputDevice,
-        echoCancellation: this.#settings.echoCancellation,
-        noiseSuppression: this.#settings.noiseSupression,
-      },
-      videoCaptureDefaults: {
-        deviceId: this.#settings.preferredVideoInputDevice,
-      },
-      audioOutput: {
-        deviceId: this.#settings.preferredAudioOutputDevice,
-      },
-    });
+    const isMock =
+      import.meta.env.VITE_MOCK_RTC === "true" ||
+      (typeof window !== "undefined" &&
+        (window as any).__STOAT_MOCK_RTC__ === true);
+
+    const room = isMock
+      ? (new MockRoom() as unknown as Room)
+      : new Room({
+          audioCaptureDefaults: {
+            deviceId: this.#settings.preferredAudioInputDevice,
+            echoCancellation: this.#settings.echoCancellation,
+            noiseSuppression: this.#settings.noiseSupression,
+          },
+          videoCaptureDefaults: {
+            deviceId: this.#settings.preferredVideoInputDevice,
+          },
+          audioOutput: {
+            deviceId: this.#settings.preferredAudioOutputDevice,
+          },
+        });
+
+    if (isMock && typeof window !== "undefined") {
+      (window as any).__STOAT_TEST_CONTROLLER__.room = room;
+    }
 
     batch(() => {
       this.#setRoom(room);
@@ -145,26 +172,41 @@ class Voice {
       this.#setVideo(false);
       this.#setScreenshare(false);
       this.#setAudioOnly(false);
+      this.#setSpotlightHideMembers(false);
+      this.#setSpotlightActive(false);
       this.#setVideoWatchDisabled({});
       this.#setScreenshareWatch({});
 
-      if (this.speakingPermission)
+      if (this.speakingPermission && !isMock)
         room.localParticipant
           .setMicrophoneEnabled(true)
           .then((track) => this.#setMicrophone(typeof track !== "undefined"));
+
+      if (isMock) {
+        // Instant mock connection
+        setTimeout(() => {
+          this.#setState("CONNECTED");
+          if (this.speakingPermission) {
+            void room.localParticipant.setMicrophoneEnabled(true).then(() => {
+              this.#setMicrophone(true);
+            });
+          }
+        }, 10);
+      }
     });
 
-    room.addListener("connected", () => this.#setState("CONNECTED"));
+    if (!isMock) {
+      room.addListener("connected", () => this.#setState("CONNECTED"));
+      room.addListener("disconnected", () => this.#setState("DISCONNECTED"));
 
-    room.addListener("disconnected", () => this.#setState("DISCONNECTED"));
+      if (!auth) {
+        auth = await channel.joinCall("worldwide");
+      }
 
-    if (!auth) {
-      auth = await channel.joinCall("worldwide");
+      await room.connect(auth.url, auth.token, {
+        autoSubscribe: false,
+      });
     }
-
-    await room.connect(auth.url, auth.token, {
-      autoSubscribe: false,
-    });
   }
 
   disconnect() {
@@ -280,6 +322,18 @@ class Voice {
     } catch (error) {
       this.onError(error);
     }
+  }
+
+  async toggleSpotlightHideMembers() {
+    this.#setSpotlightHideMembers((v) => !v);
+  }
+
+  setSpotlightActive(active: boolean) {
+    this.#setSpotlightActive(active);
+  }
+
+  setSpotlightHideMembers(value: boolean) {
+    this.#setSpotlightHideMembers(value);
   }
 
   async toggleScreenshare() {

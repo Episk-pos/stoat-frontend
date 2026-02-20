@@ -67,20 +67,6 @@ function useCallFullscreen() {
   return useContext(callFullscreenContext);
 }
 
-type SpotlightControlsState = {
-  hideMembers: Accessor<boolean>;
-  toggleHideMembers: () => void;
-  hasOtherTiles: Accessor<boolean>;
-};
-
-const spotlightControlsContext = createContext<SpotlightControlsState>(
-  null as unknown as SpotlightControlsState,
-);
-
-function useSpotlightControls() {
-  return useContext(spotlightControlsContext);
-}
-
 /**
  * Call card (active)
  */
@@ -161,8 +147,12 @@ const Call = styled("div", {
  * Show a grid of participants
  */
 function Participants() {
+  const voice = useVoice();
   const [maximizedTileId, setMaximizedTileId] = createSignal<string>();
-  const [hideMembers, setHideMembers] = createSignal(false);
+  const [manualPinnedId, setManualPinnedId] = createSignal<string>();
+  const [autoSpotlightSuppressed, setAutoSpotlightSuppressed] =
+    createSignal(false);
+  const [dismissedAutoTarget, setDismissedAutoTarget] = createSignal<string>();
 
   let spotlightStageRef: HTMLDivElement | undefined;
   const [spotlightSize, setSpotlightSize] = createSignal<
@@ -177,15 +167,120 @@ function Participants() {
     { onlySubscribed: false },
   );
 
-  const context: MaximizeState = {
-    maximizedTileId,
-    setMaximizedTileId,
-  };
-
   const getTracks = () =>
     typeof tracks === "function"
       ? (tracks as unknown as () => TrackReference[])()
       : (tracks as unknown as TrackReference[]);
+
+  const [activeSpeakerIdentity, setActiveSpeakerIdentity] =
+    createSignal<string>();
+
+  // Track the primary active speaker identity (sticky — keep last speaker
+  // during silence to avoid layout flicker between grid and spotlight).
+  createEffect(() => {
+    const room = voice.room();
+    if (!room) return;
+
+    const onSpeakersChanged = (speakers: Array<{ identity: string }>) => {
+      if (speakers.length > 0) {
+        setActiveSpeakerIdentity(speakers[0]!.identity);
+      }
+    };
+
+    room.on("activeSpeakersChanged", onSpeakersChanged);
+    onCleanup(() => room.off("activeSpeakersChanged", onSpeakersChanged));
+
+    // Sync initial state
+    if (room.activeSpeakers.length > 0) {
+      setActiveSpeakerIdentity(room.activeSpeakers[0]!.identity);
+    }
+  });
+
+  // Calculate the current auto-spotlight target
+  const autoSpotlightId = createMemo(() => {
+    const all = getTracks();
+    const speakerIdentity = activeSpeakerIdentity();
+
+    // Priority 1: Screenshare
+    const screenshare = all.find((t) => t.source === Track.Source.ScreenShare);
+    if (screenshare) {
+      return `${screenshare.participant.identity}:${screenshare.source}`;
+    }
+
+    // Priority 2: Active Speaker
+    if (speakerIdentity) {
+      const speakerTrack = all.find(
+        (t) =>
+          t.participant.identity === speakerIdentity &&
+          (t.source === Track.Source.Camera ||
+            t.source === Track.Source.ScreenShare),
+      );
+      if (speakerTrack) {
+        return `${speakerTrack.participant.identity}:${speakerTrack.source}`;
+      }
+    }
+
+    return undefined;
+  });
+
+  // Unified Spotlight State
+  // If user has pinned something, use that. Otherwise use the auto-target
+  // (unless the user explicitly dismissed spotlight).
+  createEffect(() => {
+    const pinned = manualPinnedId();
+    if (pinned) {
+      // Verify pinned track still exists
+      const all = getTracks();
+      const stillExists = all.some(
+        (t) => `${t.participant.identity}:${t.source}` === pinned,
+      );
+      if (stillExists) {
+        setMaximizedTileId(pinned);
+        return;
+      } else {
+        // Pinned track disappeared, clear it
+        setManualPinnedId(undefined);
+      }
+    }
+
+    // User explicitly returned to grid — stay there
+    if (autoSpotlightSuppressed()) {
+      setMaximizedTileId(undefined);
+      return;
+    }
+
+    // Fallback to auto-spotlight
+    setMaximizedTileId(autoSpotlightId());
+  });
+
+  // Re-engage auto-spotlight when the target changes to a different
+  // participant/source than what was showing when the user dismissed.
+  createEffect(() => {
+    const current = autoSpotlightId();
+    if (
+      autoSpotlightSuppressed() &&
+      current &&
+      current !== dismissedAutoTarget()
+    ) {
+      setAutoSpotlightSuppressed(false);
+    }
+  });
+
+  const context: MaximizeState = {
+    maximizedTileId,
+    setMaximizedTileId: (id) => {
+      if (id === undefined) {
+        // User explicitly dismissed — suppress auto-spotlight until a new
+        // event (different speaker / screenshare) occurs.
+        setDismissedAutoTarget(autoSpotlightId());
+        setAutoSpotlightSuppressed(true);
+      } else {
+        setAutoSpotlightSuppressed(false);
+        setDismissedAutoTarget(undefined);
+      }
+      setManualPinnedId(id);
+    },
+  };
 
   const spotlightTrack = createMemo(() => {
     const id = maximizedTileId();
@@ -205,10 +300,6 @@ function Participants() {
     const all = getTracks();
     if (!id) return all;
     return all.filter((t) => `${t.participant.identity}:${t.source}` !== id);
-  });
-
-  createEffect(() => {
-    if (!maximizedTileId()) setHideMembers(false);
   });
 
   const updateSpotlightSize = () => {
@@ -244,58 +335,61 @@ function Participants() {
     updateSpotlightSize();
   });
 
-  const hasOtherTiles = createMemo(
-    () => !!maximizedTileId() && otherTracks().length > 0,
-  );
+  // Sync spotlight-active flag to Voice so VoiceCallCardActions can read it.
+  createEffect(() => {
+    voice.setSpotlightActive(!!maximizedTileId());
+  });
 
-  const spotlightControls: SpotlightControlsState = {
-    hideMembers,
-    toggleHideMembers: () => setHideMembers((v) => !v),
-    hasOtherTiles,
-  };
+  // Reset hide-members when leaving spotlight mode, so it doesn't persist
+  // silently into the next spotlight activation.
+  createEffect(() => {
+    if (!maximizedTileId()) {
+      voice.setSpotlightHideMembers(false);
+    }
+  });
 
   return (
     <maximizeContext.Provider value={context}>
-      <spotlightControlsContext.Provider value={spotlightControls}>
-        <Show
-          when={maximizedTileId()}
-          fallback={
-            <Grid>
-              <TrackLoop tracks={tracks}>{() => <ParticipantTile />}</TrackLoop>
-            </Grid>
-          }
-        >
-          <Spotlight>
-            <SpotlightStage
-              ref={(el) => {
-                spotlightStageRef = el;
-                updateSpotlightSize();
-              }}
-              style={
-                spotlightSize()
-                  ? {
-                      "--spotlight-width": `${spotlightSize()!.width}px`,
-                      "--spotlight-height": `${spotlightSize()!.height}px`,
-                    }
-                  : undefined
-              }
-              data-hide-members={hideMembers() ? "true" : "false"}
-            >
-              <TrackLoop tracks={spotlightTracks}>
+      <Show
+        when={maximizedTileId()}
+        fallback={
+          <Grid>
+            <TrackLoop tracks={tracks}>{() => <ParticipantTile />}</TrackLoop>
+          </Grid>
+        }
+      >
+        <Spotlight>
+          <SpotlightStage
+            ref={(el) => {
+              spotlightStageRef = el;
+              updateSpotlightSize();
+            }}
+            style={
+              spotlightSize()
+                ? {
+                    "--spotlight-width": `${spotlightSize()!.width}px`,
+                    "--spotlight-height": `${spotlightSize()!.height}px`,
+                  }
+                : undefined
+            }
+            data-hide-members={voice.spotlightHideMembers() ? "true" : "false"}
+          >
+            <TrackLoop tracks={spotlightTracks}>
+              {() => <ParticipantTile />}
+            </TrackLoop>
+          </SpotlightStage>
+
+          <Show
+            when={!voice.spotlightHideMembers() && otherTracks().length > 0}
+          >
+            <Filmstrip>
+              <TrackLoop tracks={otherTracks}>
                 {() => <ParticipantTile />}
               </TrackLoop>
-            </SpotlightStage>
-
-            <Show when={!hideMembers() && otherTracks().length > 0}>
-              <Filmstrip>
-                <TrackLoop tracks={otherTracks}>
-                  {() => <ParticipantTile />}
-                </TrackLoop>
-              </Filmstrip>
-            </Show>
-          </Spotlight>
-        </Show>
-      </spotlightControlsContext.Provider>
+            </Filmstrip>
+          </Show>
+        </Spotlight>
+      </Show>
     </maximizeContext.Provider>
   );
 }
@@ -393,7 +487,6 @@ function UserTile(props: { tileId: string; isMaximized: boolean }) {
   const track = useMaybeTrackRefContext();
   const { setMaximizedTileId } = useMaximize();
   const callFullscreen = useCallFullscreen();
-  const spotlightControls = useSpotlightControls();
 
   const isMicMuted = useIsMuted({
     participant,
@@ -421,6 +514,8 @@ function UserTile(props: { tileId: string; isMaximized: boolean }) {
         spotlighted: props.isMaximized,
       })}
       classList={{ "voice-tile": true, group: true }}
+      data-spotlighted={props.isMaximized}
+      onDblClick={() => toggleSpotlight()}
       use:floating={{
         userCard: {
           user: user().user!,
@@ -483,25 +578,6 @@ function UserTile(props: { tileId: string; isMaximized: boolean }) {
             </TileActionButton>
 
             <Show when={props.isMaximized}>
-              <Show when={spotlightControls.hasOtherTiles()}>
-                <TileActionButton
-                  type="button"
-                  title={
-                    spotlightControls.hideMembers()
-                      ? "Show members"
-                      : "Hide members"
-                  }
-                  onClick={(event) => {
-                    event.stopPropagation();
-                    spotlightControls.toggleHideMembers();
-                  }}
-                >
-                  <Symbol size={16}>
-                    {spotlightControls.hideMembers() ? "group" : "group_off"}
-                  </Symbol>
-                </TileActionButton>
-              </Show>
-
               <TileActionButton
                 type="button"
                 title={
@@ -557,7 +633,6 @@ function ScreenshareTile(props: { tileId: string; isMaximized: boolean }) {
   const voice = useVoice();
   const { setMaximizedTileId } = useMaximize();
   const callFullscreen = useCallFullscreen();
-  const spotlightControls = useSpotlightControls();
 
   const isMuted = useIsMuted({
     participant,
@@ -574,6 +649,8 @@ function ScreenshareTile(props: { tileId: string; isMaximized: boolean }) {
     <div
       class={tile({ spotlighted: props.isMaximized })}
       classList={{ "voice-tile": true, group: true }}
+      data-spotlighted={props.isMaximized}
+      onDblClick={() => toggleSpotlight()}
     >
       <MediaLayer>
         <Show
@@ -643,25 +720,6 @@ function ScreenshareTile(props: { tileId: string; isMaximized: boolean }) {
             </TileActionButton>
 
             <Show when={props.isMaximized}>
-              <Show when={spotlightControls.hasOtherTiles()}>
-                <TileActionButton
-                  type="button"
-                  title={
-                    spotlightControls.hideMembers()
-                      ? "Show members"
-                      : "Hide members"
-                  }
-                  onClick={(event) => {
-                    event.stopPropagation();
-                    spotlightControls.toggleHideMembers();
-                  }}
-                >
-                  <Symbol size={16}>
-                    {spotlightControls.hideMembers() ? "group" : "group_off"}
-                  </Symbol>
-                </TileActionButton>
-              </Show>
-
               <TileActionButton
                 type="button"
                 title={

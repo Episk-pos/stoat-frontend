@@ -1972,6 +1972,10 @@ msgstr ""
 msgid "Online"
 msgstr "Conectado"
 
+#: components/app/interface/settings/user/Privacy.tsx
+msgid "Only allow direct messages from friends"
+msgstr ""
+
 #: src/interface/navigation/servers/UserMenu.tsx
 msgid "Only mentions will notify you"
 msgstr ""
@@ -2071,6 +2075,10 @@ msgstr "Por favor, seleccione un método para autenticar su solicitud."
 
 #: components/modal/modals/ReportContent.tsx
 msgid "Please select a reason"
+msgstr ""
+
+#: components/app/interface/settings/UserSettings.tsx
+msgid "Privacy"
 msgstr ""
 
 #: components/auth/src/AuthPage.tsx
@@ -3035,6 +3043,10 @@ msgstr "Webhooks"
 #: components/auth/src/flows/FlowLogin.tsx
 msgid "Welcome!"
 msgstr "¡Bienvenido!"
+
+#: components/app/interface/settings/user/Privacy.tsx
+msgid "When enabled, only users on your friends list can send you direct messages."
+msgstr ""
 
 #: components/app/interface/settings/channel/permissions/ChannelPermissionsEditor.tsx
 msgid "Whether other users can edit these settings"

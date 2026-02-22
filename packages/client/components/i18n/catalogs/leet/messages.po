@@ -1972,6 +1972,10 @@ msgstr ""
 msgid "Online"
 msgstr "0NL1N3"
 
+#: components/app/interface/settings/user/Privacy.tsx
+msgid "Only allow direct messages from friends"
+msgstr ""
+
 #: src/interface/navigation/servers/UserMenu.tsx
 msgid "Only mentions will notify you"
 msgstr ""
@@ -2071,6 +2075,10 @@ msgstr "PL3453 53L3C7 4 M37H0D 70 4U7H3N71C473 Y0U2 23QU357."
 
 #: components/modal/modals/ReportContent.tsx
 msgid "Please select a reason"
+msgstr ""
+
+#: components/app/interface/settings/UserSettings.tsx
+msgid "Privacy"
 msgstr ""
 
 #: components/auth/src/AuthPage.tsx
@@ -3035,6 +3043,10 @@ msgstr "W38H00K5"
 #: components/auth/src/flows/FlowLogin.tsx
 msgid "Welcome!"
 msgstr "W3LC0M3!"
+
+#: components/app/interface/settings/user/Privacy.tsx
+msgid "When enabled, only users on your friends list can send you direct messages."
+msgstr ""
 
 #: components/app/interface/settings/channel/permissions/ChannelPermissionsEditor.tsx
 msgid "Whether other users can edit these settings"

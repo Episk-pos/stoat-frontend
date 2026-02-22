@@ -4,7 +4,8 @@
 # Pipeline Flow:
 #   build -> deploy
 #
-# On push to main: build and deploy to stoat.episkopos.community (S3 + CloudFront)
+# On push to main:    build and deploy to stoat.episkopos.community (S3 + CloudFront)
+# On push to staging: build and deploy to staging.stoat.episkopos.community (S3 + CloudFront)
 # =============================================================================
 
 stages:
@@ -55,6 +56,44 @@ build-frontend:
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
 
+# Build the frontend (staging)
+build-frontend-staging:
+  stage: build
+  image: node:${NODE_VERSION}-slim
+  before_script:
+    - apt-get update && apt-get install -y --no-install-recommends git ca-certificates && rm -rf /var/lib/apt/lists/*
+    - npm install -g pnpm@${PNPM_VERSION}
+  script:
+    - pnpm install --frozen-lockfile
+
+    # Build dependencies (stoat.js, livekit components, lingui plugins)
+    - pnpm --filter stoat.js run build
+    - pnpm --filter solid-livekit-components build
+    - pnpm --filter @lingui-solid/babel-plugin-lingui-macro build
+    - pnpm --filter @lingui-solid/babel-plugin-extract-messages build
+
+    # Compile i18n catalogs
+    - pnpm --filter client exec lingui compile --typescript
+
+    # Copy assets
+    - pnpm --filter client exec node scripts/copyAssets.mjs
+
+    # Build the client with staging env vars
+    - |
+      VITE_API_URL=https://staging.stoat.episkopos.community/api \
+      VITE_WS_URL=wss://staging.stoat.episkopos.community/events \
+      VITE_MEDIA_URL=https://staging.stoat.episkopos.community/autumn \
+      VITE_PROXY_URL=https://staging.stoat.episkopos.community/january \
+      VITE_EMOJI_URL=https://static.stoat.chat/emoji \
+      VITE_GIF_API_URL=https://staging.stoat.episkopos.community/gifbox \
+      pnpm --filter client exec vite build
+  artifacts:
+    paths:
+      - packages/client/dist/
+    expire_in: 1 hour
+  rules:
+    - if: $CI_COMMIT_BRANCH == "staging"
+
 # Deploy to S3 + invalidate CloudFront
 deploy-frontend:
   stage: deploy
@@ -87,4 +126,41 @@ deploy-frontend:
     - if: $CI_COMMIT_BRANCH == "main"
   needs:
     - job: build-frontend
+      artifacts: true
+
+# Deploy to S3 + invalidate CloudFront (staging)
+deploy-frontend-staging:
+  stage: deploy
+  image: amazon/aws-cli:2.15.0
+  variables:
+    AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID_STAGING
+    AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY_STAGING
+  script:
+    # Sync hashed assets with immutable cache headers (1 year)
+    - |
+      aws s3 sync packages/client/dist/ s3://$S3_BUCKET_STAGING/ \
+        --delete \
+        --cache-control "max-age=31536000,immutable" \
+        --exclude "index.html" \
+        --exclude "*.json" \
+        --exclude "*.txt"
+    # Upload index.html with no-cache (always revalidate)
+    - |
+      aws s3 cp packages/client/dist/index.html s3://$S3_BUCKET_STAGING/index.html \
+        --cache-control "no-cache,no-store,must-revalidate"
+    # Upload manifests with no-cache
+    - |
+      for f in packages/client/dist/*.json packages/client/dist/*.txt; do
+        [ -f "$f" ] && aws s3 cp "$f" s3://$S3_BUCKET_STAGING/$(basename "$f") \
+          --cache-control "no-cache,no-store,must-revalidate" || true
+      done
+    # Invalidate CloudFront cache
+    - |
+      aws cloudfront create-invalidation \
+        --distribution-id $CLOUDFRONT_DISTRIBUTION_ID_STAGING \
+        --paths "/*"
+  rules:
+    - if: $CI_COMMIT_BRANCH == "staging"
+  needs:
+    - job: build-frontend-staging
       artifacts: true

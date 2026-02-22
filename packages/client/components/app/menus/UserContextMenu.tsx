@@ -3,7 +3,7 @@ import { JSX, Match, Show, Switch } from "solid-js";
 import { Trans } from "@lingui-solid/solid/macro";
 import { useNavigate } from "@solidjs/router";
 import { Track } from "livekit-client";
-import { Channel, Message, ServerMember, User } from "stoat.js";
+import { Channel, Message, ServerMember, User, UserPermission } from "stoat.js";
 
 import { useClient } from "@revolt/client";
 import { useModals } from "@revolt/modal";
@@ -295,7 +295,14 @@ export function UserContextMenu(props: {
           <Trans>Mention</Trans>
         </ContextMenuButton>
       </Show>
-      <Show when={props.user.relationship === "Friend"}>
+      <Show
+        when={
+          props.user.relationship !== "Blocked" &&
+          props.user.relationship !== "BlockedOther" &&
+          !props.user.self &&
+          (props.user.permission & UserPermission.SendMessage) !== 0
+        }
+      >
         <ContextMenuButton icon={MdChat} onClick={openDm}>
           <Trans>Message</Trans>
         </ContextMenuButton>
@@ -303,7 +310,10 @@ export function UserContextMenu(props: {
 
       <Show
         when={
-          props.user.relationship === "Friend" ||
+          (props.user.relationship !== "Blocked" &&
+            props.user.relationship !== "BlockedOther" &&
+            !props.user.self &&
+            (props.user.permission & UserPermission.SendMessage) !== 0) ||
           (props.channel &&
             (props.channel.type === "DirectMessage" ||
               props.channel.type === "TextChannel"))

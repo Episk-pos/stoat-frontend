@@ -52,7 +52,13 @@ export function CreateGroupModal(
 
   const users = createMemo(() =>
     client()
-      .users.filter((user) => user.relationship === "Friend")
+      .users.filter(
+        (user) =>
+          user.relationship !== "Blocked" &&
+          user.relationship !== "BlockedOther" &&
+          user.relationship !== "User" &&
+          !user.self,
+      )
       .filter((user) =>
         user.displayName.toLowerCase().includes(filterLowercase()),
       )

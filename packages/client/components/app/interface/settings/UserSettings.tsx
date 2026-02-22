@@ -20,6 +20,7 @@ import MdPalette from "@material-design-icons/svg/outlined/palette.svg?component
 import MdRateReview from "@material-design-icons/svg/outlined/rate_review.svg?component-solid";
 import MdScience from "@material-design-icons/svg/outlined/science.svg?component-solid";
 import MdSmartToy from "@material-design-icons/svg/outlined/smart_toy.svg?component-solid";
+import MdShield from "@material-design-icons/svg/outlined/shield.svg?component-solid";
 import MdVerifiedUser from "@material-design-icons/svg/outlined/verified_user.svg?component-solid";
 import MdWorkspacePremium from "@material-design-icons/svg/outlined/workspace_premium.svg?component-solid";
 
@@ -36,6 +37,7 @@ import { AccountCard } from "./user/_AccountCard";
 import { AppearanceMenu } from "./user/appearance";
 import { MyBots, ViewBot } from "./user/bots";
 import { EditProfile } from "./user/profile";
+import PrivacySettings from "./user/Privacy";
 import { EditSubscription } from "./user/subscriptions";
 import { VoiceSettings } from "./user/voice/VoiceSettings";
 
@@ -81,6 +83,8 @@ const Config: SettingsConfiguration<{ server: Server }> = {
         return <EditProfile />;
       case "sessions":
         return <Sessions />;
+      case "privacy":
+        return <PrivacySettings />;
       case "bots":
         return <MyBots />;
       case "language":
@@ -165,6 +169,11 @@ const Config: SettingsConfiguration<{ server: Server }> = {
               id: "sessions",
               icon: <MdVerifiedUser {...iconSize(20)} />,
               title: <Trans>Sessions</Trans>,
+            },
+            {
+              id: "privacy",
+              icon: <MdShield {...iconSize(20)} />,
+              title: <Trans>Privacy</Trans>,
             },
           ],
         },

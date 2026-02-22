@@ -135,6 +135,7 @@ deploy-frontend-staging:
   variables:
     AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID_STAGING
     AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY_STAGING
+    AWS_DEFAULT_REGION: us-east-1
   script:
     # Sync hashed assets with immutable cache headers (1 year)
     - |

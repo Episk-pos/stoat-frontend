@@ -229,7 +229,7 @@ export function ChannelHeader(props: Props) {
         </IconButton>
       </Show>
 
-      <Show when={props.sidebarState && props.channel.type !== "SavedMessages"}>
+      <Show when={props.sidebarState && props.channel.type !== "SavedMessages" && props.channel.type !== "DirectMessage"}>
         <IconButton
           onPress={() => {
             if (props.sidebarState!().state === "default") {

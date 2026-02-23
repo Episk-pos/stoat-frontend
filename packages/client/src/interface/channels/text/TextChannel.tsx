@@ -153,7 +153,12 @@ export function TextChannel(props: ChannelPageProps) {
   createEffect(
     on(
       () => props.channel.id,
-      () => setSidebarState({ state: "default" }),
+      () => {
+        setSidebarState({ state: "default" });
+        if (props.channel.type === "DirectMessage") {
+          state.layout.setSectionState(LAYOUT_SECTIONS.MEMBER_SIDEBAR, false, true);
+        }
+      },
     ),
   );
 

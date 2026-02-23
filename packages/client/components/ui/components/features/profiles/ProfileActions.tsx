@@ -32,6 +32,7 @@ export function ProfileActions(props: {
    */
   function openDm() {
     props.user.openDM().then((channel) => navigate(channel.url));
+    dismissFloatingElements();
   }
 
   /**

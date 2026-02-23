@@ -22,6 +22,7 @@ import {
 } from "@revolt/ui";
 import { Symbol } from "@revolt/ui/components/utils/Symbol";
 
+import MdCall from "@material-design-icons/svg/outlined/call.svg?component-solid";
 import MdGroup from "@material-design-icons/svg/outlined/group.svg?component-solid";
 import MdPersonAdd from "@material-design-icons/svg/outlined/person_add.svg?component-solid";
 import MdSettings from "@material-design-icons/svg/outlined/settings.svg?component-solid";
@@ -227,7 +228,7 @@ export function ChannelHeader(props: Props) {
           }}
           onPress={() => voice.connect(props.channel)}
         >
-          <Symbol>call</Symbol>
+          <MdCall />
         </IconButton>
       </Show>
 

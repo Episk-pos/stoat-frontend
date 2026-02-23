@@ -8,6 +8,7 @@ import { styled } from "styled-system/jsx";
 import { useClient } from "@revolt/client";
 import { TextWithEmoji } from "@revolt/markdown";
 import { useModals } from "@revolt/modal";
+import { useVoice } from "@revolt/rtc";
 import { useState } from "@revolt/state";
 import { LAYOUT_SECTIONS } from "@revolt/state/stores/Layout";
 import {
@@ -45,6 +46,11 @@ interface Props {
    * Set sidebar state
    */
   setSidebarState?: Setter<SidebarState>;
+
+  /**
+   * Whether the voice layout is currently active (call in progress)
+   */
+  showVoiceLayout?: Accessor<boolean>;
 }
 
 /**
@@ -55,6 +61,7 @@ export function ChannelHeader(props: Props) {
   const client = useClient();
   const { t } = useLingui();
   const state = useState();
+  const voice = useVoice();
 
   const searchValue = () => {
     if (!props.sidebarState) return null;
@@ -203,7 +210,29 @@ export function ChannelHeader(props: Props) {
         </IconButton>
       </Show>
 
-      <Show when={props.sidebarState && props.channel.isVoice}>
+      {/* Start Voice Call button — shown for DMs/Groups when no call is active */}
+      <Show
+        when={
+          props.channel.isVoice &&
+          !props.showVoiceLayout?.() &&
+          (props.channel.type === "DirectMessage" || props.channel.type === "Group")
+        }
+      >
+        <IconButton
+          use:floating={{
+            tooltip: {
+              placement: "bottom",
+              content: t`Start voice call`,
+            },
+          }}
+          onPress={() => voice.connect(props.channel)}
+        >
+          <Symbol>call</Symbol>
+        </IconButton>
+      </Show>
+
+      {/* View Chat sidebar toggle — only shown when voice layout is active */}
+      <Show when={props.sidebarState && props.showVoiceLayout?.()}>
         <IconButton
           use:floating={{
             tooltip: {

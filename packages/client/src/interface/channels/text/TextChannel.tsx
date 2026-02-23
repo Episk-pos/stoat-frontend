@@ -179,6 +179,15 @@ export function TextChannel(props: ChannelPageProps) {
     ),
   );
 
+  // Reset voice_chat sidebar when voice layout turns off (e.g. call ends)
+  createEffect(
+    on(showVoiceLayout, (isVoice) => {
+      if (!isVoice && sidebarState().state === "voice_chat") {
+        setSidebarState({ state: "default" });
+      }
+    }),
+  );
+
   return (
     <>
       <Header placement="primary">

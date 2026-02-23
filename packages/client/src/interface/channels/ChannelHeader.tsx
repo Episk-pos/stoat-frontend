@@ -129,7 +129,7 @@ export function ChannelHeader(props: Props) {
           <HeaderIcon>
             <Symbol>alternate_email</Symbol>
           </HeaderIcon>
-          <TextWithEmoji content={props.channel.recipient?.username} />
+          <TextWithEmoji content={props.channel.recipient?.displayName} />
           <UserStatus status={props.channel.recipient?.presence} size="8px" />
         </Match>
         <Match when={props.channel.type === "SavedMessages"}>

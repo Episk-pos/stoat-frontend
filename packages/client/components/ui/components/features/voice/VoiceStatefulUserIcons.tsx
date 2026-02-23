@@ -47,7 +47,7 @@ export function VoiceStatefulUserIcons(props: {
         <Symbol size={16}>headset_off</Symbol>
       </Show>
       <Show when={props.camera}>
-        <Symbol size={16}>camera_video</Symbol>
+        <Symbol size={16}>videocam</Symbol>
       </Show>
       <Show when={props.screenshare}>
         <Symbol size={16}>screen_share</Symbol>

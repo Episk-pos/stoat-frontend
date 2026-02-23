@@ -110,7 +110,7 @@ export function VoiceCallCardActions(props: { size: "xs" | "sm" }) {
           onPress={() => voice.toggleCamera()}
         >
           <Show when={voice.video()} fallback={<Symbol>videocam_off</Symbol>}>
-            <Symbol>camera_video</Symbol>
+            <Symbol>videocam</Symbol>
           </Show>
         </IconButton>
         <Show when={voice.video()}>

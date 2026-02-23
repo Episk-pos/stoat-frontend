@@ -20,6 +20,7 @@ import {
   UserStatus,
   typography,
 } from "@revolt/ui";
+import { Tooltip } from "@revolt/ui/components/floating";
 import { Symbol } from "@revolt/ui/components/utils/Symbol";
 
 import MdCall from "@material-design-icons/svg/outlined/call.svg?component-solid";
@@ -219,17 +220,11 @@ export function ChannelHeader(props: Props) {
           (props.channel.type === "DirectMessage" || props.channel.type === "Group")
         }
       >
-        <IconButton
-          use:floating={{
-            tooltip: {
-              placement: "bottom",
-              content: t`Start voice call`,
-            },
-          }}
-          onPress={() => voice.connect(props.channel)}
-        >
-          <MdCall />
-        </IconButton>
+        <Tooltip placement="bottom" content={t`Start voice call`}>
+          <IconButton onPress={() => voice.connect(props.channel)}>
+            <MdCall />
+          </IconButton>
+        </Tooltip>
       </Show>
 
       {/* View Chat sidebar toggle — only shown when voice layout is active */}

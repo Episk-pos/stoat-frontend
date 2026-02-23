@@ -22,7 +22,7 @@ export function VoiceCallCardPreview(props: { channel: Channel }) {
 
   function subtext() {
     const names = users()
-      .map((user) => user?.username)
+      .map((user) => user?.displayName)
       .filter((x) => x);
 
     return names.length ? t`With ${names.join(", ")}` : t`Start the call`;

@@ -99,6 +99,10 @@ build-frontend-staging:
 deploy-frontend:
   stage: deploy
   image: amazon/aws-cli:2.15.0
+  variables:
+    AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID_PRODUCTION
+    AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY_PRODUCTION
+    AWS_DEFAULT_REGION: us-east-1
   script:
     # Sync hashed assets with immutable cache headers (1 year)
     - |

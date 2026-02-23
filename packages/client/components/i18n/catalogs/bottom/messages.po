@@ -1737,7 +1737,7 @@ msgstr "💖✨✨🥺,,👉👈💖💖,👉👈💖💖✨👉👈💖💖✨�
 msgid "Message"
 msgstr "💖✨✨🥺,,👉👈💖💖,👉👈💖💖✨🥺👉👈💖💖✨🥺👉👈💖✨✨✨✨🥺,,👉👈💖💖,,,👉👈💖💖,👉👈"
 
-#. placeholder {0}: props.channel.recipient?.username
+#. placeholder {0}: props.channel.recipient?.displayName
 #. placeholder {0}: props.channel.name
 #: src/interface/channels/text/Composition.tsx
 #: src/interface/channels/text/Composition.tsx
@@ -2555,6 +2555,10 @@ msgstr ""
 
 #: components/ui/components/features/voice/callCard/VoiceCallCardPreview.tsx
 msgid "Start the call"
+msgstr ""
+
+#: src/interface/channels/ChannelHeader.tsx
+msgid "Start voice call"
 msgstr ""
 
 #: components/app/interface/settings/user/Native.tsx

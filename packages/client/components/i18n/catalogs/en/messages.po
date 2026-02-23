@@ -1737,7 +1737,7 @@ msgstr "Mentions Only"
 msgid "Message"
 msgstr "Message"
 
-#. placeholder {0}: props.channel.recipient?.username
+#. placeholder {0}: props.channel.recipient?.displayName
 #. placeholder {0}: props.channel.name
 #: src/interface/channels/text/Composition.tsx
 #: src/interface/channels/text/Composition.tsx
@@ -2556,6 +2556,10 @@ msgstr "Spellchecker"
 #: components/ui/components/features/voice/callCard/VoiceCallCardPreview.tsx
 msgid "Start the call"
 msgstr "Start the call"
+
+#: src/interface/channels/ChannelHeader.tsx
+msgid "Start voice call"
+msgstr "Start voice call"
 
 #: components/app/interface/settings/user/Native.tsx
 msgid "Start with Computer"

@@ -2557,6 +2557,10 @@ msgstr "Spellchecker"
 msgid "Start the call"
 msgstr "Start the call"
 
+#: src/interface/channels/ChannelHeader.tsx
+msgid "Start voice call"
+msgstr "Start voice call"
+
 #: components/app/interface/settings/user/Native.tsx
 msgid "Start with Computer"
 msgstr "Start with Computer"

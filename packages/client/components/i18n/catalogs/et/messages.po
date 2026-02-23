@@ -2557,6 +2557,10 @@ msgstr ""
 msgid "Start the call"
 msgstr ""
 
+#: src/interface/channels/ChannelHeader.tsx
+msgid "Start voice call"
+msgstr ""
+
 #: components/app/interface/settings/user/Native.tsx
 msgid "Start with Computer"
 msgstr ""

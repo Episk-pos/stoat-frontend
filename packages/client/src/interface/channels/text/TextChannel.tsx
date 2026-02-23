@@ -16,6 +16,7 @@ import { DraftMessages, Messages } from "@revolt/app";
 import { useClient } from "@revolt/client";
 import { Keybind, KeybindAction, createKeybind } from "@revolt/keybinds";
 import { useNavigate, useSmartParams } from "@revolt/routing";
+import { useVoice } from "@revolt/rtc";
 import { useState } from "@revolt/state";
 import { LAYOUT_SECTIONS } from "@revolt/state/stores/Layout";
 import {
@@ -60,6 +61,22 @@ export type SidebarState =
 export function TextChannel(props: ChannelPageProps) {
   const state = useState();
   const client = useClient();
+  const voice = useVoice();
+
+  /**
+   * Whether to show the voice layout (call card in main area, messages in sidebar).
+   * For DMs/Groups: only when actively in a call for this channel OR others are in the call.
+   * For server voice channels: always (original behavior).
+   */
+  const showVoiceLayout = () => {
+    if (!props.channel.isVoice) return false;
+    // Server voice channels always use voice layout
+    if (props.channel.type === "TextChannel") return true;
+    // DMs/Groups: voice layout only when a call is active
+    const inCall = voice.channel()?.id === props.channel.id;
+    const hasParticipants = props.channel.voiceParticipants.size > 0;
+    return inCall || hasParticipants;
+  };
 
   // Last unread message id
   const [lastId, setLastId] = createSignal<string>();
@@ -162,6 +179,15 @@ export function TextChannel(props: ChannelPageProps) {
     ),
   );
 
+  // Reset voice_chat sidebar when voice layout turns off (e.g. call ends)
+  createEffect(
+    on(showVoiceLayout, (isVoice) => {
+      if (!isVoice && sidebarState().state === "voice_chat") {
+        setSidebarState({ state: "default" });
+      }
+    }),
+  );
+
   return (
     <>
       <Header placement="primary">
@@ -169,15 +195,16 @@ export function TextChannel(props: ChannelPageProps) {
           channel={props.channel}
           sidebarState={sidebarState}
           setSidebarState={setSidebarState}
+          showVoiceLayout={showVoiceLayout}
         />
       </Header>
       <Content>
         <main class={main()}>
-          <Show when={props.channel.isVoice}>
+          <Show when={showVoiceLayout()}>
             <VoiceChannelCallCardMount channel={props.channel} />
           </Show>
 
-          <Show when={!props.channel.isVoice}>
+          <Show when={!showVoiceLayout()}>
             <BelowFloatingHeader>
               <div>
                 <NewMessages
@@ -228,7 +255,7 @@ export function TextChannel(props: ChannelPageProps) {
         >
           <Show
             when={
-              props.channel.isVoice && sidebarState().state === "voice_chat"
+              showVoiceLayout() && sidebarState().state === "voice_chat"
             }
             fallback={
               <div

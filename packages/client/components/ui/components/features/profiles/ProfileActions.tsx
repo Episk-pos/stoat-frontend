@@ -25,13 +25,16 @@ export function ProfileActions(props: {
   member?: ServerMember;
 }) {
   const navigate = useNavigate();
-  const { openModal } = useModals();
+  const modals = useModals();
+  const { openModal } = modals;
 
   /**
    * Open direct message channel
    */
   function openDm() {
     props.user.openDM().then((channel) => navigate(channel.url));
+    dismissFloatingElements();
+    modals.pop();
   }
 
   /**

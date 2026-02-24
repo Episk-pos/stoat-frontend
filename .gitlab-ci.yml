@@ -78,15 +78,14 @@ build-frontend-staging:
     # Copy assets
     - pnpm --filter client exec node scripts/copyAssets.mjs
 
-    # Build the client pointing at production backend
-    # Staging frontend tests UI changes against production data
+    # Build the client pointing at staging backend
     - |
-      VITE_API_URL=https://stoat.episkopos.community/api \
-      VITE_WS_URL=wss://stoat.episkopos.community/events \
-      VITE_MEDIA_URL=https://stoat.episkopos.community/autumn \
-      VITE_PROXY_URL=https://stoat.episkopos.community/january \
+      VITE_API_URL=https://staging.stoat.episkopos.community/api \
+      VITE_WS_URL=wss://staging.stoat.episkopos.community/events \
+      VITE_MEDIA_URL=https://staging.stoat.episkopos.community/autumn \
+      VITE_PROXY_URL=https://staging.stoat.episkopos.community/january \
       VITE_EMOJI_URL=https://static.stoat.chat/emoji \
-      VITE_GIF_API_URL=https://stoat.episkopos.community/gifbox \
+      VITE_GIF_API_URL=https://staging.stoat.episkopos.community/gifbox \
       pnpm --filter client exec vite build
   artifacts:
     paths:

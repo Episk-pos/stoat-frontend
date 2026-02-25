@@ -272,6 +272,10 @@ msgstr ""
 msgid "Acknowledge"
 msgstr ""
 
+#: components/app/interface/settings/server/events/ListServerEvents.tsx
+msgid "Active"
+msgstr ""
+
 #: components/modal/modals/AddMembersToGroup.tsx
 #: components/modal/modals/AddBot.tsx
 msgid "Add"
@@ -397,6 +401,8 @@ msgstr "প্রোফাইলের ছবি"
 #: src/interface/channels/AgeGate.tsx
 #: src/interface/channels/AgeGate.tsx
 #: components/modal/modals/MFAFlow.tsx
+#: components/modal/modals/CreateScheduledEvent.tsx
+#: components/modal/modals/CreateScheduledEvent.tsx
 #: components/auth/src/flows/FlowLogin.tsx
 #: components/auth/src/flows/FlowCreate.tsx
 #: components/auth/src/flows/FlowCheck.tsx
@@ -512,6 +518,8 @@ msgstr ""
 #: components/modal/modals/DeleteChannel.tsx
 #: components/modal/modals/DeleteCategory.tsx
 #: components/modal/modals/DeleteBot.tsx
+#: components/modal/modals/CreateScheduledEvent.tsx
+#: components/modal/modals/CreateScheduledEvent.tsx
 #: components/modal/modals/BanNonMember.tsx
 #: components/modal/modals/BanMember.tsx
 #: components/modal/modals/AddBot.tsx
@@ -525,6 +533,10 @@ msgstr "অনুরোধ বাতিল করুন"
 
 #: components/app/menus/DraftMessageContextMenu.tsx
 msgid "Cancel message"
+msgstr ""
+
+#: components/app/interface/settings/server/events/ListServerEvents.tsx
+msgid "Cancelled"
 msgstr ""
 
 #: components/app/interface/settings/user/Account.tsx
@@ -583,6 +595,10 @@ msgstr ""
 
 #: components/modal/modals/Changelog.tsx
 msgid "Changelog"
+msgstr ""
+
+#: components/modal/modals/CreateScheduledEvent.tsx
+msgid "Channel"
 msgstr ""
 
 #: components/app/interface/settings/channel/Overview.tsx
@@ -680,6 +696,10 @@ msgstr ""
 
 #: components/modal/modals/JoinServer.tsx
 msgid "Code"
+msgstr ""
+
+#: components/app/interface/settings/server/events/ListServerEvents.tsx
+msgid "Completed"
 msgstr ""
 
 #: components/app/interface/settings/user/Account.tsx
@@ -869,6 +889,13 @@ msgstr "বিভাগ তৈরি করুন"
 msgid "Create channel"
 msgstr "চ্যানেল তৈরি করুন"
 
+#: components/modal/modals/CreateScheduledEvent.tsx
+#: components/modal/modals/CreateScheduledEvent.tsx
+#: components/modal/modals/CreateScheduledEvent.tsx
+#: components/app/interface/settings/server/events/ListServerEvents.tsx
+msgid "Create Event"
+msgstr ""
+
 #: components/app/menus/ServerContextMenu.tsx
 #: components/app/menus/ChannelContextMenu.tsx
 #: components/app/interface/settings/server/invites/ListServerInvites.tsx
@@ -904,6 +931,10 @@ msgstr ""
 msgid "Created <0/>"
 msgstr ""
 
+#: components/modal/modals/CreateScheduledEvent.tsx
+msgid "Creating event..."
+msgstr ""
+
 #: components/modal/modals/EditUsername.tsx
 #: components/modal/modals/EditPassword.tsx
 #: components/modal/modals/EditEmail.tsx
@@ -933,6 +964,10 @@ msgstr ""
 #. placeholder {0}: err.location
 #: components/i18n/errors.ts
 msgid "Database error, please contact support. ({0})"
+msgstr ""
+
+#: components/app/interface/settings/server/events/ListServerEvents.tsx
+msgid "Date"
 msgstr ""
 
 #: components/app/interface/settings/channel/permissions/ChannelPermissionsEditor.tsx
@@ -998,6 +1033,10 @@ msgstr "চ্যানেল মুছুন"
 msgid "Delete Channel"
 msgstr ""
 
+#: components/app/interface/settings/server/events/ListServerEvents.tsx
+msgid "Delete Event"
+msgstr ""
+
 #: components/app/interface/settings/server/invites/ListServerInvites.tsx
 msgid "Delete Invite"
 msgstr ""
@@ -1014,6 +1053,11 @@ msgstr "রোল মুছে ফেলুন"
 
 #: components/app/interface/settings/ServerSettings.tsx
 msgid "Delete Server"
+msgstr ""
+
+#: components/modal/modals/CreateScheduledEvent.tsx
+#: components/modal/modals/CreateScheduledEvent.tsx
+msgid "Description"
 msgstr ""
 
 #. placeholder {0}: props.invite.username
@@ -1121,6 +1165,12 @@ msgstr ""
 msgid "Edit channel-specific role and default permissions"
 msgstr ""
 
+#: components/modal/modals/CreateScheduledEvent.tsx
+#: components/modal/modals/CreateScheduledEvent.tsx
+#: components/app/interface/settings/server/events/ListServerEvents.tsx
+msgid "Edit Event"
+msgstr ""
+
 #: components/app/interface/settings/user/profile/EditProfile.tsx
 msgid "Edit Global Profile"
 msgstr ""
@@ -1197,6 +1247,14 @@ msgstr "ডেস্কটপ নোটিফিকেশন চালু কর
 msgid "Enable transparency glass/blur effects (slow on older machines)"
 msgstr ""
 
+#: components/modal/modals/CreateScheduledEvent.tsx
+msgid "End Time"
+msgstr ""
+
+#: components/modal/modals/CreateScheduledEvent.tsx
+msgid "End Time (optional)"
+msgstr ""
+
 #: components/modal/modals/RenameSession.tsx
 msgid "Enter a new name for this session"
 msgstr ""
@@ -1228,9 +1286,30 @@ msgstr ""
 msgid "Enter your preferred username."
 msgstr "আপনার পছন্দের নাম লিখুন।"
 
+#: components/modal/modals/CreateScheduledEvent.tsx
+msgid "Event Details"
+msgstr ""
+
+#: components/modal/modals/CreateScheduledEvent.tsx
+msgid "Event Name"
+msgstr ""
+
+#: components/app/interface/settings/ServerSettings.tsx
+msgid "Events"
+msgstr ""
+
+#: components/app/interface/settings/server/events/ListServerEvents.tsx
+msgid "External"
+msgstr ""
+
 #: components/modal/modals/LinkWarning.tsx
 msgid "External links can be dangerous!"
 msgstr "বাহ্যিক লিঙ্ক বিপজ্জনক হতে পারে!"
+
+#: components/modal/modals/CreateScheduledEvent.tsx
+#: components/modal/modals/CreateScheduledEvent.tsx
+msgid "External Location"
+msgstr ""
 
 #: components/modal/modals/ReportContent.tsx
 msgid "Extortion or blackmail"
@@ -1334,6 +1413,10 @@ msgstr ""
 msgid "Give us some detail"
 msgstr ""
 
+#: components/modal/modals/CreateScheduledEvent.tsx
+msgid "Give your event a name"
+msgstr ""
+
 #: components/auth/src/flows/FlowVerify.tsx
 #: components/auth/src/flows/FlowVerify.tsx
 #: components/auth/src/flows/FlowReset.tsx
@@ -1412,6 +1495,14 @@ msgstr ""
 #: src/interface/navigation/channels/HomeSidebar.tsx
 msgid "Home"
 msgstr "বাড়ি"
+
+#: components/modal/modals/CreateScheduledEvent.tsx
+msgid "Host the event in a voice channel on your server"
+msgstr ""
+
+#: components/modal/modals/CreateScheduledEvent.tsx
+msgid "Host the event somewhere outside of your server"
+msgstr ""
 
 #: src/interface/channels/AgeGate.tsx
 msgid "I confirm that I am at least 18 years old."
@@ -1610,6 +1701,11 @@ msgstr ""
 msgid "Load file ({0})"
 msgstr ""
 
+#: components/modal/modals/CreateScheduledEvent.tsx
+#: components/modal/modals/CreateScheduledEvent.tsx
+msgid "Location"
+msgstr ""
+
 #: components/auth/src/flows/FlowHome.tsx
 msgid "Log In"
 msgstr ""
@@ -1670,6 +1766,10 @@ msgstr "সার্ভার পরিচালনা করুন"
 #: components/app/interface/settings/channel/permissions/ChannelPermissionsEditor.tsx
 msgid "Manage Webhooks"
 msgstr "ওয়েবহুক (Webhook) পরিচালনা করুন"
+
+#: components/app/interface/settings/ServerSettings.tsx
+msgid "Management"
+msgstr ""
 
 #: components/modal/modals/ChannelToggleMature.tsx
 msgid "Mark as mature"
@@ -1737,7 +1837,7 @@ msgstr "শুধুমাত্র পিং করা মেসেজগুল
 msgid "Message"
 msgstr "মেসেজ করুন"
 
-#. placeholder {0}: props.channel.recipient?.username
+#. placeholder {0}: props.channel.recipient?.displayName
 #. placeholder {0}: props.channel.name
 #: src/interface/channels/text/Composition.tsx
 #: src/interface/channels/text/Composition.tsx
@@ -1858,7 +1958,9 @@ msgid "My Bots"
 msgstr "আমার সমস্ত বট অ্যাপ্লিকেশনগুলো"
 
 #: components/modal/modals/RenameSession.tsx
+#: components/modal/modals/CreateScheduledEvent.tsx
 #: components/modal/modals/CreateCategory.tsx
+#: components/app/interface/settings/server/events/ListServerEvents.tsx
 msgid "Name"
 msgstr ""
 
@@ -1888,12 +1990,20 @@ msgstr ""
 msgid "New to the server"
 msgstr ""
 
+#: components/modal/modals/CreateScheduledEvent.tsx
+msgid "Next"
+msgstr ""
+
 #: components/modal/modals/ServerIdentity.tsx
 msgid "Nickname"
 msgstr "ডাকনাম"
 
 #: components/app/interface/settings/channel/permissions/ChannelPermissionsOverview.tsx
 msgid "No permissions set yet"
+msgstr ""
+
+#: components/app/interface/settings/server/events/ListServerEvents.tsx
+msgid "No scheduled events yet."
 msgstr ""
 
 #: src/interface/Friends.tsx
@@ -2287,6 +2397,14 @@ msgstr ""
 msgid "Revenge or underage pornography"
 msgstr ""
 
+#: components/modal/modals/CreateScheduledEvent.tsx
+msgid "Review Changes"
+msgstr ""
+
+#: components/modal/modals/CreateScheduledEvent.tsx
+msgid "Review Event"
+msgstr ""
+
 #: components/modal/modals/PolicyChange.tsx
 msgid "Review policy changes"
 msgstr ""
@@ -2315,6 +2433,10 @@ msgstr "রোলগুলো"
 msgid "Save"
 msgstr "সেভ করুন"
 
+#: components/modal/modals/CreateScheduledEvent.tsx
+msgid "Save Changes"
+msgstr ""
+
 #: components/app/menus/MessageContextMenu.tsx
 msgid "Save file"
 msgstr ""
@@ -2333,6 +2455,10 @@ msgstr "সেভ করা নোটসগুলো"
 msgid "Scams or fraud"
 msgstr ""
 
+#: components/app/interface/settings/server/events/ListServerEvents.tsx
+msgid "Scheduled"
+msgstr ""
+
 #: components/modal/modals/AddBot.tsx
 msgid "Search for groups..."
 msgstr ""
@@ -2345,6 +2471,10 @@ msgstr ""
 #: components/app/interface/settings/user/Feedback.tsx
 #~ msgid "See what we're currently working on."
 #~ msgstr ""
+
+#: components/modal/modals/CreateScheduledEvent.tsx
+msgid "Select a channel"
+msgstr ""
 
 #: components/app/interface/settings/user/voice/VoiceInputOptions.tsx
 msgid "Select audio input"
@@ -2553,8 +2683,17 @@ msgstr "বলুন"
 msgid "Spellchecker"
 msgstr ""
 
+#: components/app/interface/settings/server/events/ListServerEvents.tsx
+msgid "Stage"
+msgstr ""
+
 #: components/ui/components/features/voice/callCard/VoiceCallCardPreview.tsx
 msgid "Start the call"
+msgstr ""
+
+#: components/modal/modals/CreateScheduledEvent.tsx
+#: components/modal/modals/CreateScheduledEvent.tsx
+msgid "Start Time"
 msgstr ""
 
 #: src/interface/channels/ChannelHeader.tsx
@@ -2566,6 +2705,7 @@ msgid "Start with Computer"
 msgstr ""
 
 #: components/ui/components/features/profiles/ProfileStatus.tsx
+#: components/app/interface/settings/server/events/ListServerEvents.tsx
 msgid "Status"
 msgstr ""
 
@@ -2792,6 +2932,11 @@ msgstr ""
 msgid "Trending GIFs"
 msgstr ""
 
+#: components/modal/modals/CreateScheduledEvent.tsx
+#: components/app/interface/settings/server/events/ListServerEvents.tsx
+msgid "Type"
+msgstr ""
+
 #: components/app/menus/UserContextMenu.tsx
 msgid "Unblock user"
 msgstr "ইউজারকে আনব্লক করুন"
@@ -2803,6 +2948,10 @@ msgstr ""
 
 #: components/ui/components/features/voice/callCard/VoiceCallCardActions.tsx
 msgid "Unknown camera"
+msgstr ""
+
+#: components/modal/modals/CreateScheduledEvent.tsx
+msgid "Unknown Channel"
 msgstr ""
 
 #: components/ui/components/features/voice/callCard/VoiceCallCardActions.tsx
@@ -2990,10 +3139,14 @@ msgid "Viewing older messages"
 msgstr "আপনি পুরনো মেসেজগুলো দেখছেন"
 
 #: components/app/interface/settings/UserSettings.tsx
+#: components/app/interface/settings/server/events/ListServerEvents.tsx
 #: components/app/interface/settings/channel/permissions/ChannelPermissionsEditor.tsx
 msgid "Voice"
 msgstr ""
 
+#: components/modal/modals/CreateScheduledEvent.tsx
+#: components/modal/modals/CreateScheduledEvent.tsx
+#: components/modal/modals/CreateScheduledEvent.tsx
 #: components/modal/modals/CreateChannel.tsx
 msgid "Voice Channel"
 msgstr "ভয়েস চ্যানেল"
@@ -3048,8 +3201,20 @@ msgstr "ওয়েবহুকগুলি"
 msgid "Welcome!"
 msgstr "আপনাকে স্বাগত জানাই!"
 
+#: components/modal/modals/CreateScheduledEvent.tsx
+msgid "What is this event about?"
+msgstr ""
+
+#: components/modal/modals/CreateScheduledEvent.tsx
+msgid "What type of event would you like to create?"
+msgstr ""
+
 #: components/app/interface/settings/user/Privacy.tsx
 msgid "When enabled, only users on your friends list can send you direct messages."
+msgstr ""
+
+#: components/modal/modals/CreateScheduledEvent.tsx
+msgid "Where is this event taking place?"
 msgstr ""
 
 #: components/app/interface/settings/channel/permissions/ChannelPermissionsEditor.tsx

@@ -41,6 +41,8 @@ import { Discover } from "./interface/Discover";
 import E2EPage from "./interface/E2E";
 import { Friends } from "./interface/Friends";
 import { HomePage } from "./interface/Home";
+import { ServerEventDetail } from "./interface/ServerEventDetail";
+import { ServerEvents } from "./interface/ServerEvents";
 import { ServerHome } from "./interface/ServerHome";
 import { ChannelPage } from "./interface/channels/ChannelPage";
 import "./serviceWorkerInterface";
@@ -163,6 +165,8 @@ render(
           <Route path="/friends" component={Friends} />
           <Route path="/server/:server/*">
             <Route path="/channel/:channel/*" component={ChannelPage} />
+            <Route path="/events" component={ServerEvents} />
+            <Route path="/events/:event" component={ServerEventDetail} />
             <Route path="/*" component={ServerHome} />
           </Route>
           <Route path="/channel/:channel/*" component={ChannelPage} />

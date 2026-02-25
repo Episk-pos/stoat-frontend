@@ -1,4 +1,5 @@
 import {
+  BiSolidCalendarEvent,
   BiSolidEnvelope,
   BiSolidFlagAlt,
   BiSolidGroup,
@@ -21,6 +22,7 @@ import { ChannelPermissionsEditor } from "./channel/permissions/ChannelPermissio
 import Overview from "./server/Overview";
 import { ListServerBans } from "./server/bans/ListBans";
 import { EmojiList } from "./server/emojis/EmojiList";
+import { ListServerEvents } from "./server/events/ListServerEvents";
 import { ListServerInvites } from "./server/invites/ListServerInvites";
 import { ServerRoleEditor } from "./server/roles/ServerRoleEditor";
 import { ServerRoleOverview } from "./server/roles/ServerRoleOverview";
@@ -74,6 +76,8 @@ const Config: SettingsConfiguration<Server> = {
         return <EmojiList server={server} />;
       case "roles":
         return <ServerRoleOverview context={server} />;
+      case "events":
+        return <ListServerEvents server={server} />;
       case "invites":
         return <ListServerInvites server={server} />;
       case "bans":
@@ -103,6 +107,17 @@ const Config: SettingsConfiguration<Server> = {
               id: "overview",
               icon: <BiSolidInfoCircle size={20} />,
               title: <Trans>Overview</Trans>,
+            },
+          ],
+        },
+        {
+          hidden: !server.havePermission("ManageServer"),
+          title: <Trans>Management</Trans>,
+          entries: [
+            {
+              id: "events",
+              icon: <BiSolidCalendarEvent size={20} />,
+              title: <Trans>Events</Trans>,
             },
           ],
         },

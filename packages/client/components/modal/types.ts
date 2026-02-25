@@ -317,4 +317,7 @@ export type Modals =
     }
   | {
       type: "import_theme";
+    }
+  | {
+      type: "quick_switcher";
     };

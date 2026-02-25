@@ -56,6 +56,7 @@ import { SignedOutModal } from "./modals/SignedOut";
 import { UserProfileModal } from "./modals/UserProfile";
 import { UserProfileMutualFriendsModal } from "./modals/UserProfileMutualFriends";
 import { UserProfileMutualGroupsModal } from "./modals/UserProfileMutualGroups";
+import { QuickSwitcherModal } from "./modals/QuickSwitcher";
 import { UserProfileRolesModal } from "./modals/UserProfileRoles";
 
 /**
@@ -185,6 +186,8 @@ export function RenderModal(props: ActiveModal & { onClose: () => void }) {
       return <UserProfileMutualGroupsModal {...modalProps} />;
     case "reset_bot_token":
       return <ResetBotTokenModal {...modalProps} />;
+    case "quick_switcher":
+      return <QuickSwitcherModal {...modalProps} />;
 
     default:
       console.error(

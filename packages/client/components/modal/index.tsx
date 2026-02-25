@@ -273,6 +273,12 @@ export function ModalRenderer() {
           onPressed={() => modalController.pop()}
         />
       </Show>
+      <Show when={!modalController.isOpen()}>
+        <Keybind
+          keybind={KeybindAction.OPEN_QUICK_SWITCHER}
+          onPressed={() => modalController.openModal({ type: "quick_switcher" })}
+        />
+      </Show>
     </>
   );
 }

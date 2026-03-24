@@ -6,7 +6,7 @@ You can get started with Stoat for Web by following [the development guide on th
 
 ## Contribution Policy
 
-Since this project is still heavily in development, things may change rapidly at little notice, so it's recommended that you join [the Stoat server](https://stt.gg/Testers) and [the Stoat development server](https://stt.gg/API) where you can talk in `#Stoat for Web` about this project.
+Since this project is still heavily in development, things may change rapidly at little notice, so it's recommended that you join [the Stoat server](https://stoat.chat/Testers) and [the Stoat development server](https://stoat.chat/API) where you can talk in `#Stoat for Web` about this project.
 
 If something is explicitly marked as 'help wanted', then you can likely just pick up the issue and contribute a PR, however, you should make sure to communicate this on the issue so others don't start on the same issue as you, causing issues later.
 

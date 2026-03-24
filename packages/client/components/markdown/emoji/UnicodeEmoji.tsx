@@ -2,7 +2,8 @@ import { ComponentProps, splitProps } from "solid-js";
 
 import emojiRegex from "emoji-regex";
 
-import { useState } from "@revolt/state";
+import { CONFIGURATION } from "@revolt/common";
+
 import { EmojiBase, toCodepoint } from ".";
 
 export type UnicodeEmojiPacks =
@@ -65,7 +66,7 @@ export function unicodeEmojiUrl(
   pack: UnicodeEmojiPacks = "fluent-3d",
   text: string,
 ) {
-  return `https://static.stoat.chat/emoji/${pack}/${toCodepoint(text)}.svg?v=1`;
+  return `${CONFIGURATION.EMOJI_URL}/${pack}/${toCodepoint(text)}.svg?v=1`;
 }
 
 /**
@@ -78,7 +79,6 @@ export function UnicodeEmoji(
   >,
 ) {
   const [local, remote] = splitProps(props, ["emoji"]);
-  const state = useState();
 
   return (
     <EmojiBase
@@ -87,10 +87,7 @@ export function UnicodeEmoji(
       class="emoji"
       alt={local.emoji}
       draggable={false}
-      src={unicodeEmojiUrl(
-        props.pack ?? state.settings.getValue("appearance:unicode_emoji"),
-        props.emoji,
-      )}
+      src={unicodeEmojiUrl(props.pack, props.emoji)}
     />
   );
 }

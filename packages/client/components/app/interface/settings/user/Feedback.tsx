@@ -1,35 +1,24 @@
-import { useNavigate } from "@solidjs/router";
-import { Match, Switch } from "solid-js";
-
 import { Trans } from "@lingui-solid/solid/macro";
-import { PublicChannelInvite } from "stoat.js";
 import { styled } from "styled-system/jsx";
 
-import MdGroups3 from "@material-design-icons/svg/filled/groups_3.svg?component-solid";
+import {
+  CategoryButton,
+  CategoryButtonGroup,
+  Column,
+  iconSize,
+} from "@revolt/ui";
+
 import MdBugReport from "@material-design-icons/svg/outlined/bug_report.svg?component-solid";
 import MdFormatListNumbered from "@material-design-icons/svg/outlined/format_list_numbered.svg?component-solid";
 import MdStar from "@material-design-icons/svg/outlined/star_outline.svg?component-solid";
-
-import { useClient } from "@revolt/client";
-import { CONFIGURATION } from "@revolt/common";
-import { useModals } from "@revolt/modal";
-import { CategoryButton, Column, iconSize } from "@revolt/ui";
 
 /**
  * Feedback
  */
 export function Feedback() {
-  const { openModal, pop } = useModals();
-  const navigate = useNavigate();
-  const client = useClient();
-
-  const showLoungeButton = CONFIGURATION.IS_STOAT;
-  const isInLounge =
-    client()!.servers.get("01F7ZSBSFHQ8TA81725KQCSDDP") !== undefined;
-
   return (
     <Column gap="lg">
-      <CategoryButton.Group>
+      <CategoryButtonGroup>
         {/* <Link
           href="https://example.com"
           target="_blank"
@@ -84,45 +73,7 @@ export function Feedback() {
             <Trans>Bug Tracker</Trans>
           </CategoryButton>
         </Link>
-        <Switch fallback={null}>
-          <Match when={showLoungeButton && isInLounge}>
-            <CategoryButton
-              onClick={() => {
-                navigate("/server/01F7ZSBSFHQ8TA81725KQCSDDP");
-                pop();
-              }}
-              description={
-                <Trans>
-                  You can report issues and discuss improvements with us
-                  directly here.
-                </Trans>
-              }
-              icon={<MdGroups3 />}
-            >
-              <Trans>Go to the Stoat Lounge</Trans>
-            </CategoryButton>
-          </Match>
-          <Match when={showLoungeButton && !isInLounge}>
-            <CategoryButton
-              onClick={() => {
-                client()
-                  .api.get("/invites/Testers")
-                  .then((invite) => PublicChannelInvite.from(client(), invite))
-                  .then((invite) => openModal({ type: "invite", invite }));
-              }}
-              description={
-                <Trans>
-                  You can report issues and discuss improvements with us
-                  directly here.
-                </Trans>
-              }
-              icon={<MdGroups3 />}
-            >
-              <Trans>Join the Stoat Lounge</Trans>
-            </CategoryButton>
-          </Match>
-        </Switch>
-      </CategoryButton.Group>
+      </CategoryButtonGroup>
     </Column>
   );
 }

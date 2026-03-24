@@ -13,17 +13,6 @@ export default {
    */
   DEFAULT_API_URL,
   /**
-   * Whether this is Stoat
-   */
-  IS_STOAT: [
-    // historically...
-    "https://api.revolt.chat",
-    "https://beta.revolt.chat/api",
-    "https://revolt.chat/api",
-    // ... and now:
-    "https://stoat.chat/api",
-  ].includes(DEFAULT_API_URL),
-  /**
    * What WS server to connect to by default.
    */
   DEFAULT_WS_URL:
@@ -45,11 +34,24 @@ export default {
     (import.meta.env.VITE_PROXY_URL as string) ??
     "https://proxy.stoatusercontent.com",
   /**
-   * What gifbox server to connect to by default.
+   * What emoji CDN to use for Unicode emoji SVGs.
    */
-  DEFAULT_GIFBOX_URL:
-    (import.meta.env.DEV ? import.meta.env.VITE_DEV_GIFBOX_URL : undefined) ??
-    (import.meta.env.VITE_GIFBOX_URL as string) ??
+  EMOJI_URL:
+    (import.meta.env.VITE_EMOJI_URL as string) ??
+    "https://static.stoat.chat/emoji",
+  /**
+   * Discover directory URL. If not set, the Discover feature is hidden.
+   */
+  DISCOVER_URL: import.meta.env.VITE_DISCOVER_URL as string | undefined,
+  /**
+   * Geolocation API URL for age-restricted content. If not set, geo-blocking is disabled.
+   */
+  GEO_URL: import.meta.env.VITE_GEO_URL as string | undefined,
+  /**
+   * GIF API URL for the GIF picker. If not set, the GIF picker is hidden/disabled.
+   */
+  GIF_API_URL:
+    (import.meta.env.VITE_GIF_API_URL as string) ??
     "https://api.gifbox.me",
   /**
    * hCaptcha site key to use if enabled
@@ -74,17 +76,6 @@ export default {
    */
   MAX_FILE_SIZE:
     (import.meta.env.VITE_CFG_MAX_FILE_SIZE as number) ?? 20_000_000,
-  /**
-   * RNNoise worklet CDN host location. Defaults to blank, which uses the url provided by the livekit-rnnoise-processor package.
-   */
-  RNNOISE_WORKLET_CDN_URL:
-    (import.meta.env.VITE_RNNOISE_WORKLET_CDN_URL as string) ?? "",
-  /**
-   * Enable video allows the web client to enable video and screensharing
-   */
-  ENABLE_VIDEO:
-    ((import.meta.env.VITE_CFG_ENABLE_VIDEO as string) ?? "").toLowerCase() ==
-    "true",
   /**
    * Session ID to set during development.
    */

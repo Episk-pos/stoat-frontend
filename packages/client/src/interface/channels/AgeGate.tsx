@@ -4,6 +4,7 @@ import { Trans } from "@lingui-solid/solid/macro";
 import { useQuery } from "@tanstack/solid-query";
 import { styled } from "styled-system/jsx";
 
+import { CONFIGURATION } from "@revolt/common";
 import { useState } from "@revolt/state";
 import { LAYOUT_SECTIONS } from "@revolt/state/stores/Layout";
 import { Button, Checkbox, CircularProgress, Text, iconSize } from "@revolt/ui";
@@ -35,13 +36,16 @@ export function AgeGate(props: {
   const geoQuery = useQuery(() => ({
     queryKey: ["geoblock"],
     queryFn: async (): Promise<GeoBlock> => {
-      const response = await fetch("https://geo.revolt.chat");
+      if (!CONFIGURATION.GEO_URL) {
+        return { countryCode: "", isAgeRestrictedGeo: false };
+      }
+      const response = await fetch(CONFIGURATION.GEO_URL);
       if (!response.ok) {
         throw new Error("Failed to fetch geo data");
       }
       return response.json();
     },
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 5 * 60 * 1000,
     throwOnError: true,
   }));
 

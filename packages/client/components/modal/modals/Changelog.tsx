@@ -40,12 +40,12 @@ const ChangelogPosts: ChangelogPost[] = [
   //     "Two-factor authentication is now available to all users, you can now head over to settings to enable recovery codes and an authenticator app.",
   //     {
   //       type: "image",
-  //       src: "https://autumn.revolt.chat/attachments/E21kwmuJGcASgkVLiSIW0wV3ggcaOWjW0TQF7cdFNY/image.png",
+  //       src: "https://autumn.stoat.chat/attachments/E21kwmuJGcASgkVLiSIW0wV3ggcaOWjW0TQF7cdFNY/image.png",
   //     },
   //     "Once enabled, you will be prompted on login.",
   //     {
   //       type: "image",
-  //       src: "https://autumn.revolt.chat/attachments/LWRYoKR2tE1ggW_Lzm547P1pnrkNgmBaoCAfWvHE74/image.png",
+  //       src: "https://autumn.stoat.chat/attachments/LWRYoKR2tE1ggW_Lzm547P1pnrkNgmBaoCAfWvHE74/image.png",
   //     },
   //     "Other authentication methods coming later, stay tuned!",
   //   ],

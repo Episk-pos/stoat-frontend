@@ -1,34 +1,32 @@
 <div align="center">
-<h1>
-  Stoat Frontend
-  
-  [![Stars](https://img.shields.io/github/stars/stoatchat/for-web?style=flat-square&logoColor=white)](https://github.com/stoatchat/for-web/stargazers)
-  [![Forks](https://img.shields.io/github/forks/stoatchat/for-web?style=flat-square&logoColor=white)](https://github.com/stoatchat/for-web/network/members)
-  [![Pull Requests](https://img.shields.io/github/issues-pr/stoatchat/for-web?style=flat-square&logoColor=white)](https://github.com/stoatchat/for-web/pulls)
-  [![Issues](https://img.shields.io/github/issues/stoatchat/for-web?style=flat-square&logoColor=white)](https://github.com/stoatchat/for-web/issues)
-  [![Contributors](https://img.shields.io/github/contributors/stoatchat/for-web?style=flat-square&logoColor=white)](https://github.com/stoatchat/for-web/graphs/contributors)
-  [![License](https://img.shields.io/github/license/stoatchat/for-web?style=flat-square&logoColor=white)](https://github.com/stoatchat/for-web/blob/main/LICENSE)
-</h1>
-The official web client powering https://stoat.chat/app, built with <a href="https://www.solidjs.com/">Solid.js</a> 💖. <br/>
-Track the project roadmap on <a href="https://op.stoatinternal.com/projects/revolt-for-web/roadmap">OpenProject</a>.
+  <h1>Censer Web</h1>
+  <p><em>The Sacred Vessel of Communication</em></p>
+
+  <p>
+    <a href="https://work.episkopos.community/episkopos/censer-web/-/pipelines"><img src="https://work.episkopos.community/episkopos/censer-web/badges/main/pipeline.svg" alt="Pipeline Status"></a>
+    <img src="https://img.shields.io/badge/license-AGPL--3.0--or--later-blue" alt="License">
+    <img src="https://img.shields.io/badge/solid.js-1.9-blue?logo=solid" alt="SolidJS">
+    <img src="https://img.shields.io/badge/vite-6-purple?logo=vite" alt="Vite">
+  </p>
 </div>
-<br/>
+
+The web client for Censer, a sovereign chat platform. Based on [Stoat](https://github.com/stoatchat/stoatchat).
 
 ## Development Guide
 
-Before contributing, make yourself familiar with [our contribution guidelines](https://developers.stoat.chat/developing/contrib/), the [code style guidelines](./GUIDELINES.md), and the [technical documentation for this project](https://stoatchat.github.io/for-web/).
+Before contributing, review the [code style guidelines](./GUIDELINES.md).
 
-Before getting started, you'll want to install:
+### Prerequisites
 
 - [Git](https://git-scm.com/install/)
 - [mise-en-place](https://mise.jdx.dev/getting-started.html)
 
-Then proceed to setup:
+### Setup
 
 ```bash
 # clone the repository
-git clone --recursive https://github.com/stoatchat/for-web client
-cd client
+git clone --recursive https://work.episkopos.community/episkopos/censer-web.git
+cd censer-web
 
 # update submodules if you pull new changes
 # git submodule init && git submodule update
@@ -36,11 +34,8 @@ cd client
 # install all packages
 mise install:frozen
 
-# build deps:
+# build deps
 mise build:deps
-
-# or build a specific dep (e.g. stoat.js updates):
-# pnpm --filter stoat.js run build
 
 # customise the .env
 cp packages/client/.env.example packages/client/.env
@@ -52,43 +47,22 @@ mise dev
 mise check
 ```
 
-Finally, navigate to http://local.revolt.chat:5173.
+Then navigate to http://local.revolt.chat:5173.
 
-### Pulling in Stoat's brand assets
+### Using a local backend
 
-If you want to pull in Stoat brand assets after pulling, run the following:
+By default, the client connects to a backend running on the same host (localhost). Open `/packages/client/.env` and set the local URL variables:
 
-```bash
-# update the assets
-git -c submodule."packages/client/assets".update=checkout submodule update --init packages/client/assets
-```
-
-You can switch back to the fallback assets by running deinit and continuing as normal:
-
-```bash
-# deinit submodule which clears directory
-git submodule deinit packages/client/assets
-```
-
-### Using the official backend
-
-By default, the client connects to a backend running on the same host (localhost).
-
-If you want the client to connect to the official hosted backend instead, open the .env file at /packages/client/.env and comment out the local URL varaibles like this:
 ```env
-# connect to local Stoat instance
-#VITE_API_URL=http://localhost:14702
-#VITE_WS_URL=ws://localhost:14703
-#VITE_MEDIA_URL=http://localhost:14704
-#VITE_PROXY_URL=http://localhost:14705
-
+VITE_API_URL=http://localhost:14702
+VITE_WS_URL=ws://localhost:14703
+VITE_MEDIA_URL=http://localhost:14704
+VITE_PROXY_URL=http://localhost:14705
 ```
 
-When these variables are not set, the client automatically falls back to the official backend. (See https://github.com/stoatchat/for-web/blob/main/packages/client/components/common/lib/env.ts)
+When these variables are not set, the client falls back to the production backend.
 
-## Deployment Guide
-
-### Build the app
+## Deployment
 
 ```bash
 # install packages
@@ -100,25 +74,33 @@ mise build:deps
 # build for web
 mise build
 
-# ... when building for Stoat production
+# build for production
 mise build:prod
 ```
 
-You can now deploy the directory `packages/client/dist`.
+Deploy the `packages/client/dist` directory.
 
-### Routing Information
+### Routes
 
-The app currently needs the following routes:
+The app uses the following routes:
 
-- `/login`
-- `/pwa`
-- `/dev`
-- `/discover`
-- `/settings`
-- `/invite`
-- `/bot`
-- `/friends`
-- `/server`
-- `/channel`
+- `/login`, `/pwa`, `/dev`, `/discover`
+- `/settings`, `/invite`, `/bot`
+- `/friends`, `/server`, `/channel`
 
-This corresponds to [Content.tsx#L33](packages/client/src/index.tsx).
+See [packages/client/src/index.tsx](packages/client/src/index.tsx) for the route definitions.
+
+## Related Projects
+
+| Project | Description |
+|---------|-------------|
+| [Censer Community](https://work.episkopos.community/episkopos/community) | Development hub & dev environment |
+| [Censer Backend](https://work.episkopos.community/episkopos/censer-backend) | API server (Rust) |
+| [Censer Flutter](https://work.episkopos.community/episkopos/censer-flutter) | Mobile client (Flutter) |
+| [Censer SDK (Dart)](https://work.episkopos.community/episkopos/censer-sdk-dart) | Dart SDK |
+| [Unveil](https://work.episkopos.community/episkopos/unveil) | Community knowledge browser |
+| [Postern](https://work.episkopos.community/episkopos/postern) | Migration & sync tool |
+
+## License
+
+This project is licensed under the [GNU Affero General Public License v3.0](LICENSE).

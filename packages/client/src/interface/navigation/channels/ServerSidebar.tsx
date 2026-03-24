@@ -260,12 +260,26 @@ function ServerInfo(
     canManageServer: boolean;
   },
 ) {
+  const navigate = useNavigate();
+  const { t } = useLingui();
+
   return (
     <Row align grow minWidth={0}>
       <ServerBadge flags={props.server.flags} />
       <ServerName onClick={props.openServerInfo}>
         <TextWithEmoji content={props.server.name} />
       </ServerName>
+      <IconButton
+        size="xs"
+        width="narrow"
+        variant={props.server.banner ? "_header" : "standard"}
+        onPress={() => navigate(`/server/${props.server.id}/events`)}
+        use:floating={{
+          tooltip: { placement: "bottom", content: t`Events` },
+        }}
+      >
+        <Symbol size={20}>calendar_month</Symbol>
+      </IconButton>
       <Show when={props.canManageServer}>
         <IconButton
           size="xs"

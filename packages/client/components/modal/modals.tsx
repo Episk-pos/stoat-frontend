@@ -14,6 +14,7 @@ import { ChannelToggleMatureModal } from "./modals/ChannelToggleMature";
 import { CreateBotModal } from "./modals/CreateBot";
 import { CreateCategoryModal } from "./modals/CreateCategory";
 import { CreateChannelModal } from "./modals/CreateChannel";
+import { CreateScheduledEventModal } from "./modals/CreateScheduledEvent";
 import { CreateGroupModal } from "./modals/CreateGroup";
 import { CreateGroupOrServer } from "./modals/CreateGroupOrServer";
 import { CreateInviteModal } from "./modals/CreateInvite";
@@ -27,6 +28,7 @@ import { DeleteCategoryModal } from "./modals/DeleteCategory";
 import { DeleteChannelModal } from "./modals/DeleteChannel";
 import { DeleteMessageModal } from "./modals/DeleteMessage";
 import { DeleteRoleModal } from "./modals/DeleteRole";
+import { DeleteScheduledEventModal } from "./modals/DeleteScheduledEvent";
 import { DeleteServerModal } from "./modals/DeleteServer";
 import { EditCategoryModal } from "./modals/EditCategory";
 import { EditEmailModal } from "./modals/EditEmail";
@@ -97,6 +99,8 @@ export function RenderModal(props: ActiveModal & { onClose: () => void }) {
       return <CreateCategoryModal {...modalProps} />;
     case "create_channel":
       return <CreateChannelModal {...modalProps} />;
+    case "create_scheduled_event":
+      return <CreateScheduledEventModal {...modalProps} />;
     case "create_group":
       return <CreateGroupModal {...modalProps} />;
     case "create_invite":
@@ -123,6 +127,8 @@ export function RenderModal(props: ActiveModal & { onClose: () => void }) {
       return <DeleteMessageModal {...modalProps} />;
     case "delete_role":
       return <DeleteRoleModal {...modalProps} />;
+    case "delete_scheduled_event":
+      return <DeleteScheduledEventModal {...modalProps} />;
     case "delete_server":
       return <DeleteServerModal {...modalProps} />;
     case "edit_email":
@@ -131,6 +137,8 @@ export function RenderModal(props: ActiveModal & { onClose: () => void }) {
       return <EditPasswordModal {...modalProps} />;
     case "edit_username":
       return <EditUsernameModal {...modalProps} />;
+    case "edit_scheduled_event":
+      return <CreateScheduledEventModal {...modalProps} />;
     case "emoji_preview":
       return <EmojiPreviewModal {...modalProps} />;
     case "error2":

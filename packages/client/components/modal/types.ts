@@ -11,6 +11,7 @@ import {
   Message,
   PublicBot,
   PublicChannelInvite,
+  ScheduledEvent,
   Server,
   ServerMember,
   ServerRole,
@@ -98,6 +99,10 @@ export type Modals =
       client: Client;
     }
   | {
+      type: "create_scheduled_event";
+      server: Server;
+    }
+  | {
       type: "create_webhook";
       channel: Channel;
       callback: (id: string) => void;
@@ -131,6 +136,15 @@ export type Modals =
       type: "delete_role";
       role: ServerRole;
       cb: () => void;
+    }
+  | {
+      type: "delete_scheduled_event";
+      event: ScheduledEvent;
+      cb: () => void;
+    }
+  | {
+      type: "edit_scheduled_event";
+      event: ScheduledEvent;
     }
   | {
       type: "edit_email";

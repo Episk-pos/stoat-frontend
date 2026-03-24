@@ -407,6 +407,15 @@ export function ChannelPermissionsEditor(props: Props) {
         Any: t`Mention specific roles`,
       },
     },
+    {
+      heading: t`Events`,
+      key: "ManageEvents",
+      value: 2n ** 39n,
+      title: t`Manage Events`,
+      description: {
+        Server: t`Create, edit, and delete scheduled events`,
+      },
+    },
   ];
 
   /**

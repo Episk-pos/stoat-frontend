@@ -4,6 +4,8 @@ import {
   Show,
   batch,
   createContext,
+  onCleanup,
+  onMount,
   useContext,
 } from "solid-js";
 import { SetStoreFunction, createStore } from "solid-js/store";
@@ -257,6 +259,22 @@ export function useModals() {
 export function ModalRenderer() {
   const modalController = useModals();
 
+  // Suppress browser's Ctrl+K/Cmd+K (URL bar) globally.
+  // Uses a plain DOM listener (not SolidJS reactive) to avoid tracking issues.
+  onMount(() => {
+    const handleKeydown = (e: KeyboardEvent) => {
+      if (e.key === "k" && (e.ctrlKey || e.metaKey)) {
+        e.preventDefault();
+        // Toggle quick switcher closed if it's open
+        if (modalController.isOpen("quick_switcher")) {
+          modalController.pop();
+        }
+      }
+    };
+    window.addEventListener("keydown", handleKeydown);
+    onCleanup(() => window.removeEventListener("keydown", handleKeydown));
+  });
+
   return (
     <>
       <For each={modalController.modals}>
@@ -271,6 +289,12 @@ export function ModalRenderer() {
         <Keybind
           keybind={KeybindAction.CLOSE_MODAL}
           onPressed={() => modalController.pop()}
+        />
+      </Show>
+      <Show when={!modalController.isOpen()}>
+        <Keybind
+          keybind={KeybindAction.OPEN_QUICK_SWITCHER}
+          onPressed={() => modalController.openModal({ type: "quick_switcher" })}
         />
       </Show>
     </>

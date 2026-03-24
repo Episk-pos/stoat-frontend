@@ -60,6 +60,11 @@ export enum KeybindAction {
    * Close the open and ephemeral sidebar
    */
   CLOSE_SIDEBAR = "close_sidebar",
+
+  /**
+   * Open the Quick Switcher (Ctrl+K / Cmd+K)
+   */
+  OPEN_QUICK_SWITCHER = "open_quick_switcher",
 }
 
 /**
@@ -83,6 +88,7 @@ export const ACTION_PRIORITY: KeybindAction[] = [
 
   // ... all others
   KeybindAction.CHAT_FOCUS_COMPOSITION,
+  KeybindAction.OPEN_QUICK_SWITCHER,
 ];
 
 /**

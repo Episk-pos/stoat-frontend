@@ -16,6 +16,7 @@ const NoiseSuppresionStates: NoiseSuppresionState[] = [
 export interface TypeVoice {
   preferredAudioInputDevice?: string;
   preferredAudioOutputDevice?: string;
+  preferredVideoInputDevice?: string;
 
   echoCancellation: boolean;
   noiseSupression: NoiseSuppresionState;
@@ -78,6 +79,10 @@ export class Voice extends AbstractStore<"voice", TypeVoice> {
 
     if (typeof input.preferredAudioOutputDevice === "string") {
       data.preferredAudioOutputDevice = input.preferredAudioOutputDevice;
+    }
+
+    if (typeof input.preferredVideoInputDevice === "string") {
+      data.preferredVideoInputDevice = input.preferredVideoInputDevice;
     }
 
     if (typeof input.echoCancellation === "boolean") {
@@ -187,6 +192,13 @@ export class Voice extends AbstractStore<"voice", TypeVoice> {
   }
 
   /**
+   * Set the preferred video input device
+   */
+  set preferredVideoInputDevice(value: string) {
+    this.set("preferredVideoInputDevice", value);
+  }
+
+  /**
    * Set echo cancellation
    */
   set echoCancellation(value: boolean) {
@@ -246,7 +258,14 @@ export class Voice extends AbstractStore<"voice", TypeVoice> {
    * Get the preferred audio output device
    */
   get preferredAudioOutputDevice(): string | undefined {
-    return this.get().preferredAudioInputDevice;
+    return this.get().preferredAudioOutputDevice;
+  }
+
+  /**
+   * Get the preferred video input device
+   */
+  get preferredVideoInputDevice(): string | undefined {
+    return this.get().preferredVideoInputDevice;
   }
 
   /**

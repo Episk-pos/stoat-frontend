@@ -253,10 +253,14 @@ export function TextEditor2(props: Props) {
 
 const editor = css({
   display: "inline-flex",
-  height: "100%",
+  height: "auto",
   width: "100%",
   flexGrow: 1,
   alignSelf: "center",
+
+  // Keep the composition box compact; allow growth to a few lines.
+  minHeight: "38px",
+  maxHeight: "140px",
 
   color: "var(--md-sys-color-on-surface)",
 
@@ -267,7 +271,12 @@ const editor = css({
   "& .cm-editor": {
     width: "100%",
     alignSelf: "center",
-    maxHeight: "100%",
+    maxHeight: "140px",
+  },
+
+  "& .cm-scroller": {
+    overflowY: "auto",
+    maxHeight: "140px",
   },
 
   "& .cm-editor.cm-focused": {

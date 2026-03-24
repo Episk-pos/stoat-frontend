@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Accessor,
   JSX,
@@ -10,18 +9,24 @@ import {
 } from "solid-js";
 import { RoomContext } from "solid-livekit-components";
 
-import { Room } from "livekit-client";
+import {
+  type FacingMode,
+  Room,
+  Track,
+  createLocalVideoTrack,
+  facingModeFromLocalTrack,
+} from "livekit-client";
 import { DenoiseTrackProcessor } from "livekit-rnnoise-processor";
 import { Channel } from "stoat.js";
 
+import { CONFIGURATION } from "@revolt/common";
+import { useModals } from "@revolt/modal";
 import { useState } from "@revolt/state";
 import { Voice as VoiceSettings } from "@revolt/state/stores/Voice";
 import { VoiceCallCardContext } from "@revolt/ui/components/features/voice/callCard/VoiceCallCard";
 
-import { CONFIGURATION } from "@revolt/common";
 import { InRoom } from "./components/InRoom";
 import { RoomAudioManager } from "./components/RoomAudioManager";
-import { MockRoom } from "./mock";
 
 type State =
   | "READY"
@@ -54,6 +59,25 @@ class Voice {
   screenshare: Accessor<boolean>;
   #setScreenshare: Setter<boolean>;
 
+  audioOnly: Accessor<boolean>;
+  #setAudioOnly: Setter<boolean>;
+
+  spotlightHideMembers: Accessor<boolean>;
+  #setSpotlightHideMembers: Setter<boolean>;
+
+  spotlightActive: Accessor<boolean>;
+  #setSpotlightActive: Setter<boolean>;
+
+  /** Per-remote-user camera watch override (session-scoped). */
+  videoWatchDisabled: Accessor<Record<string, boolean>>;
+  #setVideoWatchDisabled: Setter<Record<string, boolean>>;
+
+  /** Per-remote-user screenshare watch state (session-scoped). */
+  screenshareWatch: Accessor<Record<string, boolean>>;
+  #setScreenshareWatch: Setter<Record<string, boolean>>;
+
+  onError: (error: unknown) => void = () => {};
+
   constructor(voiceSettings: VoiceSettings) {
     this.#settings = voiceSettings;
 
@@ -84,33 +108,49 @@ class Voice {
     const [screenshare, setScreenshare] = createSignal(false);
     this.screenshare = screenshare;
     this.#setScreenshare = setScreenshare;
+
+    const [audioOnly, setAudioOnly] = createSignal(false);
+    this.audioOnly = audioOnly;
+    this.#setAudioOnly = setAudioOnly;
+
+    const [spotlightHideMembers, setSpotlightHideMembers] = createSignal(false);
+    this.spotlightHideMembers = spotlightHideMembers;
+    this.#setSpotlightHideMembers = setSpotlightHideMembers;
+
+    const [spotlightActive, setSpotlightActive] = createSignal(false);
+    this.spotlightActive = spotlightActive;
+    this.#setSpotlightActive = setSpotlightActive;
+
+    const [videoWatchDisabled, setVideoWatchDisabled] = createSignal<
+      Record<string, boolean>
+    >({});
+    this.videoWatchDisabled = videoWatchDisabled;
+    this.#setVideoWatchDisabled = setVideoWatchDisabled;
+
+    const [screenshareWatch, setScreenshareWatch] = createSignal<
+      Record<string, boolean>
+    >({});
+    this.screenshareWatch = screenshareWatch;
+    this.#setScreenshareWatch = setScreenshareWatch;
   }
 
   async connect(channel: Channel, auth?: { url: string; token: string }) {
     this.disconnect();
 
-    const isMock =
-      import.meta.env.VITE_MOCK_RTC === "true" ||
-      (typeof window !== "undefined" &&
-        (window as any).__STOAT_MOCK_RTC__ === true);
-
-    const room = isMock
-      ? (new MockRoom() as unknown as Room)
-      : new Room({
-          audioCaptureDefaults: {
-            deviceId: this.#settings.preferredAudioInputDevice,
-            echoCancellation: this.#settings.echoCancellation,
-            noiseSuppression: this.#settings.noiseSupression === "browser",
-            autoGainControl: this.#settings.autoGainControl,
-          },
-          audioOutput: {
-            deviceId: this.#settings.preferredAudioOutputDevice,
-          },
-        });
-
-    if (isMock && typeof window !== "undefined") {
-      (window as any).__STOAT_TEST_CONTROLLER__.room = room;
-    }
+    const room = new Room({
+      audioCaptureDefaults: {
+        deviceId: this.#settings.preferredAudioInputDevice,
+        echoCancellation: this.#settings.echoCancellation,
+        noiseSuppression: this.#settings.noiseSupression === "browser",
+        autoGainControl: this.#settings.autoGainControl,
+      },
+      videoCaptureDefaults: {
+        deviceId: this.#settings.preferredVideoInputDevice,
+      },
+      audioOutput: {
+        deviceId: this.#settings.preferredAudioOutputDevice,
+      },
+    });
 
     batch(() => {
       this.#setRoom(room);
@@ -121,9 +161,19 @@ class Voice {
       this.#setDeafen(false);
       this.#setVideo(false);
       this.#setScreenshare(false);
-      if (this.speakingPermission && !isMock)
+      this.#setAudioOnly(false);
+      this.#setSpotlightHideMembers(false);
+      this.#setSpotlightActive(false);
+      this.#setVideoWatchDisabled({});
+      this.#setScreenshareWatch({});
+    });
+
+    room.addListener("connected", () => {
+      this.#setState("CONNECTED");
+      if (this.speakingPermission)
         room.localParticipant.setMicrophoneEnabled(true).then((track) => {
-          this.#setMicrophone(typeof track !== "undefined");
+          if (this.room() === room)
+            this.#setMicrophone(typeof track !== "undefined");
           if (this.#settings.noiseSupression === "enhanced") {
             track?.audioTrack?.setProcessor(
               new DenoiseTrackProcessor({
@@ -132,32 +182,19 @@ class Voice {
             );
           }
         });
-
-      if (isMock) {
-        // Instant mock connection
-        setTimeout(() => {
-          this.#setState("CONNECTED");
-          if (this.speakingPermission) {
-            void room.localParticipant.setMicrophoneEnabled(true).then(() => {
-              this.#setMicrophone(true);
-            });
-          }
-        }, 10);
-      }
     });
 
-    if (!isMock) {
-      room.addListener("connected", () => this.#setState("CONNECTED"));
-      room.addListener("disconnected", () => this.#setState("DISCONNECTED"));
+    room.addListener("reconnecting", () => this.#setState("RECONNECTING"));
+    room.addListener("reconnected", () => this.#setState("CONNECTED"));
+    room.addListener("disconnected", () => this.#setState("DISCONNECTED"));
 
-      if (!auth) {
-        auth = await channel.joinCall("worldwide");
-      }
-
-      await room.connect(auth.url, auth.token, {
-        autoSubscribe: false,
-      });
+    if (!auth) {
+      auth = await channel.joinCall("worldwide");
     }
+
+    await room.connect(auth.url, auth.token, {
+      autoSubscribe: false,
+    });
   }
 
   disconnect() {
@@ -179,33 +216,174 @@ class Voice {
   }
 
   async toggleMute() {
-    const room = this.room();
-    if (!room) throw "invalid state";
-    await room.localParticipant.setMicrophoneEnabled(
-      !room.localParticipant.isMicrophoneEnabled,
-    );
+    try {
+      const room = this.room();
+      if (!room) throw "invalid state";
+      await room.localParticipant.setMicrophoneEnabled(
+        !room.localParticipant.isMicrophoneEnabled,
+      );
 
-    this.#setMicrophone(room.localParticipant.isMicrophoneEnabled);
+      this.#setMicrophone(room.localParticipant.isMicrophoneEnabled);
+    } catch (error) {
+      this.onError(error);
+    }
   }
 
   async toggleCamera() {
-    const room = this.room();
-    if (!room) throw "invalid state";
-    await room.localParticipant.setCameraEnabled(
-      !room.localParticipant.isCameraEnabled,
-    );
+    try {
+      const room = this.room();
+      if (!room) throw "invalid state";
+      await room.localParticipant.setCameraEnabled(
+        !room.localParticipant.isCameraEnabled,
+      );
 
-    this.#setVideo(room.localParticipant.isCameraEnabled);
+      this.#setVideo(room.localParticipant.isCameraEnabled);
+    } catch (error) {
+      this.onError(error);
+    }
+  }
+
+  async flipCamera() {
+    try {
+      const room = this.room();
+      if (!room) throw "invalid state";
+
+      const camPub = room.localParticipant.getTrackPublication(
+        Track.Source.Camera,
+      );
+      const currentTrack = camPub?.track;
+
+      // Determine current facing mode and flip it
+      let newFacingMode: FacingMode = "environment";
+      if (currentTrack) {
+        const current = facingModeFromLocalTrack(currentTrack);
+        newFacingMode =
+          current?.facingMode === "environment" ? "user" : "environment";
+      }
+
+      // Create new track with flipped facing mode
+      const newTrack = await createLocalVideoTrack({
+        facingMode: newFacingMode,
+      });
+
+      // Unpublish old and publish new
+      if (camPub) {
+        await room.localParticipant.unpublishTrack(camPub.track!);
+      }
+      await room.localParticipant.publishTrack(newTrack);
+      this.#setVideo(true);
+    } catch (error) {
+      this.onError(error);
+    }
+  }
+
+  async toggleAudioOnly() {
+    try {
+      const room = this.room();
+      if (!room) throw "invalid state";
+
+      const newValue = !this.audioOnly();
+      this.#setAudioOnly(newValue);
+
+      // Subscribe/unsubscribe to all remote video tracks.
+      // Note: respect session-scoped watch preferences for cameras and screenshares.
+      for (const participant of room.remoteParticipants.values()) {
+        const userId = participant.identity;
+        const videoDisabled = !!this.videoWatchDisabled()[userId];
+        const screenshareWatching = !!this.screenshareWatch()[userId];
+
+        for (const pub of participant.trackPublications.values()) {
+          if (
+            pub.kind === Track.Kind.Video &&
+            pub.source !== Track.Source.ScreenShareAudio
+          ) {
+            const shouldSubscribe =
+              !newValue &&
+              (pub.source === Track.Source.ScreenShare
+                ? screenshareWatching
+                : !videoDisabled);
+
+            pub.setSubscribed(shouldSubscribe);
+          }
+        }
+      }
+    } catch (error) {
+      this.onError(error);
+    }
+  }
+
+  async toggleSpotlightHideMembers() {
+    this.#setSpotlightHideMembers((v) => !v);
+  }
+
+  setSpotlightActive(active: boolean) {
+    this.#setSpotlightActive(active);
+  }
+
+  setSpotlightHideMembers(value: boolean) {
+    this.#setSpotlightHideMembers(value);
   }
 
   async toggleScreenshare() {
-    const room = this.room();
-    if (!room) throw "invalid state";
-    await room.localParticipant.setScreenShareEnabled(
-      !room.localParticipant.isScreenShareEnabled,
-    );
+    try {
+      const room = this.room();
+      if (!room) throw "invalid state";
+      await room.localParticipant.setScreenShareEnabled(
+        !room.localParticipant.isScreenShareEnabled,
+        { audio: true },
+      );
 
-    this.#setScreenshare(room.localParticipant.isScreenShareEnabled);
+      this.#setScreenshare(room.localParticipant.isScreenShareEnabled);
+    } catch (error) {
+      this.onError(error);
+    }
+  }
+
+  #setRemoteSubscribed(
+    userId: string,
+    source: Track.Source,
+    subscribed: boolean,
+  ) {
+    const room = this.room();
+    const participant = room?.getParticipantByIdentity(userId);
+    const pub = participant?.getTrackPublication(source);
+    if (pub) pub.setSubscribed(subscribed);
+  }
+
+  isVideoWatchDisabled(userId: string) {
+    return !!this.videoWatchDisabled()[userId];
+  }
+
+  setVideoWatchDisabled(userId: string, disabled: boolean) {
+    this.#setVideoWatchDisabled((current) => ({
+      ...current,
+      [userId]: disabled,
+    }));
+
+    // Only subscribe when not in audio-only.
+    this.#setRemoteSubscribed(
+      userId,
+      Track.Source.Camera,
+      !disabled && !this.audioOnly(),
+    );
+  }
+
+  isScreenshareWatching(userId: string) {
+    return !!this.screenshareWatch()[userId];
+  }
+
+  setScreenshareWatching(userId: string, watching: boolean) {
+    this.#setScreenshareWatch((current) => ({
+      ...current,
+      [userId]: watching,
+    }));
+
+    // Only subscribe when not in audio-only.
+    this.#setRemoteSubscribed(
+      userId,
+      Track.Source.ScreenShare,
+      watching && !this.audioOnly(),
+    );
   }
 
   getConnectedUser(userId: string) {
@@ -228,7 +406,9 @@ const voiceContext = createContext<Voice>(null as unknown as Voice);
  */
 export function VoiceContext(props: { children: JSX.Element }) {
   const state = useState();
+  const { showError } = useModals();
   const voice = new Voice(state.voice);
+  voice.onError = showError;
 
   return (
     <voiceContext.Provider value={voice}>

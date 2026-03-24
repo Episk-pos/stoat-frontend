@@ -126,17 +126,18 @@ const Tile = styled("div", {
 export function LeParticipant() {
   const participant = useEnsureParticipant();
   const track = useTrackRefContext();
-  const isMuted = useIsMuted({
+  const isMicMuted = useIsMuted({
     participant,
     source: Track.Source.Microphone,
   });
+  const isVideoMuted = useIsMuted(track);
   const isSpeaking = useIsSpeaking(participant);
 
   const user = useUser(participant.identity);
 
   return (
     <Tile speaking={isSpeaking() ? "yes" : undefined}>
-      {/*{participant.identity}<br/>muted? {isMuted() ? 'yes' : 'no'}*/}
+      {/*{participant.identity}<br/>muted? {isMicMuted() ? 'yes' : 'no'}*/}
       <Switch
         fallback={
           <div
@@ -163,10 +164,7 @@ export function LeParticipant() {
       >
         <Match
           when={
-            isTrackReference(track) &&
-            (track.publication?.kind === "video" ||
-              track.source === Track.Source.Camera ||
-              track.source === Track.Source.ScreenShare)
+            isTrackReference(track) && !isVideoMuted()
           }
         >
           <VideoTrack
@@ -195,7 +193,7 @@ export function LeParticipant() {
         <span class={css({ minWidth: 0 })}>
           <OverflowingText>{participant.identity}</OverflowingText>
         </span>
-        <Show when={isMuted()}>
+        <Show when={isMicMuted()}>
           <div
             class={css({
               borderRadius: "100%",
@@ -350,35 +348,17 @@ export function Demo(props: { channel: Channel }) {
               <MdHeadset {...iconSize(20)} />
             </Button> */}
 
-            <div
-              use:floating={{
-                tooltip: {
-                  placement: "top",
-                  content: "Coming soon! 👀",
-                },
-              }}
-            >
-              <Button onPress={() => voice.toggleCamera()} isDisabled>
-                <Switch fallback="Camera">
-                  <Match when={voice.video()}>Sharing camera</Match>
-                </Switch>
-              </Button>
-            </div>
+            <Button onPress={() => voice.toggleCamera()}>
+              <Switch fallback="Camera">
+                <Match when={voice.video()}>Sharing camera</Match>
+              </Switch>
+            </Button>
 
-            <div
-              use:floating={{
-                tooltip: {
-                  placement: "top",
-                  content: "Coming soon! 👀",
-                },
-              }}
-            >
-              <Button onPress={() => voice.toggleScreenshare()} isDisabled>
-                <Switch fallback="Share screen">
-                  <Match when={voice.screenshare()}>Sharing screen</Match>
-                </Switch>
-              </Button>
-            </div>
+            <Button onPress={() => voice.toggleScreenshare()}>
+              <Switch fallback="Share screen">
+                <Match when={voice.screenshare()}>Sharing screen</Match>
+              </Switch>
+            </Button>
           </Show>
         </Actions>
       </Row>

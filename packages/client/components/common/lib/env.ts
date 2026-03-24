@@ -62,7 +62,7 @@ export default {
   /**
    * Maximum number of attachments a message can have
    */
-  MAX_ATTACHMENTS: (import.meta.env.VITE_CFG_MAX_ATTACHMENTS as number) ?? 5,
+  MAX_ATTACHMENTS: (import.meta.env.VITE_CFG_MAX_ATTACHMENTS as number) ?? 25,
   /**
    * Maximum number of emoji a server can have
    */

@@ -1,0 +1,19 @@
+Episkopos — Sovereign Community Tools
+Copyright 2024-2026 Episkopos Contributors
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+See BRANDING.md for trademark policy regarding the names Episkopos,
+Censer, Unveil, and Postern.
+
+---
+
+This software is based on Stoat for Web (https://github.com/stoatchat/for-web),
+originally created by Paul Makles and contributors, licensed under AGPL-3.0.
+Stoat was formerly known as Revolt (https://github.com/revoltchat).
+
+Some packages within this repository retain their original licenses (MIT,
+Apache 2.0) as specified in their individual LICENSE files.

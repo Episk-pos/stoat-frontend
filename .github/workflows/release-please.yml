@@ -18,6 +18,10 @@ jobs:
   release-please:
     name: Release Please
     runs-on: ubuntu-latest
+
+    # This workflow expects a GitHub App to be configured.
+    # Gate on a repo variable to avoid hard failures when secrets aren't set.
+    if: ${{ vars.ENABLE_RELEASE_PLEASE == 'true' }}
     outputs:
       release_created: ${{ steps.rp.outputs.release_created }}
     steps:
@@ -77,7 +81,7 @@ jobs:
 
     permissions:
       contents: write
-    
+
     steps:
       - id: app-token
         uses: actions/create-github-app-token@v2

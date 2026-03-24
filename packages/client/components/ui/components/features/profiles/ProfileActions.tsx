@@ -1,7 +1,7 @@
 import { Show } from "solid-js";
 
 import { useNavigate } from "@solidjs/router";
-import { ServerMember, User } from "stoat.js";
+import { ServerMember, User, UserPermission } from "stoat.js";
 import { styled } from "styled-system/jsx";
 
 import { UserContextMenu } from "@revolt/app";
@@ -25,13 +25,16 @@ export function ProfileActions(props: {
   member?: ServerMember;
 }) {
   const navigate = useNavigate();
-  const { openModal } = useModals();
+  const modals = useModals();
+  const { openModal } = modals;
 
   /**
    * Open direct message channel
    */
   function openDm() {
     props.user.openDM().then((channel) => navigate(channel.url));
+    dismissFloatingElements();
+    modals.pop();
   }
 
   /**
@@ -65,7 +68,15 @@ export function ProfileActions(props: {
           Cancel friend request
         </Button>
       </Show>
-      <Show when={props.user.relationship === "Friend"}>
+      <Show
+        when={
+          props.user.relationship !== "Blocked" &&
+          props.user.relationship !== "BlockedOther" &&
+          props.user.relationship !== "User" &&
+          !props.user.self &&
+          (props.user.permission & UserPermission.SendMessage) !== 0
+        }
+      >
         <Button onPress={openDm}>Message</Button>
       </Show>
 

@@ -8,6 +8,7 @@ import { styled } from "styled-system/jsx";
 import { useClient } from "@revolt/client";
 import { TextWithEmoji } from "@revolt/markdown";
 import { useModals } from "@revolt/modal";
+import { useVoice } from "@revolt/rtc";
 import { useState } from "@revolt/state";
 import { LAYOUT_SECTIONS } from "@revolt/state/stores/Layout";
 import {
@@ -19,9 +20,9 @@ import {
   UserStatus,
   typography,
 } from "@revolt/ui";
-import { Tooltip } from "@revolt/ui/components/floating";
 import { Symbol } from "@revolt/ui/components/utils/Symbol";
 
+import MdCall from "@material-design-icons/svg/outlined/call.svg?component-solid";
 import MdGroup from "@material-design-icons/svg/outlined/group.svg?component-solid";
 import MdPersonAdd from "@material-design-icons/svg/outlined/person_add.svg?component-solid";
 import MdSettings from "@material-design-icons/svg/outlined/settings.svg?component-solid";
@@ -46,6 +47,11 @@ interface Props {
    * Set sidebar state
    */
   setSidebarState?: Setter<SidebarState>;
+
+  /**
+   * Whether the voice layout is currently active (call in progress)
+   */
+  showVoiceLayout?: Accessor<boolean>;
 }
 
 /**
@@ -56,6 +62,7 @@ export function ChannelHeader(props: Props) {
   const client = useClient();
   const { t } = useLingui();
   const state = useState();
+  const voice = useVoice();
 
   const searchValue = () => {
     if (!props.sidebarState) return null;
@@ -122,7 +129,7 @@ export function ChannelHeader(props: Props) {
           <HeaderIcon>
             <Symbol>alternate_email</Symbol>
           </HeaderIcon>
-          <TextWithEmoji content={props.channel.recipient?.username} />
+          <TextWithEmoji content={props.channel.recipient?.displayName} />
           <UserStatus status={props.channel.recipient?.presence} size="8px" />
         </Match>
         <Match when={props.channel.type === "SavedMessages"}>
@@ -204,7 +211,29 @@ export function ChannelHeader(props: Props) {
         </IconButton>
       </Show>
 
-      <Show when={props.sidebarState && props.channel.isVoice}>
+      {/* Start Voice Call button — shown for DMs/Groups when no call is active */}
+      <Show
+        when={
+          props.channel.isVoice &&
+          !props.showVoiceLayout?.() &&
+          (props.channel.type === "DirectMessage" || props.channel.type === "Group")
+        }
+      >
+        <IconButton
+          use:floating={{
+            tooltip: {
+              placement: "bottom",
+              content: t`Start voice call`,
+            },
+          }}
+          onPress={() => voice.connect(props.channel)}
+        >
+          <MdCall />
+        </IconButton>
+      </Show>
+
+      {/* View Chat sidebar toggle — only shown when voice layout is active */}
+      <Show when={props.sidebarState && props.showVoiceLayout?.()}>
         <IconButton
           use:floating={{
             tooltip: {
@@ -230,7 +259,7 @@ export function ChannelHeader(props: Props) {
         </IconButton>
       </Show>
 
-      <Show when={props.sidebarState && props.channel.type !== "SavedMessages"}>
+      <Show when={props.sidebarState && props.channel.type !== "SavedMessages" && props.channel.type !== "DirectMessage"}>
         <IconButton
           onPress={() => {
             if (props.sidebarState!().state === "default") {

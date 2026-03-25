@@ -71,6 +71,9 @@ importers:
       '@fontsource/comic-neue':
         specifier: ^5.2.6
         version: 5.2.6
+      '@fontsource/cormorant-garamond':
+        specifier: ^5.2.6
+        version: 5.2.11
       '@fontsource/fira-code':
         specifier: ^5.2.6
         version: 5.2.6
@@ -639,12 +642,9 @@ importers:
         specifier: 0.12.0
         version: 0.12.0
       ulid:
-        specifier: ^3.0.2
-        version: 3.0.2
+        specifier: ^2.4.0
+        version: 2.4.0
     devDependencies:
-      '@eslint/js':
-        specifier: ^9.39.1
-        version: 9.39.1
       '@mxssfd/typedoc-theme':
         specifier: ^1.1.7
         version: 1.1.7(typedoc@0.27.9(typescript@5.8.3))
@@ -2322,6 +2322,9 @@ packages:
 
   '@fontsource/comic-neue@5.2.6':
     resolution: {integrity: sha512-FhI/0GU20Dgv/7K50UqyFSNAThevYk2hDv9D9UFYYd3HaGJxH82ujtssJD5am36kxy6nFlSM8rafL3lEoSshJQ==}
+
+  '@fontsource/cormorant-garamond@5.2.11':
+    resolution: {integrity: sha512-5JjpN023lhA5soijgVT0BdRGzmlijm402ppjccMd6h+vRE0mX2lJnE+41UPfnlidrkV9/rCo1mf58WZlHnB0CA==}
 
   '@fontsource/fira-code@5.2.6':
     resolution: {integrity: sha512-wCkIpPm0BqlkCPLYeY4Vui96ODmVUV0/GpEe3OfJ4v8EJn/BF2SlyxvarFsTs1CKiGjrO2cXlIZbBrKi9F+hUQ==}
@@ -7248,6 +7251,10 @@ packages:
   ufo@1.6.1:
     resolution: {integrity: sha512-9a4/uxlTWJ4+a5i0ooc1rU7C7YOw3wT+UGqdeNNHWnOF9qcMBgLRS+4IYUqbczewFx4mLEig6gawh7X6mFlEkA==}
 
+  ulid@2.4.0:
+    resolution: {integrity: sha512-fIRiVTJNcSRmXKPZtGzFQv9WRrZ3M9eoptl/teFJvjOzmpU+/K/JH6HZ8deBfb5vMEpicJcLn7JmvdknlMq7Zg==}
+    hasBin: true
+
   ulid@3.0.2:
     resolution: {integrity: sha512-yu26mwteFYzBAot7KVMqFGCVpsF6g8wXfJzQUHvu1no3+rRRSFcSV2nKeYvNPLD2J4b08jYBDhHUjeH0ygIl9w==}
     hasBin: true
@@ -9193,6 +9200,8 @@ snapshots:
   '@fontsource/bitter@5.2.9': {}
 
   '@fontsource/comic-neue@5.2.6': {}
+
+  '@fontsource/cormorant-garamond@5.2.11': {}
 
   '@fontsource/fira-code@5.2.6': {}
 
@@ -15153,6 +15162,8 @@ snapshots:
   uc.micro@2.1.0: {}
 
   ufo@1.6.1: {}
+
+  ulid@2.4.0: {}
 
   ulid@3.0.2: {}
 

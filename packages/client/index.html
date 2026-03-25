@@ -7,7 +7,7 @@
       content="width=device-width, initial-scale=1.0, user-scalable=no"
     />
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="theme-color" content="#000000" />
+    <meta name="theme-color" content="#0A0A0F" />
     <link
       rel="shortcut icon"
       type="image/png"
@@ -17,7 +17,12 @@
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
+    <div id="root"><div id="splash" style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;width:100vw;background:#0A0A0F;gap:16px;position:fixed;top:0;left:0;">
+  <img src="./public/assets/web/android-chrome-192x192.png" alt="" width="80" height="80" style="border-radius:16px;" />
+  <span style="font-family:'Cormorant Garamond',Georgia,serif;font-size:1.6em;font-weight:600;letter-spacing:0.04em;color:#F5F0EB;">Censer</span>
+  <div style="width:32px;height:32px;border:3px solid rgba(212,165,116,0.3);border-top-color:#D4A574;border-radius:50%;animation:spin 1s linear infinite;margin-top:8px;"></div>
+  <style>@keyframes spin{to{transform:rotate(360deg)}}</style>
+</div></div>
     <div id="floating"></div>
 
     <script src="/src/index.tsx" type="module"></script>

@@ -35,7 +35,7 @@ export function LoadTheme() {
         }),
         {},
       ),
-      // mount Stoat for Web variables
+      // mount Censer for Web variables
       ...createStoatWebVariables(activeTheme),
       // mount --md-sys-color variables
       ...createMaterialColourVariables(activeTheme, "--md-sys-color-"),

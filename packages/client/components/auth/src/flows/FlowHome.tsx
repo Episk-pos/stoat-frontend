@@ -9,7 +9,7 @@ import { Navigate } from "@revolt/routing";
 import { Button, Column } from "@revolt/ui";
 
 import { useState } from "@revolt/state";
-import Wordmark from "../../../../public/assets/web/wordmark.svg?component-solid";
+import censerIcon from "../../../../../brand/censer/icon.png";
 
 /**
  * Flow for logging into an account
@@ -27,13 +27,34 @@ export default function FlowHome() {
           </Show>
 
           <Column gap="xl">
-            <Wordmark
+            <div
               class={css({
-                width: "60%",
-                margin: "auto",
-                fill: "var(--md-sys-color-on-surface)",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                gap: "8px",
               })}
-            />
+            >
+              <img
+                src={censerIcon}
+                alt="Censer"
+                class={css({
+                  width: "96px",
+                  height: "96px",
+                  borderRadius: "16px",
+                })}
+              />
+              <span
+                class={css({
+                  fontSize: "1.8em",
+                  fontWeight: 600,
+                  letterSpacing: "0.04em",
+                  color: "var(--md-sys-color-on-surface)",
+                })}
+              >
+                Censer
+              </span>
+            </div>
 
             <Column>
               <b
@@ -58,7 +79,7 @@ export default function FlowHome() {
               </b>
               <span style={{ "text-align": "center", opacity: "0.5" }}>
                 <Trans>
-                  Stoat is one of the best ways to stay connected with your
+                  Censer is one of the best ways to stay connected with your
                   friends and community, anywhere, anytime.
                 </Trans>
               </span>

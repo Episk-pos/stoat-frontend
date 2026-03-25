@@ -1,6 +1,7 @@
-import { Show } from "solid-js";
+import { Match, Show, Switch } from "solid-js";
 
 import { Trans } from "@lingui-solid/solid/macro";
+import { PublicChannelInvite } from "stoat.js";
 import { css, cva } from "styled-system/css";
 import { styled } from "styled-system/jsx";
 
@@ -19,12 +20,13 @@ import {
 
 import MdAddCircle from "@material-design-icons/svg/filled/add_circle.svg?component-solid";
 import MdExplore from "@material-design-icons/svg/filled/explore.svg?component-solid";
+import MdGroups3 from "@material-design-icons/svg/filled/groups_3.svg?component-solid";
 import MdHome from "@material-design-icons/svg/filled/home.svg?component-solid";
 import MdPayments from "@material-design-icons/svg/filled/payments.svg?component-solid";
 import MdRateReview from "@material-design-icons/svg/filled/rate_review.svg?component-solid";
 import MdSettings from "@material-design-icons/svg/filled/settings.svg?component-solid";
 
-import Wordmark from "../../public/assets/web/wordmark.svg?component-solid";
+import censerIcon from "../../../brand/censer/icon.png";
 
 import { HeaderIcon } from "./common/CommonHeader";
 
@@ -93,6 +95,11 @@ export function HomePage() {
   const navigate = useNavigate();
   const client = useClient();
 
+  // check if we're censer.chat; if so, check if the user is in the Lounge
+  const showLoungeButton = CONFIGURATION.IS_STOAT;
+  const isInLounge =
+    client()!.servers.get("01F7ZSBSFHQ8TA81725KQCSDDP") !== undefined;
+
   return (
     <Base>
       <Header placement="primary">
@@ -102,13 +109,26 @@ export function HomePage() {
         <Trans>Home</Trans>
       </Header>
       <div use:scrollable={{ class: content() }}>
-        <Column>
-          <Wordmark
+        <Column align="center" gap="sm">
+          <img
+            src={censerIcon}
+            alt="Censer"
             class={css({
-              width: "160px",
-              fill: "var(--md-sys-color-on-surface)",
+              width: "96px",
+              height: "96px",
+              borderRadius: "var(--borderRadius-lg)",
             })}
           />
+          <span
+            class={css({
+              fontSize: "1.6em",
+              fontWeight: 600,
+              letterSpacing: "0.04em",
+              color: "var(--md-sys-color-on-surface)",
+            })}
+          >
+            Censer
+          </span>
         </Column>
         <Buttons>
           <SeparatedColumn>
@@ -129,19 +149,60 @@ export function HomePage() {
             >
               <Trans>Create a group or server</Trans>
             </CategoryButton>
+            <Switch fallback={null}>
+              <Match when={showLoungeButton && isInLounge}>
+                <CategoryButton
+                  onClick={() => navigate("/server/01F7ZSBSFHQ8TA81725KQCSDDP")}
+                  description={
+                    <Trans>
+                      You can report issues and discuss improvements with us
+                      directly here.
+                    </Trans>
+                  }
+                  icon={<MdGroups3 />}
+                >
+                  <Trans>Go to the Censer Lounge</Trans>
+                </CategoryButton>
+              </Match>
+              <Match when={showLoungeButton && !isInLounge}>
+                <CategoryButton
+                  onClick={() => {
+                    client()
+                      .api.get("/invites/Testers")
+                      .then((invite) =>
+                        PublicChannelInvite.from(client(), invite),
+                      )
+                      .then((invite) => openModal({ type: "invite", invite }));
+                  }}
+                  description={
+                    <Trans>
+                      You can report issues and discuss improvements with us
+                      directly here.
+                    </Trans>
+                  }
+                  icon={<MdGroups3 />}
+                >
+                  <Trans>Join the Censer Lounge</Trans>
+                </CategoryButton>
+              </Match>
+            </Switch>
             <CategoryButton
               variant="tertiary"
-              onClick={() => window.open("https://ko-fi.com/stoatchat")}
+              onClick={() =>
+                window.open(
+                  "https://wiki.revolt.chat/notes/project/financial-support/",
+                )
+              }
               description={
                 <Trans>Support the project by donating - thank you!</Trans>
               }
               icon={<MdPayments />}
             >
-              <Trans>Donate to Stoat</Trans>
+              <Trans>Donate to Censer</Trans>
             </CategoryButton>
           </SeparatedColumn>
           <SeparatedColumn>
-            <Show when={CONFIGURATION.DISCOVER_URL}>
+            <Show when={CONFIGURATION.IS_STOAT}>
               <CategoryButton
                 onClick={() => navigate("/discover")}
                 description={
@@ -151,7 +212,7 @@ export function HomePage() {
                 }
                 icon={<MdExplore />}
               >
-                <Trans>Discover Stoat</Trans>
+                <Trans>Discover Censer</Trans>
               </CategoryButton>
             </Show>
             <CategoryButton
@@ -169,7 +230,7 @@ export function HomePage() {
               }
               icon={<MdRateReview {...iconSize(22)} />}
             >
-              <Trans>Give feedback on Stoat</Trans>
+              <Trans>Give feedback on Censer</Trans>
             </CategoryButton>
             <CategoryButton
               onClick={() => openModal({ type: "settings", config: "user" })}

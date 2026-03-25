@@ -260,6 +260,7 @@ export const ServerList = (props: Props) => {
                 <a href={state.layout.getLastActiveServerPath(entry.item.id)}>
                   <Avatar
                     size={42}
+                    shape="rounded-square"
                     src={entry.item.iconURL}
                     holepunch={
                       entry.item.mentions.length ? "top-right" : "none"

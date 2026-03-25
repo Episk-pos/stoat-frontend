@@ -10,7 +10,7 @@ import { AbstractStore } from ".";
 interface SettingsDefinition {
   /**
    * Whether to enable desktop notifications
-   * Stoat will try to get notification permission after login if it doesn't already.
+   * Censer will try to get notification permission after login if it doesn't already.
    * TODO: implement
    */
   // "notifications:desktop": boolean;
@@ -49,7 +49,7 @@ interface SettingsDefinition {
   "appearance:compact_mode": boolean;
 
   /**
-   * Indicate new users to Stoat
+   * Indicate new users to Censer
    * TODO: implement
    */
   // "appearance:show_account_age": boolean;

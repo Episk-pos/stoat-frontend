@@ -26,7 +26,7 @@ import MdPayments from "@material-design-icons/svg/filled/payments.svg?component
 import MdRateReview from "@material-design-icons/svg/filled/rate_review.svg?component-solid";
 import MdSettings from "@material-design-icons/svg/filled/settings.svg?component-solid";
 
-import censerIcon from "../../../brand/censer/icon.png";
+import censerIcon from "../../../../brand/censer/icon.png";
 
 import { HeaderIcon } from "./common/CommonHeader";
 

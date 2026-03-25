@@ -9,7 +9,7 @@ import { Navigate } from "@revolt/routing";
 import { Button, Column } from "@revolt/ui";
 
 import { useState } from "@revolt/state";
-import censerIcon from "../../../../../brand/censer/icon.png";
+import censerIcon from "../../../../../../brand/censer/icon.png";
 
 /**
  * Flow for logging into an account

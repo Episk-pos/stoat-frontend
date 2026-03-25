@@ -46,6 +46,7 @@ export default function FlowHome() {
               />
               <span
                 class={css({
+                  fontFamily: "var(--fonts-serif)",
                   fontSize: "1.8em",
                   fontWeight: 600,
                   letterSpacing: "0.04em",

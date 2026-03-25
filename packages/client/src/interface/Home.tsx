@@ -121,6 +121,7 @@ export function HomePage() {
           />
           <span
             class={css({
+              fontFamily: "var(--fonts-serif)",
               fontSize: "1.6em",
               fontWeight: 600,
               letterSpacing: "0.04em",

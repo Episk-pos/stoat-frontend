@@ -5,6 +5,10 @@
 @import "@fontsource/inter/700";
 @import "@fontsource/inter/800";
 @import "@fontsource/jetbrains-mono";
+@import "@fontsource/cormorant-garamond/400";
+@import "@fontsource/cormorant-garamond/500";
+@import "@fontsource/cormorant-garamond/600";
+@import "@fontsource/cormorant-garamond/700";
 
 * {
   box-sizing: border-box;

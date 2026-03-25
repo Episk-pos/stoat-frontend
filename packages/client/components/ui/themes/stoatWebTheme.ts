@@ -39,6 +39,7 @@ export function createStoatWebVariables(theme: SelectedTheme) {
     // font
     "--fonts-primary": `"${theme.interfaceFont}", "Inter", sans-serif`,
     "--fonts-monospace": `"${theme.monospaceFont}", "Jetbrains Mono", sans-serif`,
+    "--fonts-serif": `"Cormorant Garamond", "Georgia", "Times New Roman", serif`,
 
     // load constants
     ...reduceWithPrefix(themeConstants.borderRadius, "--borderRadius-"),

@@ -529,6 +529,26 @@ msgstr ""
 msgid "Cannot edit this message."
 msgstr ""
 
+#: components/ui/components/features/profiles/ProfileBadges.tsx
+msgid "Censer Developer"
+msgstr ""
+
+#: components/app/interface/settings/user/Native.tsx
+msgid "Censer for Desktop"
+msgstr ""
+
+#: components/ui/components/features/profiles/ProfileBadges.tsx
+msgid "Censer Founder"
+msgstr ""
+
+#: components/auth/src/flows/FlowHome.tsx
+msgid "Censer is one of the best ways to stay connected with your friends and community, anywhere, anytime."
+msgstr ""
+
+#: components/app/interface/settings/user/Native.tsx
+msgid "Censer will start in the system tray."
+msgstr ""
+
 #: components/modal/modals/EditUsername.tsx
 #: components/modal/modals/EditPassword.tsx
 msgid "Change"
@@ -1060,8 +1080,12 @@ msgid "Discord RPC"
 msgstr ""
 
 #: src/interface/Home.tsx
-msgid "Discover Stoat"
+msgid "Discover Censer"
 msgstr ""
+
+#: src/interface/Home.tsx
+#~ msgid "Discover Stoat"
+#~ msgstr ""
 
 #: components/app/interface/settings/user/appearance/AppearanceMenu.tsx
 msgid "Display & Text"
@@ -1088,12 +1112,20 @@ msgid "Donate"
 msgstr ""
 
 #: src/interface/Home.tsx
-msgid "Donate to Stoat"
+msgid "Donate to Censer"
+msgstr ""
+
+#: src/interface/Home.tsx
+#~ msgid "Donate to Stoat"
+#~ msgstr ""
+
+#: components/ui/components/features/profiles/ProfileBadges.tsx
+msgid "Donated to Censer"
 msgstr ""
 
 #: components/ui/components/features/profiles/ProfileBadges.tsx
-msgid "Donated to Stoat"
-msgstr ""
+#~ msgid "Donated to Stoat"
+#~ msgstr ""
 
 #: components/modal/modals/MFARecovery.tsx
 msgid "Done"
@@ -1338,8 +1370,12 @@ msgid "Get active recovery codes"
 msgstr ""
 
 #: src/interface/Home.tsx
-msgid "Give feedback on Stoat"
+msgid "Give feedback on Censer"
 msgstr ""
+
+#: src/interface/Home.tsx
+#~ msgid "Give feedback on Stoat"
+#~ msgstr ""
 
 #: components/modal/modals/ReportContent.tsx
 msgid "Give us some detail"
@@ -1359,8 +1395,13 @@ msgstr ""
 
 #: src/interface/Home.tsx
 #: components/app/interface/settings/user/Feedback.tsx
-msgid "Go to the Stoat Lounge"
+msgid "Go to the Censer Lounge"
 msgstr ""
+
+#: src/interface/Home.tsx
+#: components/app/interface/settings/user/Feedback.tsx
+#~ msgid "Go to the Stoat Lounge"
+#~ msgstr ""
 
 #: components/modal/modals/Onboarding.tsx
 msgid "Good"
@@ -1398,8 +1439,12 @@ msgid "Help contribute to an existing or new language"
 msgstr ""
 
 #: components/ui/components/features/profiles/ProfileBadges.tsx
-msgid "Helped translate Stoat"
+msgid "Helped translate Censer"
 msgstr ""
+
+#: components/ui/components/features/profiles/ProfileBadges.tsx
+#~ msgid "Helped translate Stoat"
+#~ msgstr ""
 
 #. placeholder {0}: link()
 #: components/modal/modals/CreateInvite.tsx
@@ -1443,8 +1488,12 @@ msgid "Impersonation"
 msgstr ""
 
 #: components/app/interface/settings/user/Native.tsx
-msgid "Instead of closing, Stoat will hide in your tray."
+msgid "Instead of closing, Censer will hide in your tray."
 msgstr ""
+
+#: components/app/interface/settings/user/Native.tsx
+#~ msgid "Instead of closing, Stoat will hide in your tray."
+#~ msgstr ""
 
 #: components/app/interface/settings/user/appearance/AppearanceMenu.tsx
 msgid "Interface Font"
@@ -1502,8 +1551,13 @@ msgstr ""
 
 #: src/interface/Home.tsx
 #: components/app/interface/settings/user/Feedback.tsx
-msgid "Join the Stoat Lounge"
+msgid "Join the Censer Lounge"
 msgstr ""
+
+#: src/interface/Home.tsx
+#: components/app/interface/settings/user/Feedback.tsx
+#~ msgid "Join the Stoat Lounge"
+#~ msgstr ""
 
 #: components/ui/components/features/voice/callCard/VoiceCallCardPreview.tsx
 msgid "Join the voice channel"
@@ -1560,12 +1614,20 @@ msgid "Latest"
 msgstr ""
 
 #: components/app/interface/settings/user/Native.tsx
-msgid "Launch Stoat when you log into your computer."
+msgid "Launch Censer when you log into your computer."
+msgstr ""
+
+#: components/app/interface/settings/user/Native.tsx
+#~ msgid "Launch Stoat when you log into your computer."
+#~ msgstr ""
+
+#: components/app/interface/settings/user/bots/MyBots.tsx
+msgid "Learn more about how to create bots on Censer."
 msgstr ""
 
 #: components/app/interface/settings/user/bots/MyBots.tsx
-msgid "Learn more about how to create bots on Stoat."
-msgstr ""
+#~ msgid "Learn more about how to create bots on Stoat."
+#~ msgstr ""
 
 #: components/modal/modals/LeaveServer.tsx
 #: components/modal/modals/DeleteChannel.tsx
@@ -1588,8 +1650,12 @@ msgid "Leave server"
 msgstr ""
 
 #: components/app/interface/settings/user/Native.tsx
-msgid "Let Stoat use its own custom titlebar."
+msgid "Let Censer use its own custom titlebar."
 msgstr ""
+
+#: components/app/interface/settings/user/Native.tsx
+#~ msgid "Let Stoat use its own custom titlebar."
+#~ msgstr ""
 
 #: src/interface/Home.tsx
 msgid "Let us know how we can improve our app by giving us feedback."
@@ -1875,8 +1941,12 @@ msgid "New Password"
 msgstr ""
 
 #: components/app/interface/channels/text/Message.tsx
-msgid "New to Stoat"
+msgid "New to Censer"
 msgstr ""
+
+#: components/app/interface/channels/text/Message.tsx
+#~ msgid "New to Stoat"
+#~ msgstr ""
 
 #: components/app/interface/channels/text/Message.tsx
 msgid "New to the server"
@@ -2211,8 +2281,12 @@ msgid "Rename Session"
 msgstr ""
 
 #: components/app/interface/settings/user/Native.tsx
-msgid "Rep Stoat using Discord rich presence."
+msgid "Rep Censer using Discord rich presence."
 msgstr ""
+
+#: components/app/interface/settings/user/Native.tsx
+#~ msgid "Rep Stoat using Discord rich presence."
+#~ msgstr ""
 
 #: components/app/menus/MessageContextMenu.tsx
 msgid "Reply"
@@ -2485,8 +2559,12 @@ msgid "Show send message button"
 msgstr ""
 
 #: components/auth/src/flows/FlowLogin.tsx
-msgid "Sign into Stoat"
+msgid "Sign into Censer"
 msgstr ""
+
+#: components/auth/src/flows/FlowLogin.tsx
+#~ msgid "Sign into Stoat"
+#~ msgstr ""
 
 #: components/auth/src/flows/FlowHome.tsx
 msgid "Sign Up"
@@ -2550,24 +2628,24 @@ msgid "Status"
 msgstr ""
 
 #: components/ui/components/features/profiles/ProfileBadges.tsx
-msgid "Stoat Developer"
-msgstr ""
+#~ msgid "Stoat Developer"
+#~ msgstr ""
 
 #: components/app/interface/settings/user/Native.tsx
-msgid "Stoat for Desktop"
-msgstr ""
+#~ msgid "Stoat for Desktop"
+#~ msgstr ""
 
 #: components/ui/components/features/profiles/ProfileBadges.tsx
-msgid "Stoat Founder"
-msgstr ""
+#~ msgid "Stoat Founder"
+#~ msgstr ""
 
 #: components/auth/src/flows/FlowHome.tsx
-msgid "Stoat is one of the best ways to stay connected with your friends and community, anywhere, anytime."
-msgstr ""
+#~ msgid "Stoat is one of the best ways to stay connected with your friends and community, anywhere, anytime."
+#~ msgstr ""
 
 #: components/app/interface/settings/user/Native.tsx
-msgid "Stoat will start in the system tray."
-msgstr ""
+#~ msgid "Stoat will start in the system tray."
+#~ msgstr ""
 
 #: components/app/interface/settings/user/Feedback.tsx
 msgid "Submit feature suggestion"
@@ -2586,8 +2664,12 @@ msgid "Subscriptions"
 msgstr ""
 
 #: components/app/interface/settings/user/Feedback.tsx
-msgid "Suggest new Stoat features on GitHub discussions."
+msgid "Suggest new Censer features on GitHub discussions."
 msgstr ""
+
+#: components/app/interface/settings/user/Feedback.tsx
+#~ msgid "Suggest new Stoat features on GitHub discussions."
+#~ msgstr ""
 
 #: src/interface/Home.tsx
 msgid "Support the project by donating - thank you!"
@@ -2773,8 +2855,12 @@ msgstr ""
 
 #. placeholder {0}: err.type
 #: components/i18n/errors.ts
-msgid "Uncaught Stoat error: {0}"
+msgid "Uncaught Censer error: {0}"
 msgstr ""
+
+#: components/i18n/errors.ts
+#~ msgid "Uncaught Stoat error: {0}"
+#~ msgstr ""
 
 #: components/markdown/plugins/anchors.tsx
 msgid "Unknown Server"
@@ -3145,8 +3231,12 @@ msgid "You've been invited to join this server.<0/>Would you like to join?"
 msgstr ""
 
 #: components/modal/modals/SignedOut.tsx
-msgid "You've been signed out of Stoat!"
+msgid "You've been signed out of Censer!"
 msgstr ""
+
+#: components/modal/modals/SignedOut.tsx
+#~ msgid "You've been signed out of Stoat!"
+#~ msgstr ""
 
 #: components/i18n/errors.ts
 msgid "You've reached your personal bot limit."

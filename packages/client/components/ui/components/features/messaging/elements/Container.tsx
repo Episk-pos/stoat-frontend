@@ -126,6 +126,11 @@ const base = cva({
     padding: "2px 0",
     background: "var(--md-sys-color-surface-container)",
     borderRadius: "var(--borderRadius-md)",
+    // Flatten bottom corners when followed by a grouped tail message
+    "&:has(+ [data-tail='true'])": {
+      borderBottomLeftRadius: "var(--borderRadius-sm)",
+      borderBottomRightRadius: "var(--borderRadius-sm)",
+    },
     minHeight: "1em",
 
     transition: "background-color var(--transitions-fast)",
@@ -142,6 +147,8 @@ const base = cva({
     tail: {
       true: {
         marginTop: 0,
+        borderTopLeftRadius: "var(--borderRadius-sm)",
+        borderTopRightRadius: "var(--borderRadius-sm)",
       },
     },
     mentioned: {
@@ -309,6 +316,7 @@ export function MessageContainer(props: Props) {
 
   return (
     <div
+      data-tail={props.tail ? "true" : undefined}
       id={props.message?.id}
       onMouseEnter={() => props.onHover && props.onHover(true)}
       onMouseLeave={() => props.onHover && props.onHover(false)}

@@ -152,7 +152,11 @@ export function TextChannel(props: ChannelPageProps) {
   createEffect(
     on(
       () => props.channel.id,
-      () => setSidebarState({ state: "default" }),
+      () => {
+        setSidebarState({
+          state: props.channel.isVoice ? "voice_chat" : "default",
+        });
+      },
     ),
   );
 
@@ -305,8 +309,7 @@ const sidebar = cva({
     width: "var(--layout-width-channel-sidebar)",
     // margin: "var(--gap-md)",
     borderRadius: "var(--borderRadius-lg)",
-    // color: "var(--colours-sidebar-channels-foreground)",
-    // background: "var(--colours-sidebar-channels-background)",
+    background: "var(--md-sys-color-surface-container-lowest)",
   },
 });
 

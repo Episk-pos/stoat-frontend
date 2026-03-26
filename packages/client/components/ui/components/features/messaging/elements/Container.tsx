@@ -124,7 +124,7 @@ const base = cva({
     flexDirection: "column",
 
     padding: "2px 0",
-    background: "transparent",
+    background: "var(--md-sys-color-surface-container)",
     borderRadius: "var(--borderRadius-md)",
     minHeight: "1em",
 
@@ -179,7 +179,7 @@ const base = cva({
         marginTop: "var(--message-group-spacing) !important",
 
         "&:hover": {
-          background: "var(--md-sys-color-surface-container)",
+          background: "var(--md-sys-color-surface-container-high)",
         },
       },
       hide: {},

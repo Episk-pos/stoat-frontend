@@ -28,6 +28,7 @@ import {
   OverflowingText,
   Row,
   Tooltip,
+  Unreads,
   iconSize,
   symbolSize,
   typography,
@@ -353,9 +354,12 @@ function Category(
       (channel) =>
         props.category.id === "default" ||
         isOpen() ||
-        channel.unread ||
         channel.id === props.channelId,
     ),
+  );
+
+  const hasUnread = createMemo(() =>
+    !isOpen() && props.category.channels.some((channel) => channel.unread),
   );
 
   return (
@@ -371,6 +375,9 @@ function Category(
           >
             {props.category.title}
             <MdChevronRight {...iconSize(12)} />
+            <Show when={hasUnread()}>
+              <Unreads count={0} size="0.4rem" unread />
+            </Show>
           </CategoryBase>
         </div>
       </Show>

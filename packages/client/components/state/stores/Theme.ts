@@ -123,7 +123,7 @@ export class Theme extends AbstractStore {
       mode: "system",
 
       m3Accent: "#D4A574",
-      m3Contrast: 0.0,
+      m3Contrast: 0.25,
       m3Variant: "tonal_spot",
 
       interfaceFont: "Inter",

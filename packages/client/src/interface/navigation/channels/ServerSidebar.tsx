@@ -409,6 +409,7 @@ const CategorySection = styled("div", {
     paddingBlock: "var(--gap-sm)",
     borderRadius: "var(--borderRadius-sm)",
     background: "var(--md-sys-color-surface-container-low)",
+    marginBottom: "var(--gap-md)",
   },
 });
 

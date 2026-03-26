@@ -17,10 +17,12 @@
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"><div id="splash" style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;width:100vw;background:#0A0A0F;gap:0;position:fixed;top:0;left:0;">
-  <img src="./public/assets/web/splash.png" alt="" style="width:min(360px,60vw);height:auto;object-fit:contain;margin-bottom:-24px;" />
-  <span style="font-family:'Cormorant Garamond',Georgia,serif;font-size:1.8em;font-weight:600;letter-spacing:0.06em;color:#F5F0EB;text-shadow:0 2px 12px rgba(0,0,0,0.6);">Censer</span>
-  <div style="width:28px;height:28px;border:3px solid rgba(212,165,116,0.3);border-top-color:#D4A574;border-radius:50%;animation:spin 1s linear infinite;margin-top:16px;"></div>
+    <div id="root"><div id="splash" style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;width:100vw;background:#0A0A0F;position:fixed;top:0;left:0;">
+  <div style="position:relative;width:min(540px,90vw);display:flex;flex-direction:column;align-items:center;">
+    <img src="./public/assets/web/splash.png" alt="" style="width:100%;height:auto;object-fit:contain;" />
+    <span style="font-family:'Cormorant Garamond',Georgia,serif;font-size:1.8em;font-weight:600;letter-spacing:0.06em;color:#F5F0EB;text-shadow:0 2px 12px rgba(0,0,0,0.6);margin-top:-48px;">Censer</span>
+    <div style="width:28px;height:28px;border:3px solid rgba(212,165,116,0.3);border-top-color:#D4A574;border-radius:50%;animation:spin 1s linear infinite;margin-top:12px;"></div>
+  </div>
   <style>@keyframes spin{to{transform:rotate(360deg)}}</style>
 </div></div>
     <div id="floating"></div>

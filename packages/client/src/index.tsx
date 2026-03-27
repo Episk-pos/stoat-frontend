@@ -181,3 +181,6 @@ render(
   ),
   document.getElementById("root") as HTMLElement,
 );
+
+// Remove the inline splash screen from index.html now that the app has mounted
+document.getElementById("splash")?.remove();

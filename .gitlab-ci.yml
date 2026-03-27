@@ -4,8 +4,8 @@
 # Pipeline Flow:
 #   build -> deploy
 #
-# On push to main:    build and deploy to stoat.episkopos.community (S3 + CloudFront)
-# On push to staging: build and deploy to staging.stoat.episkopos.community (S3 + CloudFront)
+# On push to main:    build and deploy to chat.episkopos.community (S3 + CloudFront)
+# On push to staging: build and deploy to staging.chat.episkopos.community (S3 + CloudFront)
 # =============================================================================
 
 stages:
@@ -42,12 +42,12 @@ build-frontend:
 
     # Build the client with Censer-specific env vars
     - |
-      VITE_API_URL=https://stoat.episkopos.community/api \
-      VITE_WS_URL=wss://stoat.episkopos.community/events \
-      VITE_MEDIA_URL=https://stoat.episkopos.community/autumn \
-      VITE_PROXY_URL=https://stoat.episkopos.community/january \
+      VITE_API_URL=https://chat.episkopos.community/api \
+      VITE_WS_URL=wss://chat.episkopos.community/events \
+      VITE_MEDIA_URL=https://chat.episkopos.community/autumn \
+      VITE_PROXY_URL=https://chat.episkopos.community/january \
       VITE_EMOJI_URL=https://static.stoat.chat/emoji \
-      VITE_GIF_API_URL=https://stoat.episkopos.community/gifbox \
+      VITE_GIF_API_URL=https://chat.episkopos.community/gifbox \
       pnpm --filter client exec vite build
   artifacts:
     paths:
@@ -81,12 +81,12 @@ build-frontend-staging:
     # Build the client pointing at production backend
     # Staging frontend tests UI changes against production data
     - |
-      VITE_API_URL=https://stoat.episkopos.community/api \
-      VITE_WS_URL=wss://stoat.episkopos.community/events \
-      VITE_MEDIA_URL=https://stoat.episkopos.community/autumn \
-      VITE_PROXY_URL=https://stoat.episkopos.community/january \
+      VITE_API_URL=https://chat.episkopos.community/api \
+      VITE_WS_URL=wss://chat.episkopos.community/events \
+      VITE_MEDIA_URL=https://chat.episkopos.community/autumn \
+      VITE_PROXY_URL=https://chat.episkopos.community/january \
       VITE_EMOJI_URL=https://static.stoat.chat/emoji \
-      VITE_GIF_API_URL=https://stoat.episkopos.community/gifbox \
+      VITE_GIF_API_URL=https://chat.episkopos.community/gifbox \
       pnpm --filter client exec vite build
   artifacts:
     paths:

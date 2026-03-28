@@ -15,6 +15,7 @@ stages:
 variables:
   NODE_VERSION: "22"
   PNPM_VERSION: "10.10.0"
+  NODE_OPTIONS: "--max-old-space-size=4096"
   GIT_SUBMODULE_STRATEGY: normal
   GIT_SUBMODULE_PATHS: packages/stoat.js packages/solid-livekit-components packages/js-lingui-solid
 

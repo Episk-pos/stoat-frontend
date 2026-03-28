@@ -91,6 +91,28 @@ export function Draggable<T>(props: Props<T>) {
     return props.disabled || dragDisabled();
   }
 
+  let longPressTimer: number | undefined;
+
+  function handleTouchStart() {
+    longPressTimer = setTimeout(() => {
+      setDragDisabled(false);
+    }, 500) as unknown as number;
+  }
+
+  function handleTouchMove() {
+    if (longPressTimer) {
+      clearTimeout(longPressTimer);
+      longPressTimer = undefined;
+    }
+  }
+
+  function handleTouchEnd() {
+    if (longPressTimer) {
+      clearTimeout(longPressTimer);
+      longPressTimer = undefined;
+    }
+  }
+
   return (
     <div
       onTouchStart={handleTouchStart}

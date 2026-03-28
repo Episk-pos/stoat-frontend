@@ -134,10 +134,11 @@ deploy-frontend:
 deploy-frontend-staging:
   stage: deploy
   image: amazon/aws-cli:2.15.0
-  variables:
-    AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID_STAGING
-    AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY_STAGING
   script:
+    # Override credentials with staging-specific keys (project-level
+    # AWS_ACCESS_KEY_ID would otherwise shadow the job-level variable)
+    - export AWS_ACCESS_KEY_ID="$AWS_ACCESS_KEY_ID_STAGING"
+    - export AWS_SECRET_ACCESS_KEY="$AWS_SECRET_ACCESS_KEY_STAGING"
     # Sync hashed assets with immutable cache headers (1 year)
     - |
       aws s3 sync packages/client/dist/ s3://$S3_BUCKET_STAGING/ \

@@ -19,6 +19,7 @@ import {
   UserStatus,
   typography,
 } from "@revolt/ui";
+import { Tooltip } from "@revolt/ui/components/floating";
 import { Symbol } from "@revolt/ui/components/utils/Symbol";
 
 import MdGroup from "@material-design-icons/svg/outlined/group.svg?component-solid";

@@ -8,9 +8,10 @@ import {
 import { Match, Show, Switch } from "solid-js";
 
 import { File, MessageEmbed } from "stoat.js";
+import { css } from "styled-system/css";
 import { styled } from "styled-system/jsx";
 
-import { IconButton, Text } from "@revolt/ui/components/design";
+import { Text } from "@revolt/ui/components/design";
 import { Column, Row } from "@revolt/ui/components/layout";
 import { humanFileSize } from "@revolt/ui/components/utils";
 import { Symbol } from "@revolt/ui/components/utils/Symbol";
@@ -20,6 +21,13 @@ import { Symbol } from "@revolt/ui/components/utils/Symbol";
  */
 const Base = styled(Row, {
   base: {},
+});
+
+const fileLinkClass = css({
+  color: "inherit",
+  textDecoration: "none",
+  display: "block",
+  cursor: "pointer",
 });
 
 interface Props {
@@ -38,7 +46,7 @@ interface Props {
  * Information about a given attachment or embed
  */
 export function FileInfo(props: Props) {
-  return (
+  const inner = (
     <Base align>
       <Switch fallback={<BiSolidFile size={24} />}>
         <Match
@@ -73,16 +81,21 @@ export function FileInfo(props: Props) {
         </Show>
       </Column>
       <Show when={props.file}>
-        <a
-          target="_blank"
-          href={props.file?.originalUrl}
-          download={props.file?.filename}
-        >
-          <IconButton>
-            <Symbol>download</Symbol>
-          </IconButton>
-        </a>
+        <Symbol>download</Symbol>
       </Show>
     </Base>
+  );
+
+  return props.file ? (
+    <a
+      class={fileLinkClass}
+      target="_blank"
+      href={props.file.originalUrl}
+      download={props.file.filename}
+    >
+      {inner}
+    </a>
+  ) : (
+    inner
   );
 }

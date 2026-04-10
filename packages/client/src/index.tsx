@@ -19,6 +19,7 @@ import FlowCreate from "@revolt/auth/src/flows/FlowCreate";
 import FlowDeleteAccount from "@revolt/auth/src/flows/FlowDelete";
 import FlowHome from "@revolt/auth/src/flows/FlowHome";
 import FlowLogin from "@revolt/auth/src/flows/FlowLogin";
+import FlowOAuth2Authorize from "@revolt/auth/src/flows/FlowOAuth2Authorize";
 import FlowResend from "@revolt/auth/src/flows/FlowResend";
 import FlowReset from "@revolt/auth/src/flows/FlowReset";
 import FlowVerify from "@revolt/auth/src/flows/FlowVerify";
@@ -143,6 +144,9 @@ render(
   () => (
     <StateContext>
       <Router root={MountContext}>
+        <Route path="/oauth2/authorize" component={AuthPage as never}>
+          <Route path="/*" component={FlowOAuth2Authorize} />
+        </Route>
         <Route path="/login" component={AuthPage as never}>
           <Route path="/delete/:token" component={FlowDeleteAccount} />
           <Route path="/check" component={FlowCheck} />

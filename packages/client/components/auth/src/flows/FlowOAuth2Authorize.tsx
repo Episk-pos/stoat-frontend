@@ -247,12 +247,11 @@ export default function FlowOAuth2Authorize() {
         </Text>
       </Match>
 
-      {/* Client still initializing (restoring session from cookies) */}
+      {/* Client still initializing (actively logging in) */}
       <Match
         when={
           appInfo() &&
-          (lifecycle.state() === State.Ready ||
-            lifecycle.state() === State.LoggingIn)
+          lifecycle.state() === State.LoggingIn
         }
       >
         <FlowTitle>Authorize {appInfo()!.name}</FlowTitle>

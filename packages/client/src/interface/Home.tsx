@@ -153,23 +153,6 @@ export function HomePage() {
           </SeparatedColumn>
           <SeparatedColumn>
             <CategoryButton
-              onClick={() =>
-                openModal({
-                  type: "settings",
-                  config: "user",
-                  context: { page: "feedback" },
-                })
-              }
-              description={
-                <Trans>
-                  Let us know how we can improve our app by giving us feedback.
-                </Trans>
-              }
-              icon={<MdRateReview {...iconSize(22)} />}
-            >
-              <Trans>Give feedback on Censer</Trans>
-            </CategoryButton>
-            <CategoryButton
               onClick={() => openModal({ type: "settings", config: "user" })}
               description={
                 <Trans>

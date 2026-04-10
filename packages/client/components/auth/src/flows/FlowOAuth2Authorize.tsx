@@ -11,6 +11,7 @@ import {
 import { styled } from "styled-system/jsx";
 
 import { useApi, useClient, useClientLifecycle } from "@revolt/client";
+import { State } from "@revolt/client/Controller";
 import { CONFIGURATION } from "@revolt/common";
 import { useError } from "@revolt/i18n";
 import { useModals } from "@revolt/modal";
@@ -244,6 +245,20 @@ export default function FlowOAuth2Authorize() {
             ? appInfo.error.message
             : "Failed to load application details."}
         </Text>
+      </Match>
+
+      {/* Client still initializing (restoring session from cookies) */}
+      <Match
+        when={
+          appInfo() &&
+          (lifecycle.state() === State.Ready ||
+            lifecycle.state() === State.LoggingIn)
+        }
+      >
+        <FlowTitle>Authorize {appInfo()!.name}</FlowTitle>
+        <Column gap="lg">
+          <CircularProgress />
+        </Column>
       </Match>
 
       {/* App info loaded, but user not logged in - show login */}

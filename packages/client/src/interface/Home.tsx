@@ -150,72 +150,8 @@ export function HomePage() {
             >
               <Trans>Create a group or server</Trans>
             </CategoryButton>
-            <Switch fallback={null}>
-              <Match when={showLoungeButton && isInLounge}>
-                <CategoryButton
-                  onClick={() => navigate("/server/01F7ZSBSFHQ8TA81725KQCSDDP")}
-                  description={
-                    <Trans>
-                      You can report issues and discuss improvements with us
-                      directly here.
-                    </Trans>
-                  }
-                  icon={<MdGroups3 />}
-                >
-                  <Trans>Go to the Censer Lounge</Trans>
-                </CategoryButton>
-              </Match>
-              <Match when={showLoungeButton && !isInLounge}>
-                <CategoryButton
-                  onClick={() => {
-                    client()
-                      .api.get("/invites/Testers")
-                      .then((invite) =>
-                        PublicChannelInvite.from(client(), invite),
-                      )
-                      .then((invite) => openModal({ type: "invite", invite }));
-                  }}
-                  description={
-                    <Trans>
-                      You can report issues and discuss improvements with us
-                      directly here.
-                    </Trans>
-                  }
-                  icon={<MdGroups3 />}
-                >
-                  <Trans>Join the Censer Lounge</Trans>
-                </CategoryButton>
-              </Match>
-            </Switch>
-            <CategoryButton
-              variant="tertiary"
-              onClick={() =>
-                window.open(
-                  "https://opencollective.com/revolt",
-                )
-              }
-              description={
-                <Trans>Support the project by donating - thank you!</Trans>
-              }
-              icon={<MdPayments />}
-            >
-              <Trans>Donate to Censer</Trans>
-            </CategoryButton>
           </SeparatedColumn>
           <SeparatedColumn>
-            <Show when={CONFIGURATION.IS_STOAT}>
-              <CategoryButton
-                onClick={() => navigate("/discover")}
-                description={
-                  <Trans>
-                    Find a community based on your hobbies or interests.
-                  </Trans>
-                }
-                icon={<MdExplore />}
-              >
-                <Trans>Discover Censer</Trans>
-              </CategoryButton>
-            </Show>
             <CategoryButton
               onClick={() =>
                 openModal({

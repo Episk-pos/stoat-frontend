@@ -1,7 +1,7 @@
 import { Trans } from "@lingui-solid/solid/macro";
 
 import { useClient } from "@revolt/client";
-import { CategoryButton, CategoryButtonGroup, Checkbox, Column } from "@revolt/ui";
+import { CategoryButton, Checkbox, Column } from "@revolt/ui";
 
 /**
  * Privacy settings
@@ -11,7 +11,7 @@ export default function PrivacySettings() {
 
   return (
     <Column gap="xl">
-      <CategoryButtonGroup>
+      <CategoryButton.Group>
         <CategoryButton
           action={
             <Checkbox
@@ -33,7 +33,7 @@ export default function PrivacySettings() {
         >
           <Trans>Only allow direct messages from friends</Trans>
         </CategoryButton>
-      </CategoryButtonGroup>
+      </CategoryButton.Group>
     </Column>
   );
 }

@@ -3,7 +3,6 @@ import { styled } from "styled-system/jsx";
 
 import {
   CategoryButton,
-  CategoryButtonGroup,
   Column,
   iconSize,
 } from "@revolt/ui";
@@ -33,7 +32,7 @@ export function Feedback() {
 
   return (
     <Column gap="lg">
-      <CategoryButtonGroup>
+      <CategoryButton.Group>
         {/* <Link
           href="https://example.com"
           target="_blank"
@@ -126,7 +125,7 @@ export function Feedback() {
             </CategoryButton>
           </Match>
         </Switch>
-      </CategoryButtonGroup>
+      </CategoryButton.Group>
     </Column>
   );
 }

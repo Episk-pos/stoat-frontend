@@ -8,10 +8,12 @@ import {
   onMount,
 } from "solid-js";
 
+import type { API } from "stoat.js";
+
 import { styled } from "styled-system/jsx";
 
 import { useApi, useClient, useClientLifecycle } from "@revolt/client";
-import { State } from "@revolt/client/Controller";
+import { State, TransitionType } from "@revolt/client/Controller";
 import { CONFIGURATION } from "@revolt/common";
 import { useError } from "@revolt/i18n";
 import { useModals } from "@revolt/modal";
@@ -100,12 +102,162 @@ export default function FlowOAuth2Authorize() {
   const state = useState();
   const { lifecycle, isLoggedIn, login } = useClientLifecycle();
   const getClient = useClient();
+  const api = useApi();
   const modals = useModals();
   const err = useError();
 
   const oauthParams = getOAuth2Params();
   const [error, setError] = createSignal<string | undefined>();
   const [submitting, setSubmitting] = createSignal(false);
+
+  /**
+   * Establish the client session from a freshly-minted session token, reusing
+   * the exact path {@link ClientController.login} takes at its tail: persist the
+   * session then drive the lifecycle into the logged-in state. This flips
+   * {@link isLoggedIn} so the consent screen renders.
+   */
+  function establishSession(session: {
+    _id: string;
+    token: string;
+    user_id: string;
+  }) {
+    const createdSession = {
+      _id: session._id,
+      token: session.token,
+      userId: session.user_id,
+      valid: false,
+    };
+
+    state.auth.setSession(createdSession);
+    lifecycle.transition({
+      type: TransitionType.LoginUncached,
+      session: createdSession,
+    });
+  }
+
+  /**
+   * Begin "Continue with Discord": redirect the browser to the backend login
+   * route, carrying the current URL (with its OAuth2 authorize params) as the
+   * post-login `return` target. The backend validates it against its origin
+   * allowlist before honouring it.
+   */
+  function handleDiscordLogin() {
+    window.location.href = `${
+      CONFIGURATION.DEFAULT_API_URL
+    }/auth/discord/login?return=${encodeURIComponent(window.location.href)}`;
+  }
+
+  /**
+   * Complete an MFA-gated Discord login by reusing the client's existing
+   * `mfa_flow` modal + `/auth/session/login` ticket exchange — the same path
+   * {@link ClientController.login} uses. On success the session is established.
+   */
+  async function completeDiscordMfa(
+    ticket: string,
+    allowedMethods: API.MFAMethod[],
+  ) {
+    const friendly_name = "Censer for Web";
+    let mfaTicket = ticket;
+    let allowed = allowedMethods;
+
+    for (;;) {
+      const mfa_response: API.MFAResponse | undefined = await new Promise(
+        (callback) =>
+          modals.openModal({
+            type: "mfa_flow",
+            state: "unknown",
+            available_methods: allowed,
+            callback,
+          }),
+      );
+
+      // User dismissed the challenge — fall back to the login form.
+      if (typeof mfa_response === "undefined") {
+        setError("Two-factor authentication was cancelled.");
+        return;
+      }
+
+      try {
+        const session = await api.post("/auth/session/login", {
+          mfa_response,
+          mfa_ticket: mfaTicket,
+          friendly_name,
+        });
+
+        if (session.result === "Success") {
+          establishSession(session);
+          return;
+        }
+
+        if (session.result === "Disabled") {
+          setError("This account is disabled.");
+          return;
+        }
+
+        // Still MFA (e.g. a further factor) — loop with the new ticket.
+        mfaTicket = session.ticket;
+        allowed = session.allowed_methods;
+      } catch (e) {
+        console.error("Failed Discord MFA login:", e);
+        // Re-present the same challenge on a transient/invalid-code failure.
+      }
+    }
+  }
+
+  /**
+   * On arrival back from Discord, exchange the one-time handoff code for the
+   * login result. The code is delivered as `?discord_handoff=<code>` and is
+   * single-use server-side; we also strip it from the URL immediately.
+   */
+  onMount(async () => {
+    const params = new URLSearchParams(window.location.search);
+    const handoffCode = params.get("discord_handoff");
+    if (!handoffCode) return;
+
+    // Strip the handoff code from the URL up-front so it cannot be re-triggered
+    // on reload or leak via history/referrer (it is single-use regardless).
+    params.delete("discord_handoff");
+    const cleanedSearch = params.toString();
+    window.history.replaceState(
+      null,
+      "",
+      `${window.location.pathname}${
+        cleanedSearch ? `?${cleanedSearch}` : ""
+      }${window.location.hash}`,
+    );
+
+    try {
+      const response = await fetch(
+        `${CONFIGURATION.DEFAULT_API_URL}/auth/discord/complete`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ code: handoffCode }),
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error(
+          "Your Discord sign-in link has expired or was already used. Please try again.",
+        );
+      }
+
+      const result = (await response.json()) as
+        | { result: "Success"; _id: string; token: string; user_id: string }
+        | { result: "MFA"; ticket: string; allowed_methods: API.MFAMethod[] }
+        | { result: "Disabled"; user_id: string };
+
+      if (result.result === "Success") {
+        establishSession(result);
+      } else if (result.result === "MFA") {
+        await completeDiscordMfa(result.ticket, result.allowed_methods);
+      } else {
+        setError("This account is disabled.");
+      }
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+    }
+  });
 
   // Validate required parameters
   const missingParams = () => {
@@ -302,6 +454,14 @@ export default function FlowOAuth2Authorize() {
             </Row>
           </Column>
         </form>
+        <OrDivider>
+          <Text class="label" size="small">
+            or
+          </Text>
+        </OrDivider>
+        <Button variant="tonal" onPress={handleDiscordLogin}>
+          Continue with Discord
+        </Button>
       </Match>
 
       {/* App info loaded and user logged in - show consent screen */}
@@ -405,6 +565,31 @@ const ScopeBullet = styled("div", {
     borderRadius: "50%",
     background: "var(--md-sys-color-primary)",
     flexShrink: 0,
+  },
+});
+
+/**
+ * Horizontal "or" divider between the login form and alternate sign-in methods
+ */
+const OrDivider = styled("div", {
+  base: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: "12px",
+    color: "var(--md-sys-color-outline)",
+    _before: {
+      content: '""',
+      flex: 1,
+      height: "1px",
+      background: "var(--md-sys-color-outline-variant)",
+    },
+    _after: {
+      content: '""',
+      flex: 1,
+      height: "1px",
+      background: "var(--md-sys-color-outline-variant)",
+    },
   },
 });
 

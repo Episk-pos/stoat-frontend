@@ -47,6 +47,16 @@ msgstr ""
 msgid "{0, plural, one {# blocked message} other {# blocked messages}}"
 msgstr ""
 
+#. placeholder {0}: props.event.interestedCount
+#: src/interface/ServerEvents.tsx
+msgid "{0, plural, one {# person interested} other {# people interested}}"
+msgstr ""
+
+#. placeholder {0}: ev().interestedCount
+#: src/interface/ServerEventDetail.tsx
+msgid "{0, plural, one {# person} other {# people}}"
+msgstr ""
+
 #. placeholder {0}: items().length
 #: components/ui/components/utils/files/FileDropAnywhereCollector.tsx
 msgid "{0, plural, one {Drop a file} other {Drop # files}}"
@@ -251,8 +261,8 @@ msgid "Able to speak in voice call"
 msgstr ""
 
 #: components/auth/src/AuthPage.tsx
-msgid "About"
-msgstr ""
+#~ msgid "About"
+#~ msgstr ""
 
 #: components/modal/modals/SignOutSessions.tsx
 msgid "Accept"
@@ -264,6 +274,17 @@ msgstr ""
 
 #: components/modal/modals/PolicyChange.tsx
 msgid "Acknowledge"
+msgstr ""
+
+#: src/interface/ServerEvents.tsx
+#: src/interface/ServerEventDetail.tsx
+#: components/app/interface/settings/server/events/ListServerEvents.tsx
+msgid "Active"
+msgstr ""
+
+#. placeholder {0}: active().length
+#: src/interface/ServerEvents.tsx
+msgid "Active ({0})"
 msgstr ""
 
 #: components/modal/modals/AddMembersToGroup.tsx
@@ -390,6 +411,8 @@ msgstr ""
 #: src/interface/channels/AgeGate.tsx
 #: src/interface/channels/AgeGate.tsx
 #: components/modal/modals/MFAFlow.tsx
+#: components/modal/modals/CreateScheduledEvent.tsx
+#: components/modal/modals/CreateScheduledEvent.tsx
 #: components/auth/src/flows/FlowLogin.tsx
 #: components/auth/src/flows/FlowCreate.tsx
 #: components/auth/src/flows/FlowCheck.tsx
@@ -487,6 +510,10 @@ msgstr ""
 msgid "By creating this server, you agree to the <0>Acceptable Use Policy</0>."
 msgstr ""
 
+#: components/ui/components/features/voice/callCard/VoiceCallCardActions.tsx
+msgid "Camera"
+msgstr ""
+
 #: components/modal/modals/SignOutSessions.tsx
 #: components/modal/modals/ServerIdentity.tsx
 #: components/modal/modals/ResetBotToken.tsx
@@ -501,11 +528,14 @@ msgstr ""
 #: components/modal/modals/Invite.tsx
 #: components/modal/modals/EditCategory.tsx
 #: components/modal/modals/DeleteServer.tsx
+#: components/modal/modals/DeleteScheduledEvent.tsx
 #: components/modal/modals/DeleteRole.tsx
 #: components/modal/modals/DeleteMessage.tsx
 #: components/modal/modals/DeleteChannel.tsx
 #: components/modal/modals/DeleteCategory.tsx
 #: components/modal/modals/DeleteBot.tsx
+#: components/modal/modals/CreateScheduledEvent.tsx
+#: components/modal/modals/CreateScheduledEvent.tsx
 #: components/modal/modals/BanNonMember.tsx
 #: components/modal/modals/BanMember.tsx
 #: components/modal/modals/AddBot.tsx
@@ -519,6 +549,12 @@ msgstr ""
 
 #: components/app/menus/DraftMessageContextMenu.tsx
 msgid "Cancel message"
+msgstr ""
+
+#: src/interface/ServerEvents.tsx
+#: src/interface/ServerEventDetail.tsx
+#: components/app/interface/settings/server/events/ListServerEvents.tsx
+msgid "Cancelled"
 msgstr ""
 
 #: components/app/interface/settings/user/Account.tsx
@@ -597,6 +633,10 @@ msgstr ""
 
 #: components/modal/modals/Changelog.tsx
 msgid "Changelog"
+msgstr ""
+
+#: components/modal/modals/CreateScheduledEvent.tsx
+msgid "Channel"
 msgstr ""
 
 #: components/app/interface/settings/channel/Overview.tsx
@@ -700,6 +740,12 @@ msgstr ""
 msgid "Code"
 msgstr ""
 
+#: src/interface/ServerEvents.tsx
+#: src/interface/ServerEventDetail.tsx
+#: components/app/interface/settings/server/events/ListServerEvents.tsx
+msgid "Completed"
+msgstr ""
+
 #: components/app/interface/settings/user/Account.tsx
 msgid "Configure a way to get back into your account in case your 2FA is lost"
 msgstr ""
@@ -781,6 +827,7 @@ msgstr ""
 msgid "Copy link"
 msgstr ""
 
+#: src/interface/ServerEventDetail.tsx
 #: components/modal/modals/CreateInvite.tsx
 msgid "Copy Link"
 msgstr ""
@@ -816,6 +863,14 @@ msgstr ""
 
 #: components/i18n/errors.ts
 msgid "Could not find what you requested."
+msgstr ""
+
+#: components/modal/modals/CreateScheduledEvent.tsx
+msgid "Cover Image"
+msgstr ""
+
+#: components/modal/modals/CreateScheduledEvent.tsx
+msgid "Cover image preview"
 msgstr ""
 
 #: components/modal/modals/CreateWebhook.tsx
@@ -887,6 +942,14 @@ msgstr ""
 msgid "Create channel"
 msgstr ""
 
+#: src/interface/ServerEvents.tsx
+#: components/modal/modals/CreateScheduledEvent.tsx
+#: components/modal/modals/CreateScheduledEvent.tsx
+#: components/modal/modals/CreateScheduledEvent.tsx
+#: components/app/interface/settings/server/events/ListServerEvents.tsx
+msgid "Create Event"
+msgstr ""
+
 #: components/app/menus/ServerContextMenu.tsx
 #: components/app/menus/ChannelContextMenu.tsx
 #: components/app/interface/settings/server/invites/ListServerInvites.tsx
@@ -918,8 +981,20 @@ msgstr ""
 msgid "Create Webhook"
 msgstr ""
 
+#: components/app/interface/settings/channel/permissions/ChannelPermissionsEditor.tsx
+msgid "Create, edit, and delete scheduled events"
+msgstr ""
+
 #: components/app/interface/settings/user/Sessions.tsx
 msgid "Created <0/>"
+msgstr ""
+
+#: src/interface/ServerEventDetail.tsx
+msgid "Created by"
+msgstr ""
+
+#: components/modal/modals/CreateScheduledEvent.tsx
+msgid "Creating event..."
 msgstr ""
 
 #: components/modal/modals/EditUsername.tsx
@@ -953,6 +1028,14 @@ msgstr ""
 msgid "Database error, please contact support. ({0})"
 msgstr ""
 
+#: components/app/interface/settings/server/events/ListServerEvents.tsx
+msgid "Date"
+msgstr ""
+
+#: src/interface/ServerEventDetail.tsx
+msgid "Date & Time"
+msgstr ""
+
 #: components/app/interface/settings/user/Language.tsx
 msgid "Date format"
 msgstr ""
@@ -977,8 +1060,10 @@ msgstr ""
 msgid "Default Permissions"
 msgstr ""
 
+#: src/interface/ServerEventDetail.tsx
 #: components/modal/modals/EmojiPreview.tsx
 #: components/modal/modals/DeleteServer.tsx
+#: components/modal/modals/DeleteScheduledEvent.tsx
 #: components/modal/modals/DeleteRole.tsx
 #: components/modal/modals/DeleteMessage.tsx
 #: components/modal/modals/DeleteChannel.tsx
@@ -988,9 +1073,10 @@ msgid "Delete"
 msgstr ""
 
 #. placeholder {0}: props.server.name
+#. placeholder {0}: props.event.name
 #. placeholder {0}: props.role.name
-#. placeholder {0}: props.channel.name
 #: components/modal/modals/DeleteServer.tsx
+#: components/modal/modals/DeleteScheduledEvent.tsx
 #: components/modal/modals/DeleteRole.tsx
 #: components/modal/modals/DeleteChannel.tsx
 #: components/modal/modals/DeleteBot.tsx
@@ -1024,6 +1110,10 @@ msgstr ""
 msgid "Delete Channel"
 msgstr ""
 
+#: components/app/interface/settings/server/events/ListServerEvents.tsx
+msgid "Delete Event"
+msgstr ""
+
 #: components/app/interface/settings/server/invites/ListServerInvites.tsx
 msgid "Delete Invite"
 msgstr ""
@@ -1042,6 +1132,11 @@ msgstr ""
 msgid "Delete Server"
 msgstr ""
 
+#: components/modal/modals/CreateScheduledEvent.tsx
+#: components/modal/modals/CreateScheduledEvent.tsx
+msgid "Description"
+msgstr ""
+
 #. placeholder {0}: props.invite.username
 #: components/modal/modals/AddBot.tsx
 msgid "Description provided by {0}"
@@ -1053,6 +1148,10 @@ msgstr ""
 
 #: components/app/interface/settings/user/bots/MyBots.tsx
 msgid "Developer Documentation"
+msgstr ""
+
+#: components/ui/components/features/voice/callCard/VoiceCallCardActions.tsx
+msgid "Device settings"
 msgstr ""
 
 #: components/app/interface/settings/user/Account.tsx
@@ -1080,8 +1179,8 @@ msgid "Discord RPC"
 msgstr ""
 
 #: src/interface/Home.tsx
-msgid "Discover Censer"
-msgstr ""
+#~ msgid "Discover Censer"
+#~ msgstr ""
 
 #: src/interface/Home.tsx
 #~ msgid "Discover Stoat"
@@ -1108,12 +1207,12 @@ msgid "Don't notify others that you've left"
 msgstr ""
 
 #: components/app/interface/settings/UserSettings.tsx
-msgid "Donate"
-msgstr ""
+#~ msgid "Donate"
+#~ msgstr ""
 
 #: src/interface/Home.tsx
-msgid "Donate to Censer"
-msgstr ""
+#~ msgid "Donate to Censer"
+#~ msgstr ""
 
 #: src/interface/Home.tsx
 #~ msgid "Donate to Stoat"
@@ -1135,6 +1234,10 @@ msgstr ""
 msgid "Drugs or illegal goods"
 msgstr ""
 
+#: src/interface/ServerEventDetail.tsx
+msgid "Edit"
+msgstr ""
+
 #. placeholder {0}: props.member.displayName
 #: components/modal/modals/UserProfileRoles.tsx
 msgid "Edit {0}'s roles"
@@ -1150,6 +1253,12 @@ msgstr ""
 
 #: components/app/interface/settings/channel/permissions/ChannelPermissionsEditor.tsx
 msgid "Edit channel-specific role and default permissions"
+msgstr ""
+
+#: components/modal/modals/CreateScheduledEvent.tsx
+#: components/modal/modals/CreateScheduledEvent.tsx
+#: components/app/interface/settings/server/events/ListServerEvents.tsx
+msgid "Edit Event"
 msgstr ""
 
 #: components/app/interface/settings/user/profile/EditProfile.tsx
@@ -1228,6 +1337,14 @@ msgstr ""
 msgid "Enable transparency glass/blur effects (slow on older machines)"
 msgstr ""
 
+#: components/modal/modals/CreateScheduledEvent.tsx
+msgid "End Time"
+msgstr ""
+
+#: components/modal/modals/CreateScheduledEvent.tsx
+msgid "End Time (optional)"
+msgstr ""
+
 #: components/app/interface/settings/user/voice/VoiceProcessingOptions.tsx
 msgid "Enhanced"
 msgstr ""
@@ -1271,8 +1388,39 @@ msgstr ""
 msgid "Enter your preferred username."
 msgstr ""
 
+#: components/modal/modals/CreateScheduledEvent.tsx
+msgid "Event Details"
+msgstr ""
+
+#: components/modal/modals/CreateScheduledEvent.tsx
+msgid "Event Name"
+msgstr ""
+
+#: src/interface/ServerEventDetail.tsx
+msgid "Event not found."
+msgstr ""
+
+#: src/interface/ServerEvents.tsx
+#: src/interface/ServerEventDetail.tsx
+#: src/interface/navigation/channels/ServerSidebar.tsx
+#: components/app/interface/settings/ServerSettings.tsx
+#: components/app/interface/settings/channel/permissions/ChannelPermissionsEditor.tsx
+msgid "Events"
+msgstr ""
+
+#: src/interface/ServerEvents.tsx
+#: src/interface/ServerEventDetail.tsx
+#: components/app/interface/settings/server/events/ListServerEvents.tsx
+msgid "External"
+msgstr ""
+
 #: components/modal/modals/LinkWarning.tsx
 msgid "External links can be dangerous!"
+msgstr ""
+
+#: components/modal/modals/CreateScheduledEvent.tsx
+#: components/modal/modals/CreateScheduledEvent.tsx
+msgid "External Location"
 msgstr ""
 
 #: components/modal/modals/ReportContent.tsx
@@ -1281,6 +1429,14 @@ msgstr ""
 
 #: components/modal/modals/ReportContent.tsx
 msgid "Extreme violence, gore or animal cruelty"
+msgstr ""
+
+#: src/interface/ServerEventDetail.tsx
+msgid "Failed to load event."
+msgstr ""
+
+#: src/interface/ServerEvents.tsx
+msgid "Failed to load events."
 msgstr ""
 
 #: components/i18n/errors.ts
@@ -1301,8 +1457,8 @@ msgid "Feedback"
 msgstr ""
 
 #: src/interface/Home.tsx
-msgid "Find a community based on your hobbies or interests."
-msgstr ""
+#~ msgid "Find a community based on your hobbies or interests."
+#~ msgstr ""
 
 #: components/auth/src/flows/FlowHome.tsx
 msgid "Find your com<0/>munity,<1/>connect with the world."
@@ -1370,8 +1526,8 @@ msgid "Get active recovery codes"
 msgstr ""
 
 #: src/interface/Home.tsx
-msgid "Give feedback on Censer"
-msgstr ""
+#~ msgid "Give feedback on Censer"
+#~ msgstr ""
 
 #: src/interface/Home.tsx
 #~ msgid "Give feedback on Stoat"
@@ -1379,6 +1535,10 @@ msgstr ""
 
 #: components/modal/modals/ReportContent.tsx
 msgid "Give us some detail"
+msgstr ""
+
+#: components/modal/modals/CreateScheduledEvent.tsx
+msgid "Give your event a name"
 msgstr ""
 
 #: components/auth/src/flows/FlowVerify.tsx
@@ -1393,7 +1553,6 @@ msgstr ""
 msgid "Go to account settings to edit your username"
 msgstr ""
 
-#: src/interface/Home.tsx
 #: components/app/interface/settings/user/Feedback.tsx
 msgid "Go to the Censer Lounge"
 msgstr ""
@@ -1451,6 +1610,10 @@ msgstr ""
 msgid "Here is your new invite code: <0>{0}</0>"
 msgstr ""
 
+#: components/ui/components/features/voice/callCard/VoiceCallCardActions.tsx
+msgid "Hide members"
+msgstr ""
+
 #: components/app/interface/settings/user/appearance/AppearanceMenu.tsx
 msgid "High Contrast"
 msgstr ""
@@ -1458,6 +1621,14 @@ msgstr ""
 #: src/interface/Home.tsx
 #: src/interface/navigation/channels/HomeSidebar.tsx
 msgid "Home"
+msgstr ""
+
+#: components/modal/modals/CreateScheduledEvent.tsx
+msgid "Host the event in a voice channel on your server"
+msgstr ""
+
+#: components/modal/modals/CreateScheduledEvent.tsx
+msgid "Host the event somewhere outside of your server"
 msgstr ""
 
 #: src/interface/channels/AgeGate.tsx
@@ -1480,8 +1651,8 @@ msgid "Illegal hacking or cracking"
 msgstr ""
 
 #: components/auth/src/AuthPage.tsx
-msgid "Image by @fakurian"
-msgstr ""
+#~ msgid "Image by @fakurian"
+#~ msgstr ""
 
 #: components/modal/modals/ReportContent.tsx
 msgid "Impersonation"
@@ -1494,6 +1665,15 @@ msgstr ""
 #: components/app/interface/settings/user/Native.tsx
 #~ msgid "Instead of closing, Stoat will hide in your tray."
 #~ msgstr ""
+
+#: src/interface/ServerEventDetail.tsx
+#: src/interface/ServerEventDetail.tsx
+msgid "Interested"
+msgstr ""
+
+#: src/interface/ServerEventDetail.tsx
+msgid "Interested?"
+msgstr ""
 
 #: components/app/interface/settings/user/appearance/AppearanceMenu.tsx
 msgid "Interface Font"
@@ -1549,7 +1729,6 @@ msgstr ""
 msgid "Join a server"
 msgstr ""
 
-#: src/interface/Home.tsx
 #: components/app/interface/settings/user/Feedback.tsx
 msgid "Join the Censer Lounge"
 msgstr ""
@@ -1658,8 +1837,8 @@ msgstr ""
 #~ msgstr ""
 
 #: src/interface/Home.tsx
-msgid "Let us know how we can improve our app by giving us feedback."
-msgstr ""
+#~ msgid "Let us know how we can improve our app by giving us feedback."
+#~ msgstr ""
 
 #: components/app/interface/settings/user/appearance/AppearanceMenu.tsx
 msgid "Light"
@@ -1672,6 +1851,12 @@ msgstr ""
 #. placeholder {0}: humanFileSize(props.file.size ?? 0)
 #: components/ui/components/features/messaging/elements/TextFile.tsx
 msgid "Load file ({0})"
+msgstr ""
+
+#: src/interface/ServerEventDetail.tsx
+#: components/modal/modals/CreateScheduledEvent.tsx
+#: components/modal/modals/CreateScheduledEvent.tsx
+msgid "Location"
 msgstr ""
 
 #: components/auth/src/flows/FlowHome.tsx
@@ -1712,6 +1897,10 @@ msgid "Manage Customisation"
 msgstr ""
 
 #: components/app/interface/settings/channel/permissions/ChannelPermissionsEditor.tsx
+msgid "Manage Events"
+msgstr ""
+
+#: components/app/interface/settings/channel/permissions/ChannelPermissionsEditor.tsx
 msgid "Manage Messages"
 msgstr ""
 
@@ -1733,6 +1922,10 @@ msgstr ""
 
 #: components/app/interface/settings/channel/permissions/ChannelPermissionsEditor.tsx
 msgid "Manage Webhooks"
+msgstr ""
+
+#: components/app/interface/settings/ServerSettings.tsx
+msgid "Management"
 msgstr ""
 
 #: components/modal/modals/ChannelToggleMature.tsx
@@ -1801,7 +1994,7 @@ msgstr ""
 msgid "Message"
 msgstr ""
 
-#. placeholder {0}: props.channel.recipient?.username
+#. placeholder {0}: props.channel.recipient?.displayName
 #. placeholder {0}: props.channel.name
 #: src/interface/channels/text/Composition.tsx
 #: src/interface/channels/text/Composition.tsx
@@ -1834,6 +2027,10 @@ msgstr ""
 
 #: components/app/interface/settings/channel/permissions/ChannelPermissionsEditor.tsx
 msgid "Messaging"
+msgstr ""
+
+#: components/ui/components/features/voice/callCard/VoiceCallCardActions.tsx
+msgid "Microphone"
 msgstr ""
 
 #: components/app/interface/settings/user/Native.tsx
@@ -1918,7 +2115,9 @@ msgid "My Bots"
 msgstr ""
 
 #: components/modal/modals/RenameSession.tsx
+#: components/modal/modals/CreateScheduledEvent.tsx
 #: components/modal/modals/CreateCategory.tsx
+#: components/app/interface/settings/server/events/ListServerEvents.tsx
 msgid "Name"
 msgstr ""
 
@@ -1952,12 +2151,36 @@ msgstr ""
 msgid "New to the server"
 msgstr ""
 
+#: components/modal/modals/CreateScheduledEvent.tsx
+msgid "Next"
+msgstr ""
+
 #: components/modal/modals/ServerIdentity.tsx
 msgid "Nickname"
 msgstr ""
 
+#: src/interface/ServerEvents.tsx
+msgid "No events are currently active."
+msgstr ""
+
+#: src/interface/ServerEvents.tsx
+msgid "No events to show."
+msgstr ""
+
+#: src/interface/ServerEvents.tsx
+msgid "No past events."
+msgstr ""
+
 #: components/app/interface/settings/channel/permissions/ChannelPermissionsOverview.tsx
 msgid "No permissions set yet"
+msgstr ""
+
+#: components/app/interface/settings/server/events/ListServerEvents.tsx
+msgid "No scheduled events yet."
+msgstr ""
+
+#: src/interface/ServerEvents.tsx
+msgid "No upcoming events scheduled."
 msgstr ""
 
 #: src/interface/Friends.tsx
@@ -2017,6 +2240,7 @@ msgid "On"
 msgstr ""
 
 #: components/modal/modals/DeleteServer.tsx
+#: components/modal/modals/DeleteScheduledEvent.tsx
 #: components/modal/modals/DeleteRole.tsx
 #: components/modal/modals/DeleteChannel.tsx
 #: components/modal/modals/DeleteCategory.tsx
@@ -2034,6 +2258,10 @@ msgstr ""
 #: src/interface/channels/text/MemberSidebar.tsx
 #: components/ui/components/features/profiles/ProfileStatus.tsx
 msgid "Online"
+msgstr ""
+
+#: components/app/interface/settings/user/Privacy.tsx
+msgid "Only allow direct messages from friends"
 msgstr ""
 
 #: src/interface/navigation/servers/UserMenu.tsx
@@ -2089,6 +2317,11 @@ msgstr ""
 msgid "Password"
 msgstr ""
 
+#. placeholder {0}: past().length
+#: src/interface/ServerEvents.tsx
+msgid "Past ({0})"
+msgstr ""
+
 #: src/interface/Friends.tsx
 msgid "Pending"
 msgstr ""
@@ -2141,9 +2374,13 @@ msgstr ""
 msgid "Powered by RNNoise"
 msgstr ""
 
-#: components/auth/src/AuthPage.tsx
-msgid "Privacy Policy"
+#: components/app/interface/settings/UserSettings.tsx
+msgid "Privacy"
 msgstr ""
+
+#: components/auth/src/AuthPage.tsx
+#~ msgid "Privacy Policy"
+#~ msgstr ""
 
 #: components/markdown/plugins/anchors.tsx
 msgid "Private Channel"
@@ -2361,6 +2598,14 @@ msgstr ""
 msgid "Revenge or underage pornography"
 msgstr ""
 
+#: components/modal/modals/CreateScheduledEvent.tsx
+msgid "Review Changes"
+msgstr ""
+
+#: components/modal/modals/CreateScheduledEvent.tsx
+msgid "Review Event"
+msgstr ""
+
 #: components/modal/modals/PolicyChange.tsx
 msgid "Review policy changes"
 msgstr ""
@@ -2385,6 +2630,10 @@ msgstr ""
 msgid "Save"
 msgstr ""
 
+#: components/modal/modals/CreateScheduledEvent.tsx
+msgid "Save Changes"
+msgstr ""
+
 #: components/app/menus/MessageContextMenu.tsx
 msgid "Save file"
 msgstr ""
@@ -2403,6 +2652,12 @@ msgstr ""
 msgid "Scams or fraud"
 msgstr ""
 
+#: src/interface/ServerEvents.tsx
+#: src/interface/ServerEventDetail.tsx
+#: components/app/interface/settings/server/events/ListServerEvents.tsx
+msgid "Scheduled"
+msgstr ""
+
 #: components/modal/modals/AddBot.tsx
 msgid "Search for groups..."
 msgstr ""
@@ -2410,6 +2665,10 @@ msgstr ""
 #: components/modal/modals/CreateGroup.tsx
 #: components/modal/modals/AddMembersToGroup.tsx
 msgid "Search for users..."
+msgstr ""
+
+#: components/modal/modals/CreateScheduledEvent.tsx
+msgid "Select a channel"
 msgstr ""
 
 #: components/app/interface/settings/user/voice/VoiceInputOptions.tsx
@@ -2430,6 +2689,14 @@ msgstr ""
 
 #: components/app/interface/settings/user/Language.tsx
 msgid "Select your language"
+msgstr ""
+
+#: components/ui/components/features/voice/callCard/VoiceCallCardActions.tsx
+msgid "Selected camera is unavailable."
+msgstr ""
+
+#: components/ui/components/features/voice/callCard/VoiceCallCardActions.tsx
+msgid "Selected microphone is unavailable."
 msgstr ""
 
 #: components/app/interface/settings/channel/permissions/ChannelPermissionsEditor.tsx
@@ -2554,6 +2821,10 @@ msgstr ""
 msgid "Show corrections and suggestions as you type."
 msgstr ""
 
+#: components/ui/components/features/voice/callCard/VoiceCallCardActions.tsx
+msgid "Show members"
+msgstr ""
+
 #: components/app/interface/settings/user/appearance/AppearanceMenu.tsx
 msgid "Show send message button"
 msgstr ""
@@ -2611,6 +2882,12 @@ msgstr ""
 msgid "Spellchecker"
 msgstr ""
 
+#: src/interface/ServerEvents.tsx
+#: src/interface/ServerEventDetail.tsx
+#: components/app/interface/settings/server/events/ListServerEvents.tsx
+msgid "Stage"
+msgstr ""
+
 #: components/app/interface/settings/user/Native.tsx
 msgid "Start Minimised to Tray"
 msgstr ""
@@ -2619,11 +2896,21 @@ msgstr ""
 msgid "Start the call"
 msgstr ""
 
+#: components/modal/modals/CreateScheduledEvent.tsx
+#: components/modal/modals/CreateScheduledEvent.tsx
+msgid "Start Time"
+msgstr ""
+
+#: src/interface/channels/ChannelHeader.tsx
+msgid "Start voice call"
+msgstr ""
+
 #: components/app/interface/settings/user/Native.tsx
 msgid "Start with Computer"
 msgstr ""
 
 #: components/ui/components/features/profiles/ProfileStatus.tsx
+#: components/app/interface/settings/server/events/ListServerEvents.tsx
 msgid "Status"
 msgstr ""
 
@@ -2646,6 +2933,14 @@ msgstr ""
 #: components/app/interface/settings/user/Native.tsx
 #~ msgid "Stoat will start in the system tray."
 #~ msgstr ""
+
+#: components/app/menus/UserContextMenu.tsx
+msgid "Stop watching screenshare"
+msgstr ""
+
+#: components/app/menus/UserContextMenu.tsx
+msgid "Stop watching video"
+msgstr ""
 
 #: components/app/interface/settings/user/Feedback.tsx
 msgid "Submit feature suggestion"
@@ -2672,8 +2967,8 @@ msgstr ""
 #~ msgstr ""
 
 #: src/interface/Home.tsx
-msgid "Support the project by donating - thank you!"
-msgstr ""
+#~ msgid "Support the project by donating - thank you!"
+#~ msgstr ""
 
 #: components/ui/components/features/voice/callCard/VoiceCallCardPreview.tsx
 msgid "Switch to this voice channel"
@@ -2716,8 +3011,8 @@ msgid "Temporarily prevent lower-ranking members from interacting"
 msgstr ""
 
 #: components/auth/src/AuthPage.tsx
-msgid "Terms of Service"
-msgstr ""
+#~ msgid "Terms of Service"
+#~ msgstr ""
 
 #: components/modal/modals/CreateChannel.tsx
 msgid "Text Channel"
@@ -2833,6 +3128,10 @@ msgstr ""
 msgid "Timeout Members"
 msgstr ""
 
+#: src/interface/ServerEventDetail.tsx
+msgid "to"
+msgstr ""
+
 #: src/interface/common/CommonHeader.tsx
 msgid "Toggle main sidebar"
 msgstr ""
@@ -2849,6 +3148,11 @@ msgstr ""
 msgid "Trending GIFs"
 msgstr ""
 
+#: components/modal/modals/CreateScheduledEvent.tsx
+#: components/app/interface/settings/server/events/ListServerEvents.tsx
+msgid "Type"
+msgstr ""
+
 #: components/app/menus/UserContextMenu.tsx
 msgid "Unblock user"
 msgstr ""
@@ -2861,6 +3165,22 @@ msgstr ""
 #: components/i18n/errors.ts
 #~ msgid "Uncaught Stoat error: {0}"
 #~ msgstr ""
+
+#: src/interface/ServerEventDetail.tsx
+msgid "Unknown"
+msgstr ""
+
+#: components/ui/components/features/voice/callCard/VoiceCallCardActions.tsx
+msgid "Unknown camera"
+msgstr ""
+
+#: components/modal/modals/CreateScheduledEvent.tsx
+msgid "Unknown Channel"
+msgstr ""
+
+#: components/ui/components/features/voice/callCard/VoiceCallCardActions.tsx
+msgid "Unknown microphone"
+msgstr ""
 
 #: components/markdown/plugins/anchors.tsx
 msgid "Unknown Server"
@@ -2901,6 +3221,11 @@ msgstr ""
 #: components/app/menus/ServerContextMenu.tsx
 #: components/app/menus/shared/NotificationContextMenu.tsx
 msgid "Until I turn it back on"
+msgstr ""
+
+#. placeholder {0}: upcoming().length
+#: src/interface/ServerEvents.tsx
+msgid "Upcoming ({0})"
 msgstr ""
 
 #: components/app/interface/settings/channel/permissions/ChannelPermissionsEditor.tsx
@@ -3014,6 +3339,10 @@ msgstr ""
 msgid "View Channel"
 msgstr ""
 
+#: src/interface/channels/ChannelHeader.tsx
+msgid "View chat"
+msgstr ""
+
 #: components/app/interface/settings/user/Feedback.tsx
 msgid "View currently active bug reports here."
 msgstr ""
@@ -3034,11 +3363,17 @@ msgstr ""
 msgid "Viewing older messages"
 msgstr ""
 
+#: src/interface/ServerEvents.tsx
+#: src/interface/ServerEventDetail.tsx
 #: components/app/interface/settings/UserSettings.tsx
+#: components/app/interface/settings/server/events/ListServerEvents.tsx
 #: components/app/interface/settings/channel/permissions/ChannelPermissionsEditor.tsx
 msgid "Voice"
 msgstr ""
 
+#: components/modal/modals/CreateScheduledEvent.tsx
+#: components/modal/modals/CreateScheduledEvent.tsx
+#: components/modal/modals/CreateScheduledEvent.tsx
 #: components/modal/modals/CreateChannel.tsx
 msgid "Voice Channel"
 msgstr ""
@@ -3053,6 +3388,14 @@ msgstr ""
 
 #: components/app/interface/settings/user/profile/UserProfileEditor.tsx
 msgid "Want to change username?"
+msgstr ""
+
+#: components/app/menus/UserContextMenu.tsx
+msgid "Watch screenshare"
+msgstr ""
+
+#: components/app/menus/UserContextMenu.tsx
+msgid "Watch video"
 msgstr ""
 
 #: components/auth/src/flows/FlowCheck.tsx
@@ -3078,6 +3421,22 @@ msgstr ""
 
 #: components/auth/src/flows/FlowLogin.tsx
 msgid "Welcome!"
+msgstr ""
+
+#: components/modal/modals/CreateScheduledEvent.tsx
+msgid "What is this event about?"
+msgstr ""
+
+#: components/modal/modals/CreateScheduledEvent.tsx
+msgid "What type of event would you like to create?"
+msgstr ""
+
+#: components/app/interface/settings/user/Privacy.tsx
+msgid "When enabled, only users on your friends list can send you direct messages."
+msgstr ""
+
+#: components/modal/modals/CreateScheduledEvent.tsx
+msgid "Where is this event taking place?"
 msgstr ""
 
 #: components/app/interface/settings/channel/permissions/ChannelPermissionsEditor.tsx
@@ -3125,8 +3484,6 @@ msgstr ""
 msgid "You can re-open it later, but it will disappear on both sides."
 msgstr ""
 
-#: src/interface/Home.tsx
-#: src/interface/Home.tsx
 #: components/app/interface/settings/user/Feedback.tsx
 #: components/app/interface/settings/user/Feedback.tsx
 msgid "You can report issues and discuss improvements with us directly here."
